@@ -93,9 +93,6 @@ Plugin 'valloric/youcompleteme'
 "  Origin: https://github.com/IanConnolly/dotfiles/blob/master/vimfiles/vimrc#L472-L478
 "  
 
-
-
-
 Plugin 'VundleVim/Vundle.vim'
 
 
@@ -108,28 +105,15 @@ filetype plugin indent on    " required
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
 """""""""""
-" Javascript plugin
+" Autopair
 """""""""""
-let g:javascript_conceal_function   = "ƒ"
-let g:javascript_conceal_null       = "ø"
-let g:javascript_conceal_this       = "@"
-let g:javascript_conceal_return     = "⇚"
-let g:javascript_conceal_undefined  = "¿"
-let g:javascript_conceal_NaN        = "ℕ"
-let g:javascript_conceal_prototype  = "¶"
-let g:javascript_conceal_static     = "•"
-let g:javascript_conceal_super      = "Ω"
 
 """""""""""
-" ==> Airline setup
+" emmet
 """""""""""
-" Show open buffer into the airline
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='onedark'
-
 
 """""""""""
-" ==> Syntastic setup
+" syntastic
 " read: http://usevim.com/2016/03/07/linting/
 """""""""""
 "
@@ -157,10 +141,77 @@ highlight link SyntasticStyleWarningSign SignColumn
 """""""""""
 " ==> Svim-ruby highlight operators
 """""""""""
-" 
 let ruby_operators    = 1
 let ruby_no_expensive = 1
 
+
+"""""""""""
+" tagbar
+"""""""""""
+
+"""""""""""
+" tabular
+"""""""""""
+
+"""""""""""
+" Unite
+"""""""""""
+
+"""""""""""
+" NerdCommenter
+"""""""""""
+
+"""""""""""
+" NerdTree
+"""""""""""
+
+"""""""""""
+" Airline
+"""""""""""
+" Show open buffer into the airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='onedark'
+
+"""""""""""
+" EasyMotion
+"""""""""""
+
+"""""""""""
+" Endwise
+"""""""""""
+
+"""""""""""
+" Fugitive
+"""""""""""
+
+"""""""""""
+" multiple cursors
+"""""""""""
+
+"""""""""""
+" Javascript plugin
+"""""""""""
+let g:javascript_conceal_function   = "ƒ"
+let g:javascript_conceal_null       = "ø"
+let g:javascript_conceal_this       = "@"
+let g:javascript_conceal_return     = "⇚"
+let g:javascript_conceal_undefined  = "¿"
+let g:javascript_conceal_NaN        = "ℕ"
+let g:javascript_conceal_prototype  = "¶"
+let g:javascript_conceal_static     = "•"
+let g:javascript_conceal_super      = "Ω"
+
+"""""""""""
+" Signify
+"""""""""""
+
+"""""""""""
+" surround
+"""""""""""
+
+"""""""""""
+" youcompleteme
+"""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
