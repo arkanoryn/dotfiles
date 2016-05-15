@@ -9,6 +9,7 @@ or use the fonts patched : https://github.com/gabrielelana/awesome-terminal-font
 
 If brew refuse to install, use the following command:
 > $ sudo chown -R $USER /usr/local
+
 > $ mkdir -p ~/Library/Caches/Homebrew/Formula
 
 This should allow you to follow awesome-terminal-fonts instructions.
