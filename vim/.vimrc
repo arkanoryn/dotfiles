@@ -1,19 +1,19 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Original_author: 
+" Original_author:
 "       Amir Salihefendic
 "       http://amix.dk - amix@amix.dk
 "
-" Blog_post: 
+" Blog_post:
 "       http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
 "
-" Raw_version: 
+" Raw_version:
 "       http://amix.dk/vim/vimrc.txt
 "
 " Current_author:
 "       Pierre-Nicolas 'ArkAnoryn' SORMANI
 "       pierre-nicolas@phenixies.com
 "
-" Version: 
+" Version:
 "       1.0 - 14/05/16 18:28:36
 "
 " Sections:
@@ -91,7 +91,7 @@ Plugin 'valloric/youcompleteme'
 " https://github.com/wellle/targets.vim
 " ---
 "  Origin: https://github.com/IanConnolly/dotfiles/blob/master/vimfiles/vimrc#L472-L478
-"  
+"
 
 Plugin 'VundleVim/Vundle.vim'
 
@@ -107,6 +107,7 @@ filetype plugin indent on    " required
 """""""""""
 " Autopair
 """""""""""
+let g:AutoPairsFlyMode = 1
 
 """""""""""
 " emmet
@@ -117,9 +118,9 @@ filetype plugin indent on    " required
 " read: http://usevim.com/2016/03/07/linting/
 """""""""""
 "
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#                     " makes airline crash
+" set statusline+=%{SyntasticStatuslineFlag()}      " makes airline crash
+" set statusline+=%*                                " makes airline crash
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_loc_list_height = 5
@@ -157,6 +158,7 @@ let ruby_no_expensive = 1
 " Unite
 """""""""""
 
+
 """""""""""
 " NerdCommenter
 """""""""""
@@ -169,8 +171,21 @@ let ruby_no_expensive = 1
 " Airline
 """""""""""
 " Show open buffer into the airline
-let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='onedark'
+
+" Show list of buffers
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#show_buffers = 25
+let g:airline#extensions#tabline#show_tabs = 1
+
+" limit the branch name to X characters
+let g:airline#extensions#branch#displayed_head_limit = 10
+
+" use powerfont
+let g:airline_powerline_fonts = 1
+
 
 """""""""""
 " EasyMotion
@@ -249,7 +264,7 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching
 set ignorecase
 
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
@@ -335,10 +350,12 @@ set si "Smart indent
 set wrap "Wrap lines
 
 " Showing invisible characters
-set listchars=tab:»\ ,extends:›,trail:⋅ " textmate
+set list
+set listchars=tab:▸\ ,trail:·,extends:»,precedes:« " Unprintable chars mapping
 set fillchars=stlnc:\-,vert:\|
 set showbreak=›››
 
+autocmd BufWritePre * :%s/\s\+$//e              " remove trailing whitespace on save
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
@@ -355,6 +372,11 @@ vnoremap <silent> # :call VisualSelection('b')<CR>
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
+
+" turn around buffer
+nnoremap <c-x>n :bn<CR>
+nnoremap <c-x>c :bp<CR>
+
 
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
 map <space> /
@@ -388,7 +410,7 @@ map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
   set stal=2
@@ -408,7 +430,7 @@ set viminfo^=%
 " => Status line
 """"""""""""""""""""""""""""""
 " Always show the status line
-set laststatus=2
+set laststatus=2 " remove because its not needed, due to airline
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
