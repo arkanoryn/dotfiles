@@ -18,3 +18,5 @@ Zsh use oh-my-zsh
 For using ZSH as a default shell, please type the following command:
 > chsh -s /bin/zsh
 
+# Vim
+copy the colors folder on your ~

@@ -1,29 +1,24 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: 
+" Original_author: 
 "       Amir Salihefendic
 "       http://amix.dk - amix@amix.dk
-"
-" Version: 
-"       5.0 - 29/05/12 15:43:36
 "
 " Blog_post: 
 "       http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
 "
-" Awesome_version:
-"       Get this config, nice color schemes and lots of plugins!
-"
-"       Install the awesome version from:
-"
-"           https://github.com/amix/vimrc
-"
-" Syntax_highlighted:
-"       http://amix.dk/vim/vimrc.html
-"
 " Raw_version: 
 "       http://amix.dk/vim/vimrc.txt
 "
+" Current_author:
+"       Pierre-Nicolas 'ArkAnoryn' SORMANI
+"       pierre-nicolas@phenixies.com
+"
+" Version: 
+"       1.0 - 14/05/16 18:28:36
+"
 " Sections:
 "    -> General
+"    -> Vundle
 "    -> VIM user interface
 "    -> Colors and Fonts
 "    -> Files and backups
@@ -46,10 +41,6 @@
 " Sets how many lines of history VIM has to remember
 set history=700
 
-" Enable filetype plugins
-filetype plugin on
-filetype indent on
-
 " Set to auto read when a file is changed from the outside
 set autoread
 
@@ -63,6 +54,115 @@ nmap <leader>w :w!<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vundle
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'mattn/emmet-vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'majutsushi/tagbar'
+Plugin 'godlygeek/tabular'
+Plugin 'shougo/unite.vim'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdtree'
+Plugin 'bling/vim-airline'
+Plugin 'easymotion/vim-easymotion'
+Plugin 'tpope/vim-endwise'                       " Insert 'end' in ruby as smartly as braces
+Plugin 'tpope/vim-fugitive'
+Plugin 'pangloss/vim-javascript'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'tpope/vim-rails'
+Plugin 'mhinz/vim-signify'
+Plugin 'tpope/vim-surround'
+Plugin 'valloric/youcompleteme'
+
+"
+" Future Plugins to add
+" https://github.com/junegunn/fzf.vim
+" https://github.com/junegunn/fzf
+" https://github.com/unblevable/quick-scope
+" https://github.com/kshenoy/vim-signature
+" https://github.com/romainl/vim-qf
+" https://github.com/tpope/vim-repeat
+" https://github.com/wellle/targets.vim
+" ---
+"  Origin: https://github.com/IanConnolly/dotfiles/blob/master/vimfiles/vimrc#L472-L478
+"  
+
+
+
+
+Plugin 'VundleVim/Vundle.vim'
+
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vundle's plugin setup
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+"""""""""""
+" Javascript plugin
+"""""""""""
+let g:javascript_conceal_function   = "ƒ"
+let g:javascript_conceal_null       = "ø"
+let g:javascript_conceal_this       = "@"
+let g:javascript_conceal_return     = "⇚"
+let g:javascript_conceal_undefined  = "¿"
+let g:javascript_conceal_NaN        = "ℕ"
+let g:javascript_conceal_prototype  = "¶"
+let g:javascript_conceal_static     = "•"
+let g:javascript_conceal_super      = "Ω"
+
+"""""""""""
+" ==> Airline setup
+"""""""""""
+" Show open buffer into the airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='onedark'
+
+
+"""""""""""
+" ==> Syntastic setup
+" read: http://usevim.com/2016/03/07/linting/
+"""""""""""
+"
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_loc_list_height = 5
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 1
+let g:syntastic_javascript_checkers = ['eslint']
+
+let g:syntastic_error_symbol = '❌'
+let g:syntastic_style_error_symbol = '⁉️'
+let g:syntastic_warning_symbol = '⚠️'
+let g:syntastic_style_warning_symbol = '💩'
+
+highlight link SyntasticErrorSign SignColumn
+highlight link SyntasticWarningSign SignColumn
+highlight link SyntasticStyleErrorSign SignColumn
+highlight link SyntasticStyleWarningSign SignColumn
+
+"""""""""""
+" ==> Svim-ruby highlight operators
+"""""""""""
+" 
+let ruby_operators    = 1
+let ruby_no_expensive = 1
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set 7 lines to the cursor - when moving vertically using j/k
@@ -72,7 +172,9 @@ set so=7
 set wildmenu
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc
+set wildignore=*.o,*.obj,*~,*.pyc,*.so,*.swp,tmp/
+set wildignore+=*.pdf,*.jpg,*.dmg,*.zip,*.png,*.gif,*DS_Store*
+
 
 "Always show current position
 set ruler
@@ -129,7 +231,8 @@ set tm=500
 " Enable syntax highlighting
 syntax enable
 
-colorscheme desert
+let g:onedark_termcolors=16
+colorscheme onedark
 set background=dark
 
 " Set extra options when running in GUI mode
@@ -145,6 +248,9 @@ set encoding=utf8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
+
+" Set font
+set guifont=Cousine\ for\ Powerline:h14
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -176,6 +282,11 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
+
+" Showing invisible characters
+set listchars=tab:»\ ,extends:›,trail:⋅ " textmate
+set fillchars=stlnc:\-,vert:\|
+set showbreak=›››
 
 
 """"""""""""""""""""""""""""""
