@@ -40,3 +40,10 @@ Install AG through:
 
 > brew install automake pkg-config pcre xz
 
+
+# CTags
+
+> brew tap universal-ctags/universal-ctags
+
+> brew install --HEAD universal-ctags
+

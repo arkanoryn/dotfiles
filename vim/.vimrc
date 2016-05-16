@@ -38,6 +38,10 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
 " Sets how many lines of history VIM has to remember
 set history=700
 
@@ -64,6 +68,7 @@ call vundle#begin()
 
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'mattn/emmet-vim'
+Plugin 'jakedouglas/exuberant-ctags'
 Plugin 'scrooloose/syntastic'
 Plugin 'majutsushi/tagbar'
 Plugin 'godlygeek/tabular'
@@ -75,6 +80,7 @@ Plugin 'bling/vim-airline'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'tpope/vim-endwise'                       " Insert 'end' in ruby as smartly as braces
 Plugin 'tpope/vim-fugitive'
+Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'pangloss/vim-javascript'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'shougo/vimproc.vim'
@@ -152,6 +158,12 @@ let ruby_no_expensive = 1
 """""""""""
 " tagbar
 """""""""""
+nmap <C-x>t :TagbarToggle<CR>
+let g:tagbar_autoclose = 1
+let g:tagbar_autofocus = 1
+let g:tagbar_show_linenumbers = 1
+let g:tagbar_singleclick = 1
+let g:tagbar_autoshowtag = 1
 
 """""""""""
 " tabular
@@ -178,7 +190,7 @@ nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
 nnoremap <C-x>b :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 nnoremap <C-x>p :Unite -no-split -start-insert file_rec/async<cr>
 nnoremap <C-p> :Unite -no-split -start-insert -auto-preview -vertical-preview file_rec/async<cr>
-nnoremap <C-f> :Unite no-split grep:.<cr>
+nnoremap <C-f> :Unite -no-split grep:.<cr>
 
 """""""""""
 " NerdCommenter
@@ -187,6 +199,32 @@ nnoremap <C-f> :Unite no-split grep:.<cr>
 """""""""""
 " NerdTree
 """""""""""
+
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+nnoremap <C-x>l :<C-u>NERDTreeToggle<CR>
+
+
+function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+ exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+ exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
+call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
+call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
+call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
+call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
+call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
+call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
+call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
+call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
+call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
+call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
+call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
+call NERDTreeHighlightFile('rb', 'Magenta', 'none', '#ff00ff', '#151515')
+
 
 """""""""""
 " Airline
@@ -199,14 +237,18 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#show_buffers = 25
-let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tabs = 3
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+
+" Show tagbar
+let g:airline#extensions#tagbar#enabled = 1
 
 " limit the branch name to X characters
 let g:airline#extensions#branch#displayed_head_limit = 10
 
 " use powerfont
 let g:airline_powerline_fonts = 1
-
 
 """""""""""
 " EasyMotion
@@ -219,10 +261,33 @@ let g:airline_powerline_fonts = 1
 """""""""""
 " Fugitive
 """""""""""
+nnoremap <silent> <leader>gs :Gstatus<CR>
+nnoremap <silent> <leader>gd :Gdiff<CR>
+nnoremap <silent> <leader>gc :Gcommit<CR>
+nnoremap <silent> <leader>gb :Gblame<CR>
+nnoremap <silent> <leader>gl :Glog<CR>
+nnoremap <silent> <leader>gp :Git push<CR>
+nnoremap <silent> <leader>gw :Gwrite<CR>
+nnoremap <silent> <leader>gr :Gremove<CR>
+
+"""""""""""
+" IndentGuide
+"""""""""""
+let g:indent_guides_auto_colors = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+
+autocmd BufReadPre,FileReadPre * :IndentGuidesEnable
+
 
 """""""""""
 " multiple cursors
 """""""""""
+
+let g:multi_cursor_next_key='<C-n>'
+let g:multi_cursor_prev_key='<C-b>'
+let g:multi_cursor_skip_key='<C-s>'
+let g:multi_cursor_quit_key='<Esc>'
 
 """""""""""
 " Javascript plugin
@@ -347,7 +412,6 @@ set guifont=Cousine\ for\ Powerline:h14
 set nobackup
 set nowb
 set noswapfile
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
@@ -500,7 +564,7 @@ endif
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
 " Open vimgrep and put the cursor in the right position
-map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+map <leader>f :vimgrep // **/*.<left><left><left><left><left><left><left>
 
 " Vimgreps in the current file
 map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
