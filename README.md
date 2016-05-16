@@ -31,3 +31,12 @@ Install Clang through:
 
 > ./install.py --clang-completer
 
+## Vimproc
+don't forget to manually compile vimproc through "make"
+
+## AG
+Install AG through:
+> brew install the_silver_searcher
+
+> brew install automake pkg-config pcre xz
+

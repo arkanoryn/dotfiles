@@ -53,6 +53,7 @@ let g:mapleader = ","
 nmap <leader>w :w!<cr>
 
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vundle
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -66,15 +67,17 @@ Plugin 'mattn/emmet-vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'majutsushi/tagbar'
 Plugin 'godlygeek/tabular'
-Plugin 'shougo/unite.vim'
+Plugin 'shougo/neomru.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'shougo/unite.vim'
 Plugin 'bling/vim-airline'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'tpope/vim-endwise'                       " Insert 'end' in ruby as smartly as braces
 Plugin 'tpope/vim-fugitive'
 Plugin 'pangloss/vim-javascript'
 Plugin 'terryma/vim-multiple-cursors'
+Plugin 'shougo/vimproc.vim'
 Plugin 'tpope/vim-rails'
 Plugin 'mhinz/vim-signify'
 Plugin 'tpope/vim-surround'
@@ -157,7 +160,25 @@ let ruby_no_expensive = 1
 """""""""""
 " Unite
 """""""""""
+if executable('ag')
+    let g:ackprg = "ag --nogroup --column --smart-case --follow"
+endif
 
+if executable('ag')
+    let g:unite_source_grep_command='ag'
+    let g:unite_source_grep_default_opts='--nocolor --line-numbers --nogroup -S -C4'
+    let g:unite_source_grep_recursive_opt=''
+endif
+
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+
+
+nnoremap <C-x>e :<C-u>Unite -no-split -buffer-name=recent -start-insert file_mru<cr>
+nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
+nnoremap <C-x>b :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+nnoremap <C-x>p :Unite -no-split -start-insert file_rec/async<cr>
+nnoremap <C-p> :Unite -no-split -start-insert -auto-preview -vertical-preview file_rec/async<cr>
+nnoremap <C-f> :Unite no-split grep:.<cr>
 
 """""""""""
 " NerdCommenter
@@ -468,6 +489,13 @@ autocmd BufWrite *.coffee :call DeleteTrailingWS()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vimgrep searching and cope displaying
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:ackprg = 'ag --nogroup --nocolor --column'
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --column\ --smart-case\ --nocolor\ --follow
+    set grepformat=%f:%l:%c:%m
+endif
+
 " When you press gv you vimgrep after the selected text
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
