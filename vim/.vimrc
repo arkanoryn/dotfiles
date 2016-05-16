@@ -77,7 +77,10 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'shougo/unite.vim'
 Plugin 'bling/vim-airline'
+Plugin 'junegunn/vim-easy-align'
 Plugin 'easymotion/vim-easymotion'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/incsearch-fuzzy.vim'
 Plugin 'tpope/vim-endwise'                       " Insert 'end' in ruby as smartly as braces
 Plugin 'tpope/vim-fugitive'
 Plugin 'nathanaelkane/vim-indent-guides'
@@ -88,13 +91,10 @@ Plugin 'tpope/vim-rails'
 Plugin 'mhinz/vim-signify'
 Plugin 'tpope/vim-surround'
 Plugin 'valloric/youcompleteme'
+Plugin 'kshenoy/vim-signature'
 
-"
 " Future Plugins to add
-" https://github.com/junegunn/fzf.vim
-" https://github.com/junegunn/fzf
 " https://github.com/unblevable/quick-scope
-" https://github.com/kshenoy/vim-signature
 " https://github.com/romainl/vim-qf
 " https://github.com/tpope/vim-repeat
 " https://github.com/wellle/targets.vim
@@ -166,8 +166,14 @@ let g:tagbar_singleclick = 1
 let g:tagbar_autoshowtag = 1
 
 """""""""""
-" tabular
+" tabular // easy align
 """""""""""
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
 
 """""""""""
 " Unite
@@ -184,7 +190,6 @@ endif
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 
-
 nnoremap <C-x>e :<C-u>Unite -no-split -buffer-name=recent -start-insert file_mru<cr>
 nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
 nnoremap <C-x>b :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
@@ -193,13 +198,8 @@ nnoremap <C-p> :Unite -no-split -start-insert -auto-preview -vertical-preview fi
 nnoremap <C-f> :Unite -no-split grep:.<cr>
 
 """""""""""
-" NerdCommenter
-"""""""""""
-
-"""""""""""
 " NerdTree
 """""""""""
-
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
@@ -224,7 +224,6 @@ call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
 call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('rb', 'Magenta', 'none', '#ff00ff', '#151515')
-
 
 """""""""""
 " Airline
@@ -253,10 +252,23 @@ let g:airline_powerline_fonts = 1
 """""""""""
 " EasyMotion
 """""""""""
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
-"""""""""""
-" Endwise
-"""""""""""
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+nmap s <Plug>(easymotion-overwin-f2)
+
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+let g:EasyMotion_smartcase = 1
+
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
 
 """""""""""
 " Fugitive
@@ -279,11 +291,9 @@ let g:indent_guides_guide_size = 1
 
 autocmd BufReadPre,FileReadPre * :IndentGuidesEnable
 
-
 """""""""""
 " multiple cursors
 """""""""""
-
 let g:multi_cursor_next_key='<C-n>'
 let g:multi_cursor_prev_key='<C-b>'
 let g:multi_cursor_skip_key='<C-s>'
@@ -301,14 +311,6 @@ let g:javascript_conceal_NaN        = "ℕ"
 let g:javascript_conceal_prototype  = "¶"
 let g:javascript_conceal_static     = "•"
 let g:javascript_conceal_super      = "Ω"
-
-"""""""""""
-" Signify
-"""""""""""
-
-"""""""""""
-" surround
-"""""""""""
 
 """""""""""
 " youcompleteme
@@ -564,7 +566,7 @@ endif
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
 " Open vimgrep and put the cursor in the right position
-map <leader>f :vimgrep // **/*.<left><left><left><left><left><left><left>
+map <leader>v :vimgrep // **/*.<left><left><left><left><left><left><left>
 
 " Vimgreps in the current file
 map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
