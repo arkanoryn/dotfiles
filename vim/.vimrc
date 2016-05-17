@@ -66,32 +66,40 @@ nmap <leader>w :w!<cr>
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'bling/vim-airline'
 Plugin 'jiangmiao/auto-pairs'
+Plugin 'junegunn/vim-easy-align'
+Plugin 'easymotion/vim-easymotion'
 Plugin 'mattn/emmet-vim'
+Plugin 'tpope/vim-endwise'                       " Insert 'end' in ruby as smartly as braces
 Plugin 'jakedouglas/exuberant-ctags'
-Plugin 'scrooloose/syntastic'
-Plugin 'majutsushi/tagbar'
-Plugin 'godlygeek/tabular'
+Plugin 'tpope/vim-fugitive'
+Plugin 'yggdroot/indentline'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/incsearch-fuzzy.vim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'terryma/vim-multiple-cursors'
 Plugin 'shougo/neomru.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
-Plugin 'shougo/unite.vim'
-Plugin 'bling/vim-airline'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'easymotion/vim-easymotion'
-Plugin 'haya14busa/incsearch.vim'
-Plugin 'haya14busa/incsearch-fuzzy.vim'
-Plugin 'tpope/vim-endwise'                       " Insert 'end' in ruby as smartly as braces
-Plugin 'tpope/vim-fugitive'
-Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'pangloss/vim-javascript'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'shougo/vimproc.vim'
 Plugin 'tpope/vim-rails'
-Plugin 'mhinz/vim-signify'
-Plugin 'tpope/vim-surround'
-Plugin 'valloric/youcompleteme'
+Plugin 'vim-ruby/vim-ruby'
 Plugin 'kshenoy/vim-signature'
+Plugin 'mhinz/vim-signify'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+Plugin 'ervandew/supertab'
+Plugin 'tpope/vim-surround'
+Plugin 'scrooloose/syntastic'
+Plugin 'godlygeek/tabular'
+Plugin 'majutsushi/tagbar'
+Plugin 'tomtom/tlib_vim'
+Plugin 'shougo/unite.vim'
+Plugin 'SirVer/ultisnips'
+Plugin 'shougo/vimproc.vim'
+Plugin 'valloric/youcompleteme'
+
 
 " Future Plugins to add
 " https://github.com/unblevable/quick-scope
@@ -200,8 +208,14 @@ nnoremap <C-f> :Unite -no-split grep:.<cr>
 """""""""""
 " NerdTree
 """""""""""
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+"
+
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+" Nerdtree behavior
+let NERDTreeHighlightCursorline=1
+
 
 nnoremap <C-x>l :<C-u>NERDTreeToggle<CR>
 
@@ -283,13 +297,13 @@ nnoremap <silent> <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gr :Gremove<CR>
 
 """""""""""
-" IndentGuide
+" IndentLine
 """""""""""
-let g:indent_guides_auto_colors = 1
-let g:indent_guides_start_level = 2
-let g:indent_guides_guide_size = 1
+let g:indentLine_color_term = 239
+let g:indentLine_color_gui = '#A4E57E'
+let g:indentLine_char = '¦'
 
-autocmd BufReadPre,FileReadPre * :IndentGuidesEnable
+let g:indentLine_enabled = 1
 
 """""""""""
 " multiple cursors
@@ -315,6 +329,18 @@ let g:javascript_conceal_super      = "Ω"
 """""""""""
 " youcompleteme
 """""""""""
+let g:EclimCompletionMethod = 'omnifunc'
+
+  " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
+let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
+
+let g:SuperTabDefaultCompletionType    = '<C-n>'
+let g:SuperTabCrMapping                = 0
+
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -338,6 +364,8 @@ set cursorline
 
 " Show line number in a gutter
 set nu
+
+set colorcolumn=120
 
 " Height of the command bar
 set cmdheight=2
@@ -425,8 +453,8 @@ set expandtab
 set smarttab
 
 " 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=2
+set tabstop=2
 
 " Linebreak on 500 characters
 set lbr
