@@ -105,8 +105,10 @@ POWERLEVEL9K_TIME_FORMAT="%D{%H:%M:%S}"
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status time_joined battery)
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(background_jobs context_joined dir vcs)
 
-export PATH="~/.rbenv/shims:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/Ghostscript/bin:/opt/ImageMagick/bin"
-# export MANPATH="/usr/local/man:$MANPATH"
+export PATH=":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/Ghostscript/bin:/opt/ImageMagick/bin"
+export PATH="$HOME/.rbenv/bin:$PATH"
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
 
 source $ZSH/oh-my-zsh.sh
 
@@ -139,5 +141,3 @@ source $ZSH/oh-my-zsh.sh
 alias la="ls -la"
 alias mi="mvim"
 
-
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
