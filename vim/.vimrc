@@ -187,14 +187,14 @@ nmap ga <Plug>(EasyAlign)
 " Unite
 """""""""""
 " Use ag (the silver searcher)
-  if executable('ag')
-" https://github.com/ggreer/the_silver_searcher
-	  let g:unite_source_grep_command = 'ag'
-	  let g:unite_source_grep_default_opts =
-	  \ '-i --vimgrep --hidden --ignore ' .
-	  \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
-	  let g:unite_source_grep_recursive_opt = ''
-  endif
+if executable('ag')
+  " https://github.com/ggreer/the_silver_searcher
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts =
+        \ '-i --vimgrep --hidden --ignore ' .
+        \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
+  let g:unite_source_grep_recursive_opt = ''
+endif
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 
