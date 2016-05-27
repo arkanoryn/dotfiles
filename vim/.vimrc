@@ -99,6 +99,7 @@ Plugin 'shougo/unite.vim'
 Plugin 'SirVer/ultisnips'
 Plugin 'shougo/vimproc.vim'
 Plugin 'valloric/youcompleteme'
+Plugin 'editorconfig/editorconfig-vim'
 
 
 " Future Plugins to add
@@ -202,7 +203,7 @@ nnoremap <C-x>e :<C-u>Unite -no-split -buffer-name=recent -start-insert file_mru
 nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
 nnoremap <C-x>b :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
 nnoremap <C-x>p :Unite -no-split -start-insert file_rec/async<cr>
-nnoremap <C-p> :Unite -no-split -start-insert -auto-preview -vertical-preview file_rec/async<cr>
+nnoremap <C-p> :Unite -no-split -start-insert -auto-preview -previewheight=35 file_rec/async<cr>
 nnoremap <C-f> :Unite -no-split grep:.<cr>
 
 """""""""""
@@ -405,6 +406,12 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
+
+" Opacity
+if has("gui_macvim")
+  set transparency=10
+  set noantialias
+endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
