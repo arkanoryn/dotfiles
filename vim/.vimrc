@@ -272,7 +272,7 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 map  <Leader>f <Plug>(easymotion-bd-f)
 nmap <Leader>f <Plug>(easymotion-overwin-f)
 
-nmap s <Plug>(easymotion-overwin-f2)
+nmap <C-s> <Plug>(easymotion-overwin-f2)
 
 map <Leader>L <Plug>(easymotion-bd-jk)
 nmap <Leader>L <Plug>(easymotion-overwin-line)
