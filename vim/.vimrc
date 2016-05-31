@@ -199,6 +199,7 @@ if executable('ag')
 endif
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#custom#source( 'buffer', 'converters', ['converter_file_directory'])
 
 nnoremap <C-x>e :<C-u>Unite -no-split -buffer-name=recent -start-insert file_mru<cr>
 nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
