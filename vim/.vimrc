@@ -100,6 +100,7 @@ Plugin 'SirVer/ultisnips'
 Plugin 'shougo/vimproc.vim'
 Plugin 'valloric/youcompleteme'
 Plugin 'editorconfig/editorconfig-vim'
+Plugin 'qpkorr/vim-bufkill'
 
 
 " Future Plugins to add
