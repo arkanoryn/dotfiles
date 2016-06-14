@@ -579,6 +579,17 @@ if has("mac") || has("macunix")
   vmap <D-k> <M-k>
 endif
 
+" map CMD+S to save the current file w/e the current mode
+if has("mac") || has("macunix")
+  nmap <D-s> :w<CR>
+  vmap <D-s> <Esc><c-s>gv
+  imap <D-s> <Esc><c-s>
+else
+  nmap <c-s> :w<CR>
+  vmap <c-s> <Esc><c-s>gv
+  imap <c-s> <Esc><c-s>
+endif
+
 " Delete trailing white space on save, useful for Python and CoffeeScript ;)
 func! DeleteTrailingWS()
   exe "normal mz"
