@@ -204,8 +204,8 @@ call unite#custom#source( 'buffer', 'converters', ['converter_file_directory'])
 nnoremap <C-x>e :<C-u>Unite -no-split -buffer-name=recent -start-insert file_mru<cr>
 nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
 nnoremap <C-x>b :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
-nnoremap <C-x>p :Unite -no-split -start-insert file_rec/async<cr>
-nnoremap <C-p> :Unite -no-split -start-insert -auto-preview -previewheight=35 file_rec/async<cr>
+nnoremap <C-p> :Unite -no-split -start-insert file_rec/async<cr>
+nnoremap <C-x>p :Unite -no-split -start-insert -auto-preview -previewheight=35 file_rec/async<cr>
 nnoremap <C-f> :Unite -no-split grep:.<cr>
 
 """""""""""
