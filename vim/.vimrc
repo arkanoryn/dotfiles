@@ -102,6 +102,8 @@ Plugin 'valloric/youcompleteme'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'qpkorr/vim-bufkill'
 
+Plugin 'slashmili/alchemist.vim'
+Plugin 'elixir-lang/vim-elixir'
 
 " Future Plugins to add
 " https://github.com/unblevable/quick-scope
