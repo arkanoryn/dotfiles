@@ -102,6 +102,7 @@ Plugin 'valloric/youcompleteme'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'qpkorr/vim-bufkill'
 
+" elixir and phoenix framework
 Plugin 'slashmili/alchemist.vim'
 Plugin 'elixir-lang/vim-elixir'
 
