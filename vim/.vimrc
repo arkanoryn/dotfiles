@@ -413,7 +413,7 @@ set tm=500
 
 " Opacity
 if has("gui_macvim")
-  set transparency=10
+  set transparency=05
   set noantialias
 endif
 
@@ -424,9 +424,10 @@ endif
 " Enable syntax highlighting
 syntax enable
 
-let g:onedark_termcolors=16
-colorscheme onedark
-set background=dark
+"let g:onedark_termcolors=16
+"set background=dark
+"colorscheme onedark
+colorscheme phoenix
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -443,7 +444,7 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 " Set font
-set guifont=Cousine\ for\ Powerline:h14
+set guifont=Cousine\ for\ Powerline:h15
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
