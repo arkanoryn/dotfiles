@@ -101,6 +101,7 @@ Plugin 'shougo/vimproc.vim'
 Plugin 'valloric/youcompleteme'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'qpkorr/vim-bufkill'
+Plugin 'NLKNguyen/papercolor-theme'
 
 " elixir and phoenix framework
 Plugin 'slashmili/alchemist.vim'
@@ -370,7 +371,6 @@ set cursorline
 
 " Show line number in a gutter
 set nu
-
 set colorcolumn=120
 
 " Height of the command bar
@@ -414,7 +414,7 @@ set tm=500
 
 " Opacity
 if has("gui_macvim")
-  set transparency=10
+  set transparency=05
   set noantialias
 endif
 
@@ -425,9 +425,15 @@ endif
 " Enable syntax highlighting
 syntax enable
 
-let g:onedark_termcolors=16
-colorscheme onedark
+"let g:onedark_termcolors=16
+"set background=dark
+"colorscheme onedark
+
+"colorscheme phoenix
+
+set t_Co=256   " This is may or may not needed.
 set background=dark
+colorscheme PaperColor
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -444,7 +450,7 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 " Set font
-set guifont=Cousine\ for\ Powerline:h14
+set guifont=Cousine\ for\ Powerline:h15
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
