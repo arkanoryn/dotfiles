@@ -101,6 +101,7 @@ Plugin 'shougo/vimproc.vim'
 Plugin 'valloric/youcompleteme'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'qpkorr/vim-bufkill'
+Plugin 'NLKNguyen/papercolor-theme'
 
 Plugin 'slashmili/alchemist.vim'
 Plugin 'elixir-lang/vim-elixir'
@@ -427,7 +428,12 @@ syntax enable
 "let g:onedark_termcolors=16
 "set background=dark
 "colorscheme onedark
-colorscheme phoenix
+
+"colorscheme phoenix
+
+set t_Co=256   " This is may or may not needed.
+set background=dark
+colorscheme PaperColor
 
 " Set extra options when running in GUI mode
 if has("gui_running")
