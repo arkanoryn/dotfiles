@@ -140,4 +140,5 @@ source $ZSH/oh-my-zsh.sh
 
 alias la="ls -la"
 alias mi="mvim"
-
+alias ni="nvim"
+alias ne="emacs $@ &"

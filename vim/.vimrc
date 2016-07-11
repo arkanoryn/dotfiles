@@ -50,7 +50,7 @@ set autoread
 
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
-let mapleader = ","
+let mapleader   = ","
 let g:mapleader = ","
 
 " Fast saving
@@ -202,8 +202,10 @@ if executable('ag')
   let g:unite_source_grep_recursive_opt = ''
 endif
 
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#custom#source( 'buffer', 'converters', ['converter_file_directory'])
+call unite#custom#source(
+      \ 'buffer,file_rec,file_rec/async,file_rec/git', 'matchers',
+      \ ['converter_relative_word', 'matcher_fuzzy',
+      \  'matcher_project_ignore_files'])
 
 nnoremap <C-x>e :<C-u>Unite -no-split -buffer-name=recent -start-insert file_mru<cr>
 nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
@@ -450,7 +452,7 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 " Set font
-set guifont=Cousine\ for\ Powerline:h15
+set guifont=Cousine\ for\ Powerline:h12
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
