@@ -34,6 +34,7 @@ values."
      themes-megapack
 
      ;; languages
+     elm
      erlang
      elixir
      html
@@ -45,7 +46,7 @@ values."
 
      ;; syntax and typing
      spell-checking
-     syntax-checking
+     ;; syntax-checking
      auto-completion
      company-mode
 
@@ -72,6 +73,9 @@ This function is called at the very startup of Spacemacs initialization
 before layers configuration.
 You should not put any user code in there besides modifying the variable
 values."
+  ;; set indent value to js files
+  (setq-default js2-basic-offset 2
+                js-indent-level 2)
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
