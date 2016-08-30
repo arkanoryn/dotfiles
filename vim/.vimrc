@@ -1,20 +1,19 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"qqq""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Original_author:
 "       Amir Salihefendic
 "       http://amix.dk - amix@amix.dk
 "
-" Blog_post:
+" article used as reference:
 "       http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
+"       https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
 "
-" Raw_version:
-"       http://amix.dk/vim/vimrc.txt
 "
 " Current_author:
 "       Pierre-Nicolas 'ArkAnoryn' SORMANI
 "       pierre-nicolas@phenixies.com
 "
 " Version:
-"       1.0 - 14/05/16 18:28:36
+"       1.0 - 29/85/16 18:28:36
 "
 " Sections:
 "    -> General
@@ -34,7 +33,6 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -50,71 +48,62 @@ set autoread
 
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
-let mapleader   = ","
-let g:mapleader = ","
-
-" Fast saving
-nmap <leader>w :w!<cr>
-
-
+let mapleader   = "\<Space>"
+let g:mapleader = "\<Space>"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vundle
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
 " set the runtime path to include Vundle and initialize
+
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'MarcWeber/vim-addon-mw-utils'
+
 Plugin 'bling/vim-airline'
 Plugin 'jiangmiao/auto-pairs'
+Plugin 'qpkorr/vim-bufkill'
+Plugin 'kien/ctrlp.vim'
+Plugin 'editorconfig/editorconfig-vim'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'easymotion/vim-easymotion'
+Plugin 'elmcast/elm-vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'tpope/vim-endwise'                       " Insert 'end' in ruby as smartly as braces
 Plugin 'jakedouglas/exuberant-ctags'
 Plugin 'tpope/vim-fugitive'
-Plugin 'yggdroot/indentline'
+Plugin 'airblade/vim-gitgutter'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'haya14busa/incsearch-fuzzy.vim'
+Plugin 'yggdroot/indentline'                     " give an indent gutter
 Plugin 'pangloss/vim-javascript'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'shougo/neomru.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'Shougo/vimproc.vim'
 Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-repeat'
 Plugin 'vim-ruby/vim-ruby'
-Plugin 'kshenoy/vim-signature'
-Plugin 'mhinz/vim-signify'
-Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'ervandew/supertab'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/syntastic'
-Plugin 'godlygeek/tabular'
 Plugin 'majutsushi/tagbar'
-Plugin 'tomtom/tlib_vim'
-Plugin 'shougo/unite.vim'
 Plugin 'SirVer/ultisnips'
-Plugin 'shougo/vimproc.vim'
 Plugin 'valloric/youcompleteme'
-Plugin 'editorconfig/editorconfig-vim'
-Plugin 'qpkorr/vim-bufkill'
+Plugin 'shougo/unite.vim'
 Plugin 'NLKNguyen/papercolor-theme'
+
+Plugin 'flazz/vim-colorschemes'
+
 
 " elixir and phoenix framework
 Plugin 'slashmili/alchemist.vim'
 Plugin 'elixir-lang/vim-elixir'
 
-" Future Plugins to add
-" https://github.com/unblevable/quick-scope
-" https://github.com/romainl/vim-qf
-" https://github.com/tpope/vim-repeat
-" https://github.com/wellle/targets.vim
-" ---
-"  Origin: https://github.com/IanConnolly/dotfiles/blob/master/vimfiles/vimrc#L472-L478
-"
+
 
 Plugin 'VundleVim/Vundle.vim'
 
@@ -122,19 +111,15 @@ Plugin 'VundleVim/Vundle.vim'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vundle's plugin setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"
+
 """""""""""
 " Autopair
 """""""""""
-let g:AutoPairsFlyMode = 1
 
-"""""""""""
-" emmet
-"""""""""""
+let g:AutoPairsFlyMode = 0
 
 """""""""""
 " syntastic
@@ -172,7 +157,7 @@ let ruby_no_expensive = 1
 """""""""""
 " tagbar
 """""""""""
-nmap <C-x>t :TagbarToggle<CR>
+nmap <leader>to :TagbarToggle<CR>
 let g:tagbar_autoclose = 1
 let g:tagbar_autofocus = 1
 let g:tagbar_show_linenumbers = 1
@@ -207,27 +192,19 @@ call unite#custom#source(
       \ ['converter_relative_word', 'matcher_fuzzy',
       \  'matcher_project_ignore_files'])
 
-nnoremap <C-x>e :<C-u>Unite -no-split -buffer-name=recent -start-insert file_mru<cr>
-nnoremap <C-x>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
-nnoremap <C-x>b :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
-nnoremap <C-p> :Unite -no-split -start-insert file_rec/async<cr>
-nnoremap <C-x>p :Unite -no-split -start-insert -auto-preview -previewheight=35 file_rec/async<cr>
-nnoremap <C-f> :Unite -no-split grep:.<cr>
+nnoremap <leader>/ :Unite -no-split grep:.<cr>
+nnoremap <leader>bb :<C-u>Unite -no-split buffer<cr>
 
 """""""""""
 " NerdTree
 """""""""""
-" autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-"
-
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 " Nerdtree behavior
 let NERDTreeHighlightCursorline=1
 
+nnoremap <leader>pt :<C-u>NERDTreeToggle<CR>
 
-nnoremap <C-x>l :<C-u>NERDTreeToggle<CR>
-
+let g:NERDTreeHijackNetrw = 1
+au VimEnter NERD_tree_1 enew | execute 'NERDTree '.argv()[0]
 
 function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
  exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
@@ -277,10 +254,10 @@ let g:airline_powerline_fonts = 1
 """""""""""
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
-map  <Leader>f <Plug>(easymotion-bd-f)
-nmap <Leader>f <Plug>(easymotion-overwin-f)
+nmap <leader><leader> <Plug>(easymotion-overwin-f2)
 
-nmap <C-s> <Plug>(easymotion-overwin-f2)
+map  <Leader>gf <Plug>(easymotion-bd-f)
+nmap <Leader>gf <Plug>(easymotion-overwin-f)
 
 map <Leader>L <Plug>(easymotion-bd-jk)
 nmap <Leader>L <Plug>(easymotion-overwin-line)
@@ -323,17 +300,31 @@ let g:multi_cursor_skip_key='<C-s>'
 let g:multi_cursor_quit_key='<Esc>'
 
 """""""""""
-" Javascript plugin
+" Ctrl P
 """""""""""
-let g:javascript_conceal_function   = "ƒ"
-let g:javascript_conceal_null       = "ø"
-let g:javascript_conceal_this       = "@"
-let g:javascript_conceal_return     = "⇚"
-let g:javascript_conceal_undefined  = "¿"
-let g:javascript_conceal_NaN        = "ℕ"
-let g:javascript_conceal_prototype  = "¶"
-let g:javascript_conceal_static     = "•"
-let g:javascript_conceal_super      = "Ω"
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.orig,*.org,*.jpg,*.png,*.gif,*.svg,*.swf,*.mp4*,*.flv
+let g:ctrlp_custom_ignore = {
+      \'dir':  '\v[\/]((\.(git|hg|svn))|public|tmp|temp|log|logs)$',
+      \'file': '\v\.(exe|so|dll|orig)$'
+      \}
+
+let g:ctrlp_use_caching = 0
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
+
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+  let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+    \ }
+endif
+
+let g:ctrlp_max_height = 30
+
+nnoremap <Leader>ph :CtrlP<CR>
+nnoremap <Leader>pf :CtrlPBuffer<CR>
 
 """""""""""
 " youcompleteme
@@ -354,59 +345,32 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the cursor - when moving vertically using j/k
-set so=7
 
-" Turn on the WiLd menu
-set wildmenu
+set so=7 " Set 7 lines to the cursor - when moving vertically using j/k
+set wildmenu " Turn on the WiLd menu
 
 " Ignore compiled files
 set wildignore=*.o,*.obj,*~,*.pyc,*.so,*.swp,tmp/
 set wildignore+=*.pdf,*.jpg,*.dmg,*.zip,*.png,*.gif,*DS_Store*
 
-
-"Always show current position
-set ruler
-
-" Show current line
-set cursorline
-
-" Show line number in a gutter
-set nu
-set colorcolumn=120
-
-" Height of the command bar
-set cmdheight=2
-
-" A buffer becomes hidden when it is abandoned
-set hid
+set ruler "Always show current position
+set cursorline " Show current line
+set nu " Show line number in a gutter
+set colorcolumn=120 " show char limit
+set cmdheight=2 " Height of the command bar
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
-" Ignore case when searching
-set ignorecase
-
-" When searching try to be smart about cases
-set smartcase
-
-" Highlight search results
-set hlsearch
-
-" Makes search act like search in modern browsers
-set incsearch
-
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-
-" For regular expressions turn magic on
-set magic
-
-" Show matching brackets when text indicator is over them
-set showmatch
-" How many tenths of a second to blink when matching brackets
-set mat=2
+set ignorecase " Ignore case when searching
+set smartcase " When searching try to be smart about cases
+set hlsearch " Highlight search results
+set incsearch " Makes search act like search in modern browsers
+set lazyredraw " Don't redraw while executing macros (good performance config)
+set magic " For regular expressions turn magic on
+set showmatch " Show matching brackets when text indicator is over them
+set mat=2 " How many tenths of a second to blink when matching brackets
 
 " No annoying sound on errors
 set noerrorbells
@@ -424,18 +388,15 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enable syntax highlighting
-syntax enable
 
-"let g:onedark_termcolors=16
-"set background=dark
-"colorscheme onedark
+syntax enable " Enable syntax highlighting
 
-"colorscheme phoenix
-
+" theme
 set t_Co=256   " This is may or may not needed.
-set background=dark
 colorscheme PaperColor
+set background=dark
+hi Normal ctermbg=none
+highlight NonText ctermbg=none
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -452,8 +413,7 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 " Set font
-set guifont=Cousine\ for\ Powerline:h12
-
+set guifont=Cousine\ for\ Powerline:h14
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
@@ -466,11 +426,11 @@ set noswapfile
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use spaces instead of tabs
-set expandtab
+set expandtab " Use spaces instead of tabs
+set smarttab " Be smart when using tabs ;)
 
-" Be smart when using tabs ;)
-set smarttab
+set splitright
+set splitbelow
 
 " 1 tab == 4 spaces
 set shiftwidth=2
@@ -495,27 +455,31 @@ autocmd BufWritePre * :%s/\s\+$//e              " remove trailing whitespace on 
 """"""""""""""""""""""""""""""
 " => Visual mode related
 """"""""""""""""""""""""""""""
+
 " Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
 
 " turn around buffer
-nnoremap <c-x>n :bn<CR>
-nnoremap <c-x>c :bp<CR>
+nnoremap <leader>bn :bn<CR>
+nnoremap <leader>bp :bp<CR>
 
+" Close the current buffer
+map <leader>bd :Bclose<cr>
 
-" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-map <space> /
-map <c-space> ?
+" swtich with last buffer
+map <leader><tab> :b#<cr>
+
+" Close all the buffers
+map <leader>ba :1,1000 bd!<cr>
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
@@ -526,24 +490,29 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
-" Close the current buffer
-map <leader>bd :Bclose<cr>
-
-" Close all the buffers
-map <leader>ba :1,1000 bd!<cr>
 
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
+map <leader>tnn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
 
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
+nnoremap <leader>tp :tabprevious<CR>
+nnoremap <leader>tn :tabnext<CR>
+
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
-
-" Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Specify the behavior when switching between buffers
 try
@@ -560,16 +529,12 @@ autocmd BufReadPost *
 " Remember info about open buffers on close
 set viminfo^=%
 
-
 """"""""""""""""""""""""""""""
 " => Status line
 """"""""""""""""""""""""""""""
+
 " Always show the status line
 set laststatus=2 " remove because its not needed, due to airline
-
-" Format the status line
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
@@ -625,35 +590,23 @@ endif
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
 " Open vimgrep and put the cursor in the right position
-map <leader>v :vimgrep // **/*.<left><left><left><left><left><left><left>
+" map <leader>/ :vimgrep // **/*.<left><left><left><left><left><left><left>
 
-" Vimgreps in the current file
-map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
-
-" When you press <leader>r you can search and replace the selected text
-vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
-
-" Do :help cope if you are unsure what cope is. It's super useful!
-"
-" When you search with vimgrep, display your results in cope by doing:
-"   <leader>cc
-"
-" To go to the next search result do:
-"   <leader>n
-"
-" To go to the previous search results do:
-"   <leader>p
-"
+" When you search with vimgrep, display your results in cope
 map <leader>cc :botright cope<cr>
-map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-map <leader>n :cn<cr>
-map <leader>p :cp<cr>
 
+map <leader>fv :CtrlP app/views<cr>
+map <leader>fc :CtrlP app/controllers<cr>
+map <leader>fm :CtrlP app/models<cr>
+map <leader>fh :CtrlP app/helpers<cr>
+map <leader>fl :CtrlP lib<cr>
+map <leader>fp :CtrlP public<cr>
+map <leader>fs :CtrlP spec<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Spell checking
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Pressing ,ss will toggle and untoggle spell checking
+" Pressing <leader>ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
 " Shortcuts using <leader>
@@ -676,45 +629,9 @@ map <leader>q :e ~/buffer<cr>
 map <leader>pp :setlocal paste!<cr>
 
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! CmdLine(str)
-    exe "menu Foo.Bar :" . a:str
-    emenu Foo.Bar
-    unmenu Foo
-endfunction
-
-function! VisualSelection(direction) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'b'
-        execute "normal ?" . l:pattern . "^M"
-    elseif a:direction == 'gv'
-        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-    elseif a:direction == 'replace'
-        call CmdLine("%s" . '/'. l:pattern . '/')
-    elseif a:direction == 'f'
-        execute "normal /" . l:pattern . "^M"
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunction
-
-
-" Returns true if paste mode is enabled
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
-    en
-    return ''
-endfunction
 
 " Don't close window, when deleting a buffer
 command! Bclose call <SID>BufcloseCloseIt()
@@ -736,3 +653,14 @@ function! <SID>BufcloseCloseIt()
      execute("bdelete! ".l:currentBufNum)
    endif
 endfunction
+
+" vp doesn't replace paste buffer
+function! RestoreRegister()
+  let @" = s:restore_reg
+  return ''
+endfunction
+function! s:Repl()
+  let s:restore_reg = @"
+  return "p@=RestoreRegister()\<cr>"
+endfunction
+vmap <silent> <expr> p <sid>Repl()
