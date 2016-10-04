@@ -142,3 +142,24 @@ alias la="ls -la"
 alias mi="mvim"
 alias ni="nvim"
 alias ne="mvim ."
+
+# move shortcuts
+alias ,helm="cd /Users/arkanoryn/projects/elixir/helheim"
+alias ,elesa="cd /Users/arkanoryn/projects/avarteq/code/elesaganter_web"
+alias ,phoe_ref="cd /Users/arkanoryn/projects/elixir/prgramming-phoenix"
+
+# Rails shortcuts
+alias rs="bundle exec rails s"
+alias rs_prod="bundle exec rails s production"
+alias rc="bundle exec rails c"
+alias spec="bundle exec rspec"
+alias bocop="bundle exec rubocop"
+
+# Phoenix shortcuts
+alias itest="iex -S mix test"
+alias phoenix_server="iex -S mix phoenix.server"
+
+export SESSION_ENCRYPTED_SIGNED_COOKIE_SALT=82d58d3dfb91238b495a311eb8539edf5064784f1d58994679db8363ec241c745bef0b446bfe44d66cbf91a2f4e497d8f6b1ef1656e3f405b0d263a9617ac75e
+export SESSION_ENCRYPTED_COOKIE_SALT=82d58d3dfb91238b495a311eb8539edf5064784f1d58994679db8363ec241c745bef0b446bfe44d66cbf91a2f4e497d8f6b1ef1656e3f405b0d263a9617ac75e
+export DOMAIN=localhost
+
