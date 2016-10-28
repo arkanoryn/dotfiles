@@ -107,6 +107,7 @@ POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(background_jobs context_joined dir vcs)
 
 export PATH=":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/Ghostscript/bin:/opt/ImageMagick/bin"
 export PATH="$HOME/.rbenv/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 
@@ -141,12 +142,16 @@ source $ZSH/oh-my-zsh.sh
 alias la="ls -la"
 alias mi="mvim"
 alias ni="nvim"
-alias ne="mvim ."
+alias ne="emacs &"
 
 # move shortcuts
 alias ,helm="cd /Users/arkanoryn/projects/elixir/helheim"
 alias ,elesa="cd /Users/arkanoryn/projects/avarteq/code/elesaganter_web"
+alias ,elphoenix="cd /Users/arkanoryn/projects/avarteq/tests/elesa_ganter_phoenix"
 alias ,phoe_ref="cd /Users/arkanoryn/projects/elixir/prgramming-phoenix"
+alias ,dailydrip="/Users/arkanoryn/projects/lang-elm/dailydrip"
+alias ,lang-elm="/Users/arkanoryn/projects/lang-elm"
+alias ,lang-elixir="/Users/arkanoryn/projects/elixir"
 
 # Rails shortcuts
 alias rs="bundle exec rails s"
@@ -159,7 +164,8 @@ alias bocop="bundle exec rubocop"
 alias itest="iex -S mix test"
 alias phoenix_server="iex -S mix phoenix.server"
 
-export SESSION_ENCRYPTED_SIGNED_COOKIE_SALT=82d58d3dfb91238b495a311eb8539edf5064784f1d58994679db8363ec241c745bef0b446bfe44d66cbf91a2f4e497d8f6b1ef1656e3f405b0d263a9617ac75e
-export SESSION_ENCRYPTED_COOKIE_SALT=82d58d3dfb91238b495a311eb8539edf5064784f1d58994679db8363ec241c745bef0b446bfe44d66cbf91a2f4e497d8f6b1ef1656e3f405b0d263a9617ac75e
-export DOMAIN=localhost
+# Elm shortcut
+alias serverdir="ruby -run -e httpd . -p 9091"
 
+export NVM_DIR="/Users/arkanoryn/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
