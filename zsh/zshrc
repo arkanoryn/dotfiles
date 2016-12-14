@@ -113,9 +113,6 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -139,6 +136,7 @@ alias ,phoe_ref="cd /Users/arkanoryn/projects/elixir/prgramming-phoenix"
 alias ,dailydrip="/Users/arkanoryn/projects/lang-elm/dailydrip"
 alias ,lang-elm="/Users/arkanoryn/projects/lang-elm"
 alias ,lang-elixir="/Users/arkanoryn/projects/elixir"
+alias ,ygg="/Users/arkanoryn/projects/elixir/yggdrasil"
 
 # Rails shortcuts
 alias rs="bundle exec rails s"
@@ -153,3 +151,5 @@ alias phoenix_server="iex -S mix phoenix.server"
 
 # Elm shortcut
 alias serverdir="ruby -run -e httpd . -p 9091"
+
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi

@@ -413,7 +413,7 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 " Set font
-set guifont=Cousine\ for\ Powerline:h14
+set guifont=SourceCodePro\+Powerline\+Awesome\ Regular:h14
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
