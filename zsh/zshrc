@@ -130,8 +130,9 @@ alias ne="emacs &"
 
 # move shortcuts
 alias ,helm="cd /Users/arkanoryn/projects/elixir/helheim"
-alias ,elesa="cd /Users/arkanoryn/projects/avarteq/code/elesaganter_web"
-alias ,elphoenix="cd /Users/arkanoryn/projects/avarteq/tests/elesa_ganter_phoenix"
+alias ,elesa="cd /Users/arkanoryn/projects/avarteq/code/elesa"
+alias ,portal_elesa="cd /Users/arkanoryn/projects/avarteq/code/elesa/portal"
+alias ,api_gateway_elesa="cd /Users/arkanoryn/projects/avarteq/tests/elesa_ganter_phoenix"
 alias ,phoe_ref="cd /Users/arkanoryn/projects/elixir/prgramming-phoenix"
 alias ,dailydrip="/Users/arkanoryn/projects/lang-elm/dailydrip"
 alias ,lang-elm="/Users/arkanoryn/projects/lang-elm"
