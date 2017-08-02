@@ -372,21 +372,21 @@ you should place your code here."
             (lambda ()
               (setq company-backends '(company-elm))))
 
-  (setq flycheck-checkers '(javascript-eslint))
+  ;; (setq flycheck-checkers '(javascript-eslint))
 
-  (require 'flycheck)
-  ;; turn on flychecking globally
-  (add-hook 'after-init-hook #'global-flycheck-mode)
-  ;; disable jshint since we prefer eslint checking
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers
-                        '(javascript-jshint)))
-  ;; use eslint with web-mode for jsx files
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-  ;; disable json-jsonlist checking for json files
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers
-                        '(json-jsonlist)))
+  ;; (require 'flycheck)
+  ;; ;; turn on flychecking globally
+  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
+  ;; ;; disable jshint since we prefer eslint checking
+  ;; (setq-default flycheck-disabled-checkers
+  ;;               (append flycheck-disabled-checkers
+  ;;                       '(javascript-jshint)))
+  ;; ;; use eslint with web-mode for jsx files
+  ;; (flycheck-add-mode 'javascript-eslint 'web-mode)
+  ;; ;; disable json-jsonlist checking for json files
+  ;; (setq-default flycheck-disabled-checkers
+  ;;               (append flycheck-disabled-checkers
+  ;;                       '(json-jsonlist)))
 
   (setq c-basic-offset 2)
   (setq indent-tabs-mode nil)
@@ -405,6 +405,8 @@ you should place your code here."
 
   (global-linum-mode)
   (setq diff-hl-side 'left)
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . react-mode))
+  (setq auto-mode-alist (rassq-delete-all 'js-mode auto-mode-alist))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

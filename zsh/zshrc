@@ -1,4 +1,5 @@
-# export TERM="xterm-256color"
+export TERM="xterm-256color"
+
 # Path to your oh-my-zsh installation.
 export ZSH=~/.dotfiles/oh-my-zsh
 
@@ -130,15 +131,12 @@ alias ni="nvim"
 alias ne="emacs &"
 
 # move shortcuts
-alias ,helm="cd /Users/arkanoryn/projects/elixir/helheim"
-alias ,elesa="cd /Users/arkanoryn/projects/avarteq/code/elesa"
-alias ,portal_elesa="cd /Users/arkanoryn/projects/avarteq/code/elesa/portal"
-alias ,api_gateway_elesa="cd /Users/arkanoryn/projects/avarteq/tests/elesa_ganter_phoenix"
-alias ,phoe_ref="cd /Users/arkanoryn/projects/elixir/prgramming-phoenix"
-alias ,dailydrip="/Users/arkanoryn/projects/lang-elm/dailydrip"
-alias ,lang-elm="/Users/arkanoryn/projects/lang-elm"
-alias ,lang-elixir="/Users/arkanoryn/projects/elixir"
-alias ,ygg="/Users/arkanoryn/projects/elixir/yggdrasil"
+alias ,elesa="cd /Users/arkanoryn/projects/avarteq/elesa_ganter/code"
+alias ,portal_elesa="cd /Users/arkanoryn/projects/avarteq//elesa_ganter/code/portal"
+alias ,phoe_ref="cd /Users/arkanoryn/projects/personal/elixir/prgramming-phoenix"
+alias ,lang-elm="/Users/arkanoryn/projects/personal/elm"
+alias ,lang-elixir="/Users/arkanoryn/projects/personal/elixir"
+alias ,lang-react="/Users/arkanoryn/projects/personal/react"
 
 # Rails shortcuts
 alias rs="bundle exec rails s"
