@@ -131,8 +131,8 @@ alias ni="nvim"
 alias ne="emacs &"
 
 # move shortcuts
-alias ,elesa="cd /Users/arkanoryn/projects/avarteq/elesa_ganter/code"
-alias ,portal_elesa="cd /Users/arkanoryn/projects/avarteq//elesa_ganter/code/portal"
+alias ,elesa="cd /Users/arkanoryn/projects/avarteq/customers/elesa_ganter/code"
+alias ,portal_elesa="cd /Users/arkanoryn/projects/avarteq/customers/elesa_ganter/code/portal"
 alias ,phoe_ref="cd /Users/arkanoryn/projects/personal/elixir/prgramming-phoenix"
 alias ,lang-elm="/Users/arkanoryn/projects/personal/elm"
 alias ,lang-elixir="/Users/arkanoryn/projects/personal/elixir"
