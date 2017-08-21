@@ -155,3 +155,4 @@ alias serverdir="ruby -run -e httpd . -p 9091"
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 export PATH=/Users/arkanoryn/Applications/:$PATH
+export GTAGSLABEL=pygments
