@@ -137,6 +137,7 @@ alias ,phoe_ref="cd /Users/arkanoryn/projects/personal/elixir/prgramming-phoenix
 alias ,lang-elm="/Users/arkanoryn/projects/personal/elm"
 alias ,lang-elixir="/Users/arkanoryn/projects/personal/elixir"
 alias ,lang-react="/Users/arkanoryn/projects/personal/react"
+alias ,vilago="/Users/arkanoryn/projects/avarteq/customers/vilago/code"
 
 # Rails shortcuts
 alias rs="bundle exec rails s"
