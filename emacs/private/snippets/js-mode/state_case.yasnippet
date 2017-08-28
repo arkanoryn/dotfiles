@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: state case
+# key: statec
+# --
+case $1:
+  return ({
+    ...state,
+    $0,
+  });

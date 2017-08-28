@@ -1,4 +1,4 @@
-"qqq""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Original_author:
 "       Amir Salihefendic
 "       http://amix.dk - amix@amix.dk
@@ -95,6 +95,7 @@ Plugin 'SirVer/ultisnips'
 Plugin 'valloric/youcompleteme'
 Plugin 'shougo/unite.vim'
 Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'ajh17/Spacegray'
 
 Plugin 'flazz/vim-colorschemes'
 
@@ -393,7 +394,7 @@ syntax enable " Enable syntax highlighting
 
 " theme
 set t_Co=256   " This is may or may not needed.
-colorscheme PaperColor
+colorscheme spacegray
 set background=dark
 hi Normal ctermbg=none
 highlight NonText ctermbg=none

@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# name: reducer
+# key: reducer
+# --
+import { $1 } from './types';
+
+const initialState = {
+  $2
+};
+
+const $3 = (state = initialState, action) => {
+   switch (action.type) {
+    case $4:
+      return ({
+        ...state,
+        $0,
+      });
+
+      default:
+        return state;
+  }
+};
+
+export default $3;
