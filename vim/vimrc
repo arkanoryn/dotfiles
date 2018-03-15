@@ -394,7 +394,7 @@ syntax enable " Enable syntax highlighting
 
 " theme
 set t_Co=256   " This is may or may not needed.
-colorscheme spacegray
+" colorscheme spacegray
 set background=dark
 hi Normal ctermbg=none
 highlight NonText ctermbg=none
