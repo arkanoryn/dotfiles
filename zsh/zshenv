@@ -1,4 +1,4 @@
-export PATH=":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/Ghostscript/bin:/opt/ImageMagick/bin"
+export PATH=":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/Ghostscript/bin:/opt/ImageMagick/bin:/Users/arkanoryn/bin/apache-maven-3.5.3/bin/"
 export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.bin:$PATH"
 
