@@ -168,6 +168,9 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 export PATH=/Users/arkanoryn/Applications/:$PATH
 export GTAGSLABEL=pygments
 
+# fix LC_* errors
+export LC_ALL=en_US.UTF-8
+
 # tabtab source for serverless package
 # uninstall by removing these lines or running `tabtab uninstall serverless`
 [[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh ]] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh
