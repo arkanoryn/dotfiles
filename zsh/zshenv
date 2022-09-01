@@ -1,26 +1,2 @@
-export PATH=":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/Ghostscript/bin:/opt/ImageMagick/bin:/Users/arkanoryn/bin/apache-maven-3.5.3/bin/"
-export PATH="$HOME/.rbenv/bin:$PATH"
-export PATH="$HOME/.bin:$PATH"
-
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
-export LDFLAGS="-L/usr/local/opt/readline/lib"
-export CPPFLAGS="-I/usr/local/opt/readline/include"
-
-# For pkg-config to find readline you may need to set:
-export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
-
-## BOSH release and a9s bosh related exports
-# export WORKSPACE_DIR=${HOME}/workspace
-# export DEPLOYMENT_DIR=${WORKSPACE_DIR}/deployments/vbox
-# export BOSH_DEPLOYMENT_DIR=${WORKSPACE_DIR}/bosh-deployment
-# export A9S_DSF_DIR=${WORKSPACE_DIR}/anynines-deployment
-# export A9S_PAAS_DIR=${WORKSPACE_DIR}/anynines-PaaS-deployment
-# export BOSH_CLIENT=admin
-# export BOSH_CLIENT_SECRET=$(bosh int ${DEPLOYMENT_DIR}/creds.yml --path /admin_password)
-# export BOSH_ENVIRONMENT=vbox
-# export CREDHUB_SERVER=https://192.168.50.6:8844
-# export CREDHUB_CA_CERT=$(bosh int --path=/credhub_ca/ca ${DEPLOYMENT_DIR}/creds.yml; \
-# bosh int --path=/uaa_ssl/ca ${DEPLOYMENT_DIR}/creds.yml)
-# export CREDHUB_CLIENT=credhub-admin
-# export CREDHUB_SECRET=$(bosh int ${DEPLOYMENT_DIR}/creds.yml --path /credhub_admin_client_secret)
+path+=(/Users/sormani/.emacs.d/bin)
+path+=(/usr/local/sbin)
