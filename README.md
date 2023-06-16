@@ -1,53 +1,15 @@
 # Fonts
-## Powerline font
-run ./install.sh to install the font once on the font folder
-Currently using "Droid Sans Mono" from the font patched
-
-## Awesome font
-To install, follow the instruction at: https://github.com/gabrielelana/awesome-terminal-fonts
-or use the fonts patched : https://github.com/gabrielelana/awesome-terminal-fonts/tree/patching-strategy
-
-If brew refuse to install, use the following command:
-```
-sudo chown -R $USER /usr/local
-$ mkdir -p ~/Library/Caches/Homebrew/Formula
-```
-
-This should allow you to follow awesome-terminal-fonts instructions.
+Install a font from [nerdfonts.com/font-downloads](nerdfonts.com/font-downloads)
 
 # ZSH
-Zsh use oh-my-zsh
-For using ZSH as a default shell, please type the following command:
-`chsh -s /bin/zsh`
-
-# Vim
-* Install Vundle (cf. github repo)
-* Link each vim folders into you ~/.vim
-
-
-## YouCompleteMe
-Install Clang through:
+Using the [oh-my-zsh distribution](https://ohmyz.sh/#install).
+See website for instructions and then create symlink of the different config files from `/zsh`
 
 ```
-cd ~/.vim/bundle/YouCompleteMe
-./install.py --clang-completer
-```
-
-## Vimproc
-don't forget to manually compile vimproc through "make"
-
-## AG
-Install AG through:
-```
-brew install the_silver_searcher
-brew install automake pkg-config pcre xz
-```
-
-# CTags
-```
-brew tap universal-ctags/universal-ctags
-
-brew install --HEAD universal-ctags
+ln -s <dotfile_path>/zsh/zshenv ~/.zshenv
+ln -s <dotfile_path>/zsh/zshrc ~/.zshrc
+ln -s <dotfile_path>/zsh/zprofile ~/.zprofile
+ln -s <dotfile_path>/zsh/p10k.zsh ~/.p10k.zsh
 ```
 
 # Git

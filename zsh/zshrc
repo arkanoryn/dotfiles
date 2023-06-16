@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 export TERM="xterm-256color"
 
 # Path to your oh-my-zsh installation.
@@ -7,7 +14,7 @@ export ZSH=~/.dotfiles/oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="powerlevel9k/powerlevel9k"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 # ZSH_THEME="frisk"
 
 # Uncomment the following line to use case-sensitive completion.
@@ -54,68 +61,10 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   bundler
-  docker
-  docker-compose
   dotenv
   git
-  kubectl
-  osx
-  yarn
+  macos
 )
-
-# User configuration
-
-
-#############################
-#
-#   My Powerline prompt
-#
-#############################
-
-
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-
-# POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX="%{%F{249}%}\u250f"
-# POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="%{%F{249}%}\u2517%{%F{default}%} "
-
-
-POWERLEVEL9K_STATUS_VERBOSE=false
-POWERLEVEL9K_MODE='awesome-patched'
-
-
-######
-## RSpec
-######
-POWERLEVEL9K_RSPEC_STATS_GOOD_FOREGROUND='blue'
-POWERLEVEL9K_RSPEC_STATS_GOOD_BACKGROUND='green'
-POWERLEVEL9K_RSPEC_STATS_AVG_FOREGROUND='black'
-POWERLEVEL9K_RSPEC_STATS_AVG_BACKGROUND='cyan'
-POWERLEVEL9K_RSPEC_STATS_BAD_FOREGROUND='red'
-POWERLEVEL9K_RSPEC_STATS_BAD_BACKGROUND='white'
-
-######
-## Battery
-######
-#POWERLEVEL9K_BATTERY_ICON='SERVER_ICON'
-#POWERLEVEL9K_BATTERY_CHARGING='yellow'
-#POWERLEVEL9K_BATTERY_CHARGED='green'
-#POWERLEVEL9K_BATTERY_DISCONNECTED='$DEFAULT_COLOR'
-#POWERLEVEL9K_BATTERY_LOW_THRESHOLD='10'
-#POWERLEVEL9K_BATTERY_LOW_COLOR='red'
-#POWERLEVEL9K_BATTERY_ICON=''
-
-POWERLEVEL9K_TIME_FOREGROUND='255'
-POWERLEVEL9K_TIME_BACKGROUND='black'
-
-# Colorize only the visual identifier
-POWERLEVEL9K_LOAD_CRITICAL_VISUAL_IDENTIFIER_COLOR="red"
-POWERLEVEL9K_LOAD_WARNING_VISUAL_IDENTIFIER_COLOR="yellow"
-POWERLEVEL9K_LOAD_NORMAL_VISUAL_IDENTIFIER_COLOR="green"
-
-POWERLEVEL9K_TIME_FORMAT="%D{%H:%M:%S}"
-
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(time)
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -131,23 +80,12 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-
 alias la="ls -la"
 alias mi="mvim"
 alias ni="nvim"
 alias ne="emacs &"
-
-# move shortcuts
-alias ,phoe_ref="cd /Users/arkanoryn/projects/personal/elixir/prgramming-phoenix/"
-alias ,lang_elm="cd /Users/arkanoryn/projects/personal/elm/"
-alias ,lang_elixir="cd /Users/arkanoryn/projects/personal/elixir/"
-alias ,lang_react="cd /Users/arkanoryn/projects/personal/react/"
-alias ,daimler="/Users/arkanoryn/projects/anynines/daimler"
-alias ,daimler="/Users/arkanoryn/projects/anynines/daimler"
-alias ,ds-framework="/Users/arkanoryn/projects/anynines/ds-framework"
+alias zshconfig="ni ~/.zshrc"
+alias ohmyzsh="ni ~/.oh-my-zsh"
 
 # Rails shortcuts
 alias rs="bundle exec rails s"
@@ -156,17 +94,11 @@ alias rc="bundle exec rails c"
 alias spec="bundle exec rspec"
 alias bocop="bundle exec rubocop"
 
-# Phoenix shortcuts
-alias itest="iex -S mix test"
-alias phoenix_server="iex -S mix phoenix.server"
-
-# Elm shortcut
-alias serverdir="ruby -run -e httpd . -p 9091"
+# Elixir shortcuts
+alias eltest="iex -S mix test"
+alias elphoenixsrv="iex -S mix phoenix.server"
 
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-
-export PATH=/Users/arkanoryn/Applications/:$PATH
-export GTAGSLABEL=pygments
 
 # fix LC_* errors
 export LC_ALL=en_US.UTF-8
@@ -177,3 +109,6 @@ export LC_ALL=en_US.UTF-8
 # tabtab source for sls package
 # uninstall by removing these lines or running `tabtab uninstall sls`
 [[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
