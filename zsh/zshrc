@@ -83,6 +83,7 @@ source $ZSH/oh-my-zsh.sh
 alias la="ls -la"
 alias mi="mvim"
 alias ni="nvim"
+alias vi="nvim"
 alias ne="emacs &"
 alias zshconfig="ni ~/.zshrc"
 alias ohmyzsh="ni ~/.oh-my-zsh"
@@ -112,3 +113,6 @@ export LC_ALL=en_US.UTF-8
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Avoid having zcompdumps in $HOME
+export ZSH_COMPDUMP=$HOME/.cache/.zcompdump-$HOST
