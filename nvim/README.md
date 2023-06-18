@@ -24,12 +24,15 @@ this is a {  test } message
 ## TODO:
 - nmap Esc -> noh
 - remove trailing whitespaces on save
+- surround
+- fast move to windows
 - easy motion or similar
 - harpoon
 - auto list?
 - sort list?
 - save on C-s and CMD-S and ...
 - marks?
+- https://github.com/stevearc/aerial.nvim/
 
 ## Folders
 - settings: general / global settings
