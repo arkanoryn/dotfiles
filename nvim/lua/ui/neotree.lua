@@ -19,6 +19,7 @@ return {
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
+  lazy = true,
   config = function()
     require('nvim-tree').setup({
       view = {
