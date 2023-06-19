@@ -25,6 +25,10 @@ this is a {  test } message
 
 - finish UI
     - check nvchad & lazyvim other UI plugins
+- map buffer shortcuts
+- map telescope
+- map to create new file / buffer
+- review treesitter setup
 - surround
 - https://github.com/akinsho/toggleterm.nvim
 - remove trailing whitespaces on save
