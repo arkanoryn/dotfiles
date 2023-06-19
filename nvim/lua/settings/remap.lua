@@ -2,7 +2,9 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- NORMAL Mode
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = 'open Ex' })
+local save_cmd = "<cmd>w!<CR>"
+vim.keymap.set("n", "<C-s>", save_cmd, { desc = 'save on Ctrl-s' })
+vim.keymap.set("n", "<C-S>", save_cmd, { desc = 'save on Ctrl-S' })
 vim.keymap.set({"n", "v"}, "<leader>y", [["+y]], { desc = '[y]ank to clipboard' })
 vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = '[Y]ank full line to clipboard' })
 vim.keymap.set("n", "Q", "<nop>")                -- no recordings
