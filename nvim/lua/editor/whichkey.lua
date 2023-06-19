@@ -23,7 +23,7 @@ return {
   config = function (_, opts)
     local folders = {
       -- ["<leader>a"] = { name = "+action?" },
-      ["<leader>b"] = { name = "?[b]uffer" },
+      ["<leader>b"] = { name = "+[b]uffer" },
       ["<leader>c"] = { name = "?[c]ode" },
       -- ["<leader>d"] = { name = "tbd" },
       -- ["<leader>e"] = { name = "tbd" },

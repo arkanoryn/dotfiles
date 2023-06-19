@@ -24,8 +24,6 @@ this is a {  test } message
 ## TODO:
 
 - finish UI
-    - buffer line
-    - notifications
     - alpha setup
     - check nvchad & lazyvim other UI plugins
 - surround
