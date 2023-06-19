@@ -1,6 +1,6 @@
 local blank_lines = {
   "lukas-reineke/indent-blankline.nvim",
-  event = { "BufReadPost", "BufNewFile" },
+  event = { "bufreadpost", "bufnewfile" },
   opts = {
     -- char = "▏",
     char = "╎",
@@ -9,7 +9,7 @@ local blank_lines = {
       "alpha",
       "dashboard",
       "neo-tree",
-      "Trouble",
+      "trouble",
       "lazy",
       "mason",
       "notify",
@@ -17,7 +17,7 @@ local blank_lines = {
       "lazyterm",
     },
     show_trailing_blankline_indent = true,
-    show_current_context = false,
+    show_current_context = true,
     show_current_context_start = true,
   },
 }

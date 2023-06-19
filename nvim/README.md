@@ -26,7 +26,6 @@ this is a {  test } message
 - finish UI
     - buffer line
     - notifications
-    - identations
     - alpha setup
     - check nvchad & lazyvim other UI plugins
 - surround
