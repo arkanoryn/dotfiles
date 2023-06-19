@@ -22,10 +22,19 @@
 this is a {  test } message
 
 ## TODO:
-- nmap Esc -> noh
-- remove trailing whitespaces on save
+
+- finish UI
+    - buffer line
+    - notifications
+    - identations
+    - alpha setup
+    - check nvchad & lazyvim other UI plugins
 - surround
-- fast move to windows
+- https://github.com/akinsho/toggleterm.nvim
+- remove trailing whitespaces on save
+- https://github.com/Wansmer/treesj
+- nmap Esc -> noh
+- fast move to windows via 1, 2, 3...
 - easy motion or similar
 - harpoon
 - auto list?

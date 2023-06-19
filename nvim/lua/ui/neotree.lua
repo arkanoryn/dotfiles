@@ -51,4 +51,8 @@ return {
         end,
       },
     })  end,
+
+  keys = {
+    { "<leader>tt", "<cmd>NvimTreeToggle<cr>", desc = "[T]oggle Nvim[T]ree" },
+  }
 }
