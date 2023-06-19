@@ -42,11 +42,11 @@ return {
       ["<leader>q"] = { name = "?[q]uit" },
       -- ["<leader>r"] = { name = "tbd" },
       ["<leader>s"] = { name = "+search" },
-      ["<leader>t"] = { name = "?[t]oggle? / tab?" },
+      ["<leader>t"] = { name = "?[t]oggle? / tab? / todo?" },
       -- ["<leader>u"] = { name = "tbd" },
       -- ["<leader>v"] = { name = "tbd" },
       ["<leader>w"] = { name = "+[w]indow" },
-      -- ["<leader>x"] = { name = "tbd" },
+      ["<leader>x"] = { name = "?to e[x]ecute (todos)" },
       -- ["<leader>y"] = { name = "tbd" },
       -- ["<leader>z"] = { name = "tbd" },
     }
