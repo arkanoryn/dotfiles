@@ -23,23 +23,25 @@ this is a {  test } message
 
 ## TODO:
 
-- finish UI
-    - check nvchad & lazyvim other UI plugins
-- map buffer shortcuts
-- map telescope
-- map to create new file / buffer
+- move the rest of /init.lua
 - review treesitter setup
-- surround
-- https://github.com/akinsho/toggleterm.nvim
-- remove trailing whitespaces on save
-- https://github.com/Wansmer/treesj
-- nmap Esc -> noh
-- fast move to windows via 1, 2, 3...
-- easy motion or similar
-- harpoon
-- auto list?
+- configure telescope
+    - map telescope
+- general key mappings
+    - map buffer shortcuts
+    - map to create new file / buffer
+    - remove trailing whitespaces on save
+    - nmap Esc -> noh
+    - save on C-s and CMD-S and ...
+- coding
+    - surround
+    - https://github.com/akinsho/toggleterm.nvim
+    - hhttps://github.com/Wansmer/treesj
+    - fhast move to windows via 1, 2, 3...
+    - ehasy motion or similar
+    - hharpoon
+- auto generate list symbols?
 - sort list?
-- save on C-s and CMD-S and ...
 - marks?
 - https://github.com/stevearc/aerial.nvim/
 

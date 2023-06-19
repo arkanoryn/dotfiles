@@ -22,6 +22,7 @@ vim.opt.rtp:prepend(lazypath)
 --  You can also configure plugins after the setup call,
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
+  -- games
   -- Game to learn vim
   'ThePrimeagen/vim-be-good',
 
@@ -87,9 +88,6 @@ require('lazy').setup({
     },
   },
 
-  { 'numToStr/Comment.nvim', opts = {} },
-
-
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -104,6 +102,7 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
   { import = 'ui' },
   { import = 'editor' },
+  { import = 'coding' },
 }, {})
 
 vim.cmd([[
