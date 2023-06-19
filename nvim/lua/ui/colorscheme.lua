@@ -5,6 +5,10 @@ return {
   priority = 1000, -- make sure to load this before all the other start plugins
 
   opts = {
+    background = {
+      light = "latte",
+      dark = "Macchiato",
+    },
     integrations = {
       alpha = true,
       cmp = true,
@@ -21,12 +25,16 @@ return {
           warnings = { "undercurl" },
           information = { "undercurl" },
         },
-      }
+      },
+    },
+    dim_inactive = {
+      enabled = true,
     },
   },
 
-  config = function()
-    -- load the colorscheme here
-    vim.cmd.colorscheme 'catppuccin'
+  config = function(_, opts)
+    require("catppuccin").setup(opts)
+
+    vim.cmd.colorscheme "catppuccin" -- load the colorscheme here
   end
 }

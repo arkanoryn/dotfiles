@@ -24,7 +24,6 @@ this is a {  test } message
 ## TODO:
 
 - finish UI
-    - alpha setup
     - check nvchad & lazyvim other UI plugins
 - surround
 - https://github.com/akinsho/toggleterm.nvim
