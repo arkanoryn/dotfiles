@@ -37,6 +37,7 @@ local bufferline_plugin = {
 
 local scope_plugin = {
   "tiagovla/scope.nvim",
+  event = { "BufReadPost", "BufNewFile" },
   dependencies = {
     'nvim-telescope/telescope.nvim',
   },

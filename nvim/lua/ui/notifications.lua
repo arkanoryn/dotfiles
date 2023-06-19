@@ -79,9 +79,6 @@ local notify = {
       return math.floor(vim.o.columns * 0.75)
     end,
   },
-  init = function()
-    vim.notify = require("notify")
-  end
 }
 
 return {
