@@ -48,7 +48,7 @@ return {
       ["<leader>w"] = { name = "+[w]indow" },
       ["<leader>x"] = { name = "?to e[x]ecute (todos)" },
       -- ["<leader>y"] = { name = "tbd" },
-      -- ["<leader>z"] = { name = "tbd" },
+      ["<leader>z"] = { name = "[z]zz games" },
     }
     require('which-key').setup(opts)
     require('which-key').register(folders, {})

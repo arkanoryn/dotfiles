@@ -3,6 +3,8 @@ local options = {
   writebackup = false,                     -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
   clipboard = "unnamedplus",               -- allows neovim to access the system clipboard
 
+  confirm = true,
+
   cmdheight = 1,                           -- more space in the neovim command line for displaying messages
   pumheight = 10,                          -- pop up menu height
 
