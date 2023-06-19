@@ -2,11 +2,10 @@
 local Util = require('settings.util')
 
 return {
-  -- Set lualine as statusline
   'nvim-lualine/lualine.nvim',
-  -- See `:help lualine.txt`
-  opts = {
+  event = "VeryLazy",
 
+  opts = {
     options = {
       icons_enabled = true,
       theme = "auto",
@@ -49,6 +48,7 @@ return {
       },
       lualine_x = {
         -- stylua: ignore
+        -- TODO:
         -- {
         --   function() return require("noice").api.status.command.get() end,
         --   cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,

@@ -60,7 +60,7 @@ local noice = {
 
 local notify = {
   "rcarriga/nvim-notify",
-  -- TODO: review mapping below
+  event = "VeryLazy",
   keys = {
     {
       "<leader>md",

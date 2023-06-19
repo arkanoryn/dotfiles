@@ -3,7 +3,7 @@
 local bufferline_plugin = {
   "akinsho/bufferline.nvim",
   dependencies = { 'echasnovski/mini.bufremove' },
-  event = "VeryLazy",
+  event = { "BufReadPost", "BufNewFile" },
   keys = {
     { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "[b]uffer [p]in toggle" },
     { "<leader>tp", "<Cmd>BufferLineTogglePin<CR>", desc = "[t]oggle [b]uffer pin" },

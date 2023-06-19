@@ -1,6 +1,6 @@
 local blank_lines = {
   "lukas-reineke/indent-blankline.nvim",
-  event = { "bufreadpost", "bufnewfile" },
+  event = { "BufReadPost", "BufNewFile" },
   opts = {
     -- char = "▏",
     char = "╎",

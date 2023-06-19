@@ -19,7 +19,7 @@ return {
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
-  lazy = true,
+  cmd = "NvimTree",
   config = function()
     require('nvim-tree').setup({
       view = {
