@@ -18,6 +18,35 @@ M.icons = {
     added = " ",
     modified = "󱨇 ",
     removed = " ",
+  },
+  kind = {
+    Text = "󱩼",
+    Method = "m",
+    Function = "󰊕",
+    Constructor = "",
+    Field = "",
+    Variable = "󰆧",
+    Class = "",
+    Interface = "",
+    Module = "",
+    Property = "",
+    Unit = "",
+    Value = "",
+    Enum = "",
+    Keyword = "",
+    Snippet = "",
+    Color = "",
+    File = "",
+    Reference = "",
+    Folder = "",
+    EnumMember = "",
+    Constant = "󱪗",
+    Struct = "",
+    Event = "",
+    Operator = "",
+    TypeParameter = "󰬁",
   }
+  -- find more here: https://www.nerdfonts.com/cheat-sheet
 }
+
 return M
