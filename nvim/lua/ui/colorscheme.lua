@@ -26,6 +26,13 @@ return {
           information = { "undercurl" },
         },
       },
+      navic = { enabled = true },
+      noice = true,
+      notify = true,
+      nvimtree = true,
+      telescope = true,
+      treesitter = true,
+      which_key = true,
     },
     dim_inactive = {
       enabled = true,

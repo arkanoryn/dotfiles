@@ -4,6 +4,12 @@ local Util = require('settings.util')
 return {
   'nvim-lualine/lualine.nvim',
   event = "VeryLazy",
+  dependencies = {
+    {
+      'SmiteshP/nvim-navic',
+      dependencies = { "neovim/nvim-lspconfig" }
+    },
+  },
 
   opts = {
     options = {
@@ -38,28 +44,26 @@ return {
           },
         },
         { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-        -- get path?
         { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
         -- stylua: ignore
-        -- {
-        --   function() return require("nvim-navic").get_location() end,
-        --   cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
-        -- },
+        {
+          function() return require("nvim-navic").get_location() end,
+          cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
+        },
       },
       lualine_x = {
         -- stylua: ignore
-        -- TODO:
-        -- {
-        --   function() return require("noice").api.status.command.get() end,
-        --   cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-        --   color = Util.fg("Statement"),
-        -- },
-        -- -- stylua: ignore
-        -- {
-        --   function() return require("noice").api.status.mode.get() end,
-        --   cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-        --   color = Util.fg("Constant"),
-        -- },
+        {
+          function() return require("noice").api.status.command.get() end,
+          cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
+          color = Util.fg("Statement"),
+        },
+        -- stylua: ignore
+        {
+          function() return require("noice").api.status.mode.get() end,
+          cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
+          color = Util.fg("Constant"),
+        },
         -- -- stylua: ignore
         { require("lazy.status").updates, cond = require("lazy.status").has_updates, color = Util.fg("Special") },
       },
