@@ -1,14 +1,12 @@
 local check_backspace = function()
-  local col = vim.fn.col "." - 1
-  return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
+  local col = vim.fn.col '.' - 1
+  return col == 0 or vim.fn.getline('.'):sub(col, col):match '%s'
 end
 
-local luasnip = {
+local luasnip_plugin = {
   'L3MON4D3/LuaSnip',
-  event = { "BufReadPost", "BufNewFile" },
-  build = (not jit.os:find('Windows'))
-    and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp"
-    or nil,
+  event = { 'BufReadPost', 'BufNewFile' },
+  build = (not jit.os:find 'Windows') and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp" or nil,
 
   dependencies = {
     'rafamadriz/friendly-snippets',
@@ -39,21 +37,22 @@ local luasnip = {
 return {
   -- Autocompletion
   'hrsh7th/nvim-cmp',
-  event = { "BufReadPost", "BufNewFile" },
+  event = { 'BufReadPost', 'BufNewFile' },
 
   dependencies = {
-    { 'hrsh7th/cmp-nvim-lsp', event = { "BufReadPost", "BufNewFile" } },
-    luasnip,
-    { 'hrsh7th/cmp-buffer', event = { "BufReadPost", "BufNewFile" } },
-    { 'hrsh7th/cmp-path', event = { "BufReadPost", "BufNewFile" } },
-    { 'hrsh7th/cmp-cmdline', event = { "BufReadPost", "BufNewFile" } },
-    { 'hrsh7th/cmp-nvim-lua', event = { "BufReadPost", "BufNewFile" } },
-    { 'saadparwaiz1/cmp_luasnip', event = { "BufReadPost", "BufNewFile" } },
+    { 'hrsh7th/cmp-nvim-lsp', event = { 'BufReadPost', 'BufNewFile' } },
+    luasnip_plugin,
+    { 'hrsh7th/cmp-buffer', event = { 'BufReadPost', 'BufNewFile' } },
+    { 'hrsh7th/cmp-path', event = { 'BufReadPost', 'BufNewFile' } },
+    { 'hrsh7th/cmp-cmdline', event = { 'BufReadPost', 'BufNewFile' } },
+    { 'hrsh7th/cmp-nvim-lua', event = { 'BufReadPost', 'BufNewFile' } },
+    { 'saadparwaiz1/cmp_luasnip', event = { 'BufReadPost', 'BufNewFile' } },
   },
 
   opts = function()
     vim.api.nvim_set_hl(0, 'CmpGhostText', { link = 'Comment', default = true })
-    local cmp = require('cmp')
+    local cmp = require 'cmp'
+    local luasnip = require 'luasnip'
 
     return {
       completion = {
@@ -64,23 +63,23 @@ return {
           require('luasnip').lsp_expand(args.body)
         end,
       },
-      mapping = cmp.mapping.preset.insert({
-        ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-        ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+      mapping = cmp.mapping.preset.insert {
+        ['<C-n>'] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert },
+        ['<C-p>'] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert },
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<c-p>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
         ['<C-e>'] = cmp.mapping.abort(),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-        ['<S-CR>'] = cmp.mapping.confirm({
+        ['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ['<S-CR>'] = cmp.mapping.confirm {
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
-        }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        }, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         -- power TAB and S-TAB
-        ["<Tab>"] = cmp.mapping(function(fallback)
+        ['<Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
-          elseif luasnip.expandable() then
+          elseif luasnip and luasnip.expandable() then
             luasnip.expand()
           elseif luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
@@ -90,10 +89,10 @@ return {
             fallback()
           end
         end, {
-            "i",
-            "s",
-          }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          'i',
+          's',
+        }),
+        ['<S-Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item()
           elseif luasnip.jumpable(-1) then
@@ -102,16 +101,16 @@ return {
             fallback()
           end
         end, {
-            "i",
-            "s",
-          }),
-      }),
+          'i',
+          's',
+        }),
+      },
 
       formatting = {
-        fields = { "kind", "abbr", "menu" },
+        fields = { 'kind', 'abbr', 'menu' },
         format = function(entry, vim_item)
           -- Kind icons
-          vim_item.kind = string.format("%s", require("settings.util").icons.kind[vim_item.kind])
+          vim_item.kind = string.format('%s', require('settings.util').icons.kind[vim_item.kind])
 
           vim_item.menu = ({
             nvim_lsp = '[LSP]',
@@ -124,18 +123,18 @@ return {
         end,
       },
 
-      sources = cmp.config.sources({
+      sources = cmp.config.sources {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'buffer' },
         { name = 'path' },
         { name = 'cmdline' },
-      }),
+      },
 
       window = {
         documentation = {
-          border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-        }
+          border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+        },
       },
 
       experimental = {
