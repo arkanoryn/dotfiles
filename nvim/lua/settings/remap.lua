@@ -1,28 +1,61 @@
+--Remap space as leader key
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- NORMAL Mode
+-- Modes --
+--   normal_mode = "n",
+--   insert_mode = "i",
+--   visual_mode = "v",
+--   visual_block_mode = "x",
+--   term_mode = "t",
+--   command_mode = "c",
+
+-- NORMAL Mode --
 local save_cmd = "<cmd>w!<CR>"
-vim.keymap.set("n", "<C-s>", save_cmd, { desc = 'save on Ctrl-s' })
-vim.keymap.set("n", "<C-S>", save_cmd, { desc = 'save on Ctrl-S' })
-vim.keymap.set({"n", "v"}, "<leader>y", [["+y]], { desc = '[y]ank to clipboard' })
-vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = '[Y]ank full line to clipboard' })
-vim.keymap.set("n", "Q", "<nop>")                -- no recordings
-vim.keymap.set("n", "J", "mzJ`z")                -- concat the next line at the end of the current line without moving the cursor
-vim.keymap.set("n", "<C-d>", "<C-d>zz")          -- move down but stay at the middle of the screen
-vim.keymap.set("n", "<C-u>", "<C-u>zz")          -- move up but stay at the middle of the screen
+local keys = {
+  -- General --
+  { "n", "<C-s>", save_cmd, { desc = 'save on Ctrl-s' } },
+  { "n", "<C-S>", save_cmd, { desc = 'save on Ctrl-S' } },
+  { {"n", "v"}, "<leader>y", [["+y]], { desc = '[y]ank to clipboard' } },
+  { "n", "<leader>Y", [["+Y]], { desc = '[Y]ank full line to clipboard' } },
+  { "n", "J", "mzJ`z" },                -- concat the next line at the end of the current line without moving the cursor
+  { "n", "<C-d>", "<C-d>zz" },          -- move down but stay at the middle of the screen
+}
 
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+  -- Windows Management --
+local window_management_keys = {
+  { { 'n', 'v' }, '<leader>wqa', ':qa<CR>', { remap = true, desc = '[w]indow [q]uit [a]ll' } },
+  { { 'n', 'v' }, '<leader>wq!', ':qa!<CR>', { remap = true, desc = '[w]indow [q]uit all[!]' } },
+  { { 'n', 'v' }, '<leader>wqw', ':wq<CR>', { remap = true, desc = '[w]indow [q]uit and [w]rite' } },
+  { { 'n', 'v' }, '<leader>wc', ':q<CR>', { remap = true, desc = '[w]indow [c]lose' } },
+  { { 'n', 'v' }, '<leader>wd', '<C-w>o', { remap = true, desc = '[w]indow [d]elete all other window' } },
+  { { 'n', 'v' }, '<leader>wv', ':vsplit<CR>', { remap = true, desc = '[w]indow [v]ertical split' } },
+  { { 'n', 'v' }, '<leader>ws', ':split<CR>', { remap = true, desc = '[w]indow horizontal [s]plit' } },
+  { { 'n', 'v' }, '<leader>w|', ':vsplit<CR>', { remap = true, desc = '[w]indow vertical split  |' } },
+  { { 'n', 'v' }, '<leader>w-', ':split<CR>', { remap = true, desc = '[w]indow horizontal split --' } },
+  { { 'n', 'v' }, '<leader>w=', "<C-w>=", { remap = true, desc = 'balance [w]indow size [=]' } },
+  { { 'n', 'v' }, '<leader>wh', "<C-w>h", { remap = true, desc = 'move to left [w]indow' } },
+  { { 'n', 'v' }, '<leader>wj', "<C-w>j", { remap = true, desc = 'move to down [w]indow' } },
+  { { 'n', 'v' }, '<leader>wk', "<C-w>k", { remap = true, desc = 'move to up [w]indow' } },
+  { { 'n', 'v' }, '<leader>wl', "<C-w>l", { remap = true, desc = 'move to right [w]indow' } },
+  { {'n', 'v'}, "<leader>ww", "<C-W>p", { remap = true, desc = "[w]indow move to previous [w]indow" } },
+}
 
-vim.keymap.set({ 'n', 'v' }, '<leader>wqa', ':qa<CR>', { desc = '[w]indow [q]uit [a]ll' })
-vim.keymap.set({ 'n', 'v' }, '<leader>wq!', ':qa!<CR>', { desc = '[w]indow [q]uit all[!]' })
-vim.keymap.set({ 'n', 'v' }, '<leader>wqw', ':wq<CR>', { desc = '[w]indow [q]uit and [w]rite' })
-vim.keymap.set({ 'n', 'v' }, '<leader>wv', ':vsplit<CR>', { desc = '[w]indow [v]ertical split' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ws', ':split<CR>', { desc = '[w]indow horizontal [s]plit' })
-vim.keymap.set({ 'n', 'v' }, '<leader>wh', "<C-w>h", { desc = 'move to left [w]indow' })
-vim.keymap.set({ 'n', 'v' }, '<leader>wj', "<C-w>j", { desc = 'move to down [w]indow' })
-vim.keymap.set({ 'n', 'v' }, '<leader>wk', "<C-w>k", { desc = 'move to up [w]indow' })
-vim.keymap.set({ 'n', 'v' }, '<leader>wl', "<C-w>l", { desc = 'move to right [w]indow' })
+for _, key in pairs(keys) do
+  vim.keymap.set(key[1], key[2], key[3], key[4])
+end
+
+for _, key in pairs(window_management_keys) do
+  vim.keymap.set(key[1], key[2], key[3], key[4])
+end
+
+for i = 1, 9, 1 do
+  vim.keymap.set(
+  {'n', 'v'},
+  "<leader>w" ..  i,
+  "<cmd>exe " .. i .. " . 'winc w'<CR>",
+  { remap = true, desc = "go to [w]indow [" .. i .. "]"})
+end
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })

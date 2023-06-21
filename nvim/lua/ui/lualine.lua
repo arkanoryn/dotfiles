@@ -3,6 +3,7 @@ local Util = require('settings.util')
 
 local sections_opts = {
   lualine_a = {
+    function() return vim.fn.winnr() end,
     "mode",
   },
   lualine_b = {
@@ -85,8 +86,6 @@ return {
     },
   },
 
-  extensions = { "aerial" },
-
   opts = {
     options = {
       icons_enabled = true,
@@ -96,6 +95,7 @@ return {
       component_separators = { left = '', right = ''}, -- other options: '|'
       section_separators = { left = '', right = ''},
     },
+
     sections = sections_opts,
     inactive_sections = sections_opts,
   },
