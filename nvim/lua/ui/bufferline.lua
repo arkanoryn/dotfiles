@@ -23,6 +23,9 @@ local bufferline_plugin = {
         .. (diag.warning and icons.Warn .. diag.warning or "")
         return vim.trim(ret)
       end,
+      numbers = function(local_opts)
+        return string.format('%s·%s', local_opts.raise(local_opts.id), local_opts.lower(local_opts.ordinal))
+      end,
       offsets = {
         {
           filetype = "neo-tree",
