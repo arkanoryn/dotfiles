@@ -128,6 +128,10 @@ return {
         { "<leader>cx", vim.diagnostic.setloclist, desc = "open errors popup" },
         { "<leader>cX", vim.diagnostic.open_float, desc = "open errors list" },
 
+        -- Git
+      { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "[c]ommits" },
+      { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "[s]tatus" },
+
         -- Helpers
         { "<leader>hk", builtin.keymaps, desc = "[k]eymaps" },
       }
