@@ -43,6 +43,8 @@ local keys = {
   { "i", "<A-down>", "<Esc>:m .+1<CR>==gi", { desc = "move text down" }  },
   { "i", "<A-up>", "<Esc>:m .-2<CR>==gi", { desc = "move text up" }  },
 
+  { "n", "<leader>l", "<cmd>:Lazy<CR>", { desc = "open Lazy" } },
+
   -- Actions Management - <leader>a --
 
   -- Buffers Management - <leader>b --
