@@ -27,7 +27,6 @@ return {
       ["<leader>at"] = { name = "+[t]rouble" },
       ["<leader>b"] = { name = "+[b]uffer" },
       ["<leader>c"] = { name = "+[c]ode" },
-      ["<leader>cs"] = { name = "+[s]urround" },
       ["<leader>d"] = { name = "?lsp / document / diagnostics?" },
       -- ["<leader>e"] = { name = "tbd" },
       ["<leader>f"] = { name = "?[f]ile" },
