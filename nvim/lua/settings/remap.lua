@@ -14,16 +14,121 @@ vim.g.maplocalleader = " "
 local save_cmd = "<cmd>w!<CR>"
 local keys = {
   -- General --
+  { "n", "<Esc>", "<cmd><Esc>:noh<CR>", { desc = 'save on Ctrl-s', silent = true } },
   { "n", "<C-s>", save_cmd, { desc = 'save on Ctrl-s' } },
   { "n", "<C-S>", save_cmd, { desc = 'save on Ctrl-S' } },
   { {"n", "v"}, "<leader>y", [["+y]], { desc = '[y]ank to clipboard' } },
   { "n", "<leader>Y", [["+Y]], { desc = '[Y]ank full line to clipboard' } },
   { "n", "J", "mzJ`z" },                -- concat the next line at the end of the current line without moving the cursor
   { "n", "<C-d>", "<C-d>zz" },          -- move down but stay at the middle of the screen
-}
+  { "x", "<leader>p", [["_dP]], { desc = '[p]aste without overriding yank' } },
+  { "i", "<C-c>", "<Esc>" },            -- CTRL-c behaves has Esc
+  -- Word Actions --
+  ---- Remap for dealing with word wrap
+  { 'n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true } },
+  { 'n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true } },
 
-  -- Windows Management --
-local window_management_keys = {
+  { "v", "J", ":m '>+1<CR>gv=gv" },     -- move down the selected lines in visual mode
+  { "v", "K", ":m '<-2<CR>gv=gv" },     -- move up the selected lines in visual mode
+  { "v", "<A-j>", ":m '>+1<CR>gv=gv" },     -- move down the selected lines in visual mode
+  { "v", "<A-k>", ":m '<-2<CR>gv=gv" },     -- move up the selected lines in visual mode
+  { "v", "<A-down>", ":m '>+1<CR>gv=gv" },     -- move down the selected lines in visual mode
+  { "v", "<A-up>", ":m '<-2<CR>gv=gv" },     -- move up the selected lines in visual mode
+
+  ---- Move text up and down
+  { "n", "<A-j>", "<Esc>:m .+1<CR>==", { desc = "move text down" } },
+  { "n", "<A-k>", "<Esc>:m .-2<CR>==", { desc = "move text up" } },
+  { "n", "<A-down>", "<Esc>:m .+1<CR>==", { desc = "move text down" } },
+  { "n", "<A-up>", "<Esc>:m .-2<CR>==", { desc = "move text up" }  },
+  { "i", "<A-down>", "<Esc>:m .+1<CR>==gi", { desc = "move text down" }  },
+  { "i", "<A-up>", "<Esc>:m .-2<CR>==gi", { desc = "move text up" }  },
+
+  -- Actions Management - <leader>a --
+
+  -- Buffers Management - <leader>b --
+  -- TODO:
+  { "n", "<leader>b]", vim.cmd.bnext, { desc = "[b]uffer: next" } },
+  { "n", "<leader>bn", vim.cmd.bnext, { desc = "[b]uffer: [n]ext" } },
+  { { "n", "v", "i" }, "<A-n>", vim.cmd.bnext, { desc = "buffer: next" } },
+  { "n", "<leader>b[", vim.cmd.bprevious, { desc = "[b]uffer: previous" } },
+  { "n", "<leader>bN", vim.cmd.bprevious, { desc = "[b]uffer: previous [N]" } },
+  { { "n", "v", "i" }, "<A-N>", vim.cmd.bprevious, { desc = "buffer: previous" } },
+  { "n", "<leader>bd", function() require("mini.bufremove").delete(0, false) end, { desc = "[b]uffer [d]elete" } },
+  { "n", "<leader>bD", function() require("mini.bufremove").delete(0, true) end, { desc = "[b]uffer [d]elete (Force)" } },
+  -- switch to buffer / buffers list [see /lua/editor/telescope.lua]
+  -- fuzzy search buffer [see /lua/editor/telescope.lua]
+  -- new empty buffer
+  -- rename buffer
+  { "n", "<leader>bs", save_cmd, { desc = '[b]uffer: [s]ave' } },
+  { "n", "<leader>bS", "<cmd>wa!<CR>", { desc = '[b]uffer: [s]ave all' } },
+  { "n", "<leader>by", "<cmd>%y+<CR>", { desc = '[b]uffer: [y]ank' } },
+  -- buffer's undo tree -- [see lua/editor/undotree.lua]
+  -- hide buffer?
+
+  -- Code Management - <leader>c --
+  -- TODO:
+  -- jump to [d]efinition
+  -- jump to reference D
+  -- eval? [e]
+  -- eval & replace? [E]
+  -- [f]ormat buffer / region
+  -- find [i]mplementation
+  { "n", "<leader>cw", "<cmd>:let _s=@/<Bar>:%s/\\s\\+$//e<Bar>:let @/=_s<Bar><CR>", { desc = "[b]uffer: remove trailing [w]hitespaces", noremap = true } },
+  { "n", "<leader>cW", function ()
+    vim.cmd(':%s/\\s\\+$//e')
+    vim.cmd(':%s/\\n\\{2,}/\\r\\r/e')
+  end, { desc = '[b]uffer: remove trailing [W]hitelines', noremap = true } },
+  -- [x] list errors -- see diagnostic
+  -- list errors in [p]opup -- see diagnostic
+  -- [n]ext error -- see diagnostic
+  -- previous error [N] -- see diagnostic
+  -- next error [ -- see diagnostic
+  -- previous error ] -- see diagnostic
+
+  -- Git Management -- <leader>g --
+  -- see [/lua/coding/git.lua]
+  -- switch branch
+  -- blame
+  -- create
+  ---- branch
+  ----commit
+  ----fixup
+  ----issue
+  ----pr
+  ----init repo
+  ----clone repo
+  -- clone
+  -- file delete
+  -- find ..,
+  ---- commit
+  ---- file
+  ---- gitconfilefile
+  ---- issue
+  ---- PR
+  -- fetch
+  -- status
+  -- Status popup
+  -- buffer log
+  -- revert hunk at point
+  -- revert file
+  -- stage hunk at point
+  -- stage file
+  -- time machine
+  -- unstage file
+  --
+
+  -- Quit Management - <leader>q --
+  -- TODO:
+  -- restore last session
+  -- restore session from files
+  { { 'n', 'v' }, '<leader>qq', ':qa<CR>', { remap = true, desc = '[q]uit nVim' } },
+  { { 'n', 'v' }, '<leader>qQ', ':qa!<CR>', { remap = true, desc = '[q]uit nVim without saving' } },
+  -- restart and restore
+  -- restart
+  -- quick save current session
+  -- save session to file
+
+  -- Windows Management - <leader>w --
   { { 'n', 'v' }, '<leader>wqa', ':qa<CR>', { remap = true, desc = '[w]indow [q]uit [a]ll' } },
   { { 'n', 'v' }, '<leader>wq!', ':qa!<CR>', { remap = true, desc = '[w]indow [q]uit all[!]' } },
   { { 'n', 'v' }, '<leader>wqw', ':wq<CR>', { remap = true, desc = '[w]indow [q]uit and [w]rite' } },
@@ -41,14 +146,6 @@ local window_management_keys = {
   { {'n', 'v'}, "<leader>ww", "<C-W>p", { remap = true, desc = "[w]indow move to previous [w]indow" } },
 }
 
-for _, key in pairs(keys) do
-  vim.keymap.set(key[1], key[2], key[3], key[4])
-end
-
-for _, key in pairs(window_management_keys) do
-  vim.keymap.set(key[1], key[2], key[3], key[4])
-end
-
 for i = 1, 9, 1 do
   vim.keymap.set(
   {'n', 'v'},
@@ -57,45 +154,7 @@ for i = 1, 9, 1 do
   { remap = true, desc = "go to [w]indow [" .. i .. "]"})
 end
 
--- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+for _, key in pairs(keys) do
+  vim.keymap.set(key[1], key[2], key[3], key[4])
+end
 
--- Move up/down
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")     -- move down the selected lines in visual mode
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")     -- move up the selected lines in visual mode
-vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv")     -- move down the selected lines in visual mode
-vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv")     -- move up the selected lines in visual mode
-vim.keymap.set("v", "<A-down>", ":m '>+1<CR>gv=gv")     -- move down the selected lines in visual mode
-vim.keymap.set("v", "<A-up>", ":m '<-2<CR>gv=gv")     -- move up the selected lines in visual mode
-
--- Move text up and down
-vim.keymap.set("n", "<A-j>", "<Esc>:m .+1<CR>==")
-vim.keymap.set("n", "<A-k>", "<Esc>:m .-2<CR>==")
-vim.keymap.set("n", "<A-down>", "<Esc>:m .+1<CR>==")
-vim.keymap.set("n", "<A-up>", "<Esc>:m .-2<CR>==")
-
-vim.keymap.set("i", "<A-down>", "<Esc>:m .+1<CR>==gi")
-vim.keymap.set("i", "<A-up>", "<Esc>:m .-2<CR>==gi")
-
--- VISUAL Mode
-vim.keymap.set("x", "<leader>p", [["_dP]], { desc = '[p]aste without overriding yank' })
-
--- INTERACTIVE Mode
-vim.keymap.set("i", "<C-c>", "<Esc>")            -- CTRL-c behaves has Esc
-
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = '*',
-})
-
--- Buffers
--- * buffer list and open
--- * next / prev buffer
--- * fzf buffer

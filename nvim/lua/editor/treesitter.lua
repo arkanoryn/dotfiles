@@ -13,6 +13,10 @@ return {
     highlight = { enable = true },
     indent = { enable = true },
     ensure_installed = {
+      "eex",
+      "elixir",
+      "erlang",
+      "heex",
       "lua",
       "luadoc",
       "luap",
@@ -36,7 +40,7 @@ return {
     },
   },
 
-  --- @param opts TSConfig
+  -- @param opts TSConfig
   config = function(_, opts)
     if type(opts.ensure_installed) == "table" then
       ---@type table<string, boolean>

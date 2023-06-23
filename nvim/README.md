@@ -23,6 +23,7 @@ this is a {  test } message
 
 ## TODO:
 
+- surround
 - move the rest of /init.lua
 - review treesitter setup
 - configure telescope
@@ -31,8 +32,6 @@ this is a {  test } message
     - map buffer shortcuts
     - map to create new file / buffer
     - remove trailing whitespaces on save
-    - nmap Esc -> noh
-    - save on C-s and CMD-S and ...
 - coding
     - surround
     - https://github.com/akinsho/toggleterm.nvim
