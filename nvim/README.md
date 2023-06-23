@@ -23,7 +23,6 @@ this is a {  test } message
 
 ## TODO:
 
-- surround
  - format on save and shortcuts: https://github.com/LazyVim/LazyVim/blob/ed89d01113b7c8495224cb7a88fe5ccb3f001ac5/lua/lazyvim/plugins/lsp/format.lua#L46
 - tabs
 - move the rest of /init.lua
@@ -35,7 +34,6 @@ this is a {  test } message
     - map to create new file / buffer
     - remove trailing whitespaces on save
 - coding
-    - surround
     - https://github.com/akinsho/toggleterm.nvim
     - hhttps://github.com/Wansmer/treesj
     - fhast move to windows via 1, 2, 3...
