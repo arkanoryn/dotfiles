@@ -129,8 +129,9 @@ return {
         { "<leader>cX", vim.diagnostic.open_float, desc = "open errors list" },
 
         -- Git
-      { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "[c]ommits" },
-      { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "[s]tatus" },
+        { "<leader>gb", "<cmd>Telescope git_bcommits<CR>", desc = "[b]uffer's commits" },
+        { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "[c]ommits" },
+        { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "[s]tatus" },
 
         -- Helpers
         { "<leader>hk", builtin.keymaps, desc = "[k]eymaps" },

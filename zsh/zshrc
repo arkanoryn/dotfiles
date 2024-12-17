@@ -132,4 +132,6 @@ function nvims() {
   NVIM_APPNAME=$config nvim $@
 }
 
-bindkey -s ^a "nvims\n"
+
+# Created by `pipx` on 2024-11-04 19:57:18
+export PATH="$PATH:/Users/anynines/.local/bin"

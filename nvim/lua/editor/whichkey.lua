@@ -42,8 +42,9 @@ return {
       ["<leader>p"] = { name = "?[p]roject" },
       ["<leader>q"] = { name = "+[q]uit" },
       -- ["<leader>r"] = { name = "tbd" },
-      ["<leader>s"] = { name = "+search" },
+      ["<leader>s"] = { name = "+[s]earch"  },
       ["<leader>t"] = { name = "+[t]oggle" },
+      ["<leader>tg"] = { name = "+[g]itsigns" },
       ["<leader>te"] = { name = "t[e]rminal" },
       -- ["<leader>u"] = { name = "tbd" },
       -- ["<leader>v"] = { name = "tbd" },
@@ -52,6 +53,7 @@ return {
       -- ["<leader>y"] = { name = "tbd" },
       ["<leader>z"] = { name = "[z]zz games" },
     }
+
     require('which-key').setup(opts)
     require('which-key').register(folders, {})
   end

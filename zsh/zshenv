@@ -1,1 +1,3 @@
 path+=(/usr/local/sbin)
+move_path="/Users/anynines/projects/anynines/move"
+

@@ -23,6 +23,8 @@ local keys = {
   { "n", "<C-d>", "<C-d>zz" },          -- move down but stay at the middle of the screen
   { "x", "<leader>p", [["_dP]], { desc = '[p]aste without overriding yank' } },
   { "i", "<C-c>", "<Esc>" },            -- CTRL-c behaves has Esc
+  -- { "n", "<leader>fv", "<cmd>:e ~/.config/nvim/init.lua<CR>", { desc = "open nvim config" } },
+
   -- Word Actions --
   ---- Remap for dealing with word wrap
   { 'n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true } },
@@ -59,7 +61,8 @@ local keys = {
   { "n", "<leader>bD", function() require("mini.bufremove").delete(0, true) end, { desc = "[b]uffer [d]elete (Force)" } },
   -- switch to buffer / buffers list [see /lua/editor/telescope.lua]
   -- fuzzy search buffer [see /lua/editor/telescope.lua]
-  -- new empty buffer
+  { "n", "<leader>nb", "<cmd>:enew<CR>", { desc = "[n]ew [b]uffer" } },
+  { "n", "<leader>bb", "<cmd>:enew<CR>", { desc = "new [b]uffer" } },
   -- rename buffer
   { "n", "<leader>bs", save_cmd, { desc = '[b]uffer: [s]ave' } },
   { "n", "<leader>bS", "<cmd>wa!<CR>", { desc = '[b]uffer: [s]ave all' } },

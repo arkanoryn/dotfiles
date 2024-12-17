@@ -63,6 +63,6 @@ return {
     { "<leader>tef", "<cmd>ToggleTerm<CR>", desc = "[f]loat" },
     {"<leader>teh", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "t[e]rminal [h]orizontal" },
     { "<leader>tev", "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "t[e]rmimal [v]ertical" },
-    { "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", {noremap = true, silent = true, desc = "lazy[g]it"} },
+    { "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", noremap = true, silent = true, desc = "lazy[g]it" },
   }
 }

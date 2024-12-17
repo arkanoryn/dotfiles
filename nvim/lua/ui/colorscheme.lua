@@ -23,8 +23,11 @@ return {
           errors = { "undercurl" },
           hints = { "undercurl" },
           warnings = { "undercurl" },
-          information = { "undercurl" },
+          information = { "underline" },
         },
+      },
+      inlay_hints = {
+        background = true,
       },
       navic = { enabled = true },
       noice = true,

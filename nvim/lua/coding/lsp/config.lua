@@ -5,7 +5,15 @@ return {
   dependencies = {
     -- Automatically install LSPs to stdpath for neovim
     { 'williamboman/mason.nvim', config = true },
-    'williamboman/mason-lspconfig.nvim',
+    {
+      'williamboman/mason-lspconfig.nvim',
+      config = function(_, opts)
+        require("mason-lspconfig").setup(opts)
+
+        require("mason").setup()
+        require("mason-lspconfig").setup()
+      end
+    },
     { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
     { 'folke/neodev.nvim', opts = {} },
     "hrsh7th/cmp-nvim-lsp",
@@ -19,6 +27,11 @@ return {
       -- rust_analyzer = {},
       -- tsserver = {},
 
+      elixirls = {
+        cmd = {
+          "/Users/anynines/.elixir_ls/language_server.sh"
+        },
+      },
       lua_ls = {
         Lua = {
           workspace = { checkThirdParty = false },
@@ -65,6 +78,8 @@ return {
       -- end, '[W]orkspace [L]ist Folders')
 
       -- Create a command `:Format` local to the LSP buffer
+      nmap('<leader>cf', vim.lsp.buf.format, "[f]ormat buffer")
+
       vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
         vim.lsp.buf.format()
       end, { desc = 'Format current buffer with LSP' })
@@ -72,7 +87,7 @@ return {
   },
 
   config = function (_, opts)
-    require("cmp_nvim_lsp").setup(opts)
+    -- require("lspconfig").setup(opts)
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
@@ -92,6 +107,24 @@ return {
           settings = opts.servers[server_name],
         }
       end,
+    }
+
+    require'lspconfig'.elixirls.setup{
+      cmd = { "/Users/anynines/.elixir_ls/language_server.sh" },
+      on_attach = function(client, bufnr)
+        vim.keymap.set("n", "<leader>cfp", ":ElixirFromPipe<cr>", { buffer = true, noremap = true })
+        vim.keymap.set("n", "<leader>ctp", ":ElixirToPipe<cr>", { buffer = true, noremap = true })
+        vim.keymap.set("v", "<leader>cem", ":ElixirExpandMacro<cr>", { buffer = true, noremap = true })
+      end,
+      -- this may be required for extended functionalities of the LSP
+      capabilities = capabilities,
+      flags = {
+        debounce_text_changes = 150,
+      },
+      elixirLS = {
+        dialyzerEnabled = false,
+        fetchDeps = false,
+      };
     }
   end
 }
