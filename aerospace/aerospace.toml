@@ -1,0 +1,327 @@
+# Info: This template is expect to work with a Meh key (ctrl-shift-alt pressed together)
+
+# sketchybar modes
+# sketchybar-default = ''
+# sketchybar-selection = ''
+# sketchybar-workspace = ''
+# sketchybar-layout = ''
+
+# Notify Sketchybar about workspace change
+exec-on-workspace-change = [
+  '/bin/bash',
+  '-c',
+  'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
+  'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 hidpi=on',
+]
+
+
+# You can use it to add commands that run after login to macOS user session.
+# 'start-at-login' needs to be 'true' for 'after-login-command' to work
+# Available commands: https://nikitabobko.github.io/AeroSpace/commands
+after-login-command = []
+
+# You can use it to add commands that run after AeroSpace startup.
+# 'after-startup-command' is run after 'after-login-command'
+# Available commands : https://nikitabobko.github.io/AeroSpace/commands
+after-startup-command = [
+  'exec-and-forget sketchybar',
+  'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 hidpi=on',
+]
+
+# Start AeroSpace at login
+start-at-login = true
+
+# Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# See: https://nikitabobko.github.io/AeroSpace/guide#layouts
+# The 'accordion-padding" specifies the size of accordion padding
+# You can set 0 to disable the padding feature
+accordion-padding = 30
+
+# Possible values: tiles|accordion
+default-root-container-layout = 'tiles'
+
+# Possible values: horizontal|vertical|auto
+# 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
+#               tall monitor (anything higher than wide) gets vertical orientation
+default-root-container-orientation = 'auto'
+
+# Mouse follows focus when focused monitor changes
+# Drop it from your config, if you don't like this behavior
+# See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
+# See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
+# Fallback value (if you omit the key): on-focused-monitor-changed = []
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+on-focus-changed = ['move-mouse window-lazy-center']
+
+# You can effectively turn off macOS "Hide application" (cmd-h) feature by toggling this flag
+# Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key
+# Also see: https://nikitabobko.github.io/AeroSpace/goodies#disable-hide-app
+automatically-unhide-macos-hidden-apps = true
+
+# Possible values: (qwerty|dvorak)
+# See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
+[key-mapping]
+preset = 'qwerty'
+
+# [key-mapping.key-notation-to-key-code]
+# meh = 'ctrl-shift-alt'
+
+# Gaps between windows (inner-*) and between monitor edges (outer-*).
+# Possible values:
+# - Constant:     gaps.outer.top = 8
+# - Per monitor:  gaps.outer.top = [{ monitor.main = 16 }, { monitor."some-pattern" = 32 }, 24]
+#                 In this example, 24 is a default value when there is no match.
+#                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
+#                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
+[gaps]
+inner.horizontal = 8
+inner.vertical = 8
+outer.left = 8
+outer.bottom = 4
+outer.top = 38
+outer.right = 8
+
+# 'main' binding mode declaration
+# See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
+# 'main' binding mode must be always presented
+# Fallback value (if you omit the key): mode.main.binding = {}
+[mode.main.binding]
+# See: https://nikitabobko.github.io/AeroSpace/commands#mode
+ctrl-shift-alt-h = [
+  'mode selection',
+  'exec-and-forget sketchybar --bar color=0xffe36a14',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+ctrl-shift-alt-a = [
+  'mode workspace',
+  'exec-and-forget sketchybar --bar color=0xff1ab82d',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+ctrl-shift-alt-e = [
+  'mode layout',
+  'exec-and-forget sketchybar --bar color=0xff2772e8',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+
+# Application launcher
+# Brave
+ctrl-shift-alt-b = '''exec-and-forget osascript -e '
+tell application "1Password"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-l = '''exec-and-forget osascript -e '
+tell application "Brave Browser"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-d = '''exec-and-forget osascript -e '
+tell application "Obsidian"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-w = '''exec-and-forget osascript -e '
+tell application "Alfred"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-z = '''exec-and-forget osascript -e '
+tell application "zoom.us"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-n = '''exec-and-forget osascript -e '
+tell application "Harvest"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-r = '''exec-and-forget osascript -e '
+tell application "Things3"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-t = '''exec-and-forget osascript -e '
+tell application "iTerm"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-s = '''exec-and-forget osascript -e '
+tell application "Slack"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-g = '''exec-and-forget osascript -e '
+tell application "Google Chrome"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-q = '''exec-and-forget osascript -e '
+tell application "WezTerm"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-x = '''exec-and-forget osascript -e '
+tell application "HazeOver"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-m = '''exec-and-forget osascript -e '
+tell application "Mail"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+ctrl-shift-alt-c = '''exec-and-forget osascript -e '
+tell application "Code"
+    activate
+    if result is not {} then set index of item 1 of result to 1
+end tell'
+'''
+
+# All possible modifiers: cmd, alt, ctrl, shift
+# All possible commands: https://nikitabobko.github.io/AeroSpace/commands
+[mode.selection.binding]
+enter = ['layout floating', 'mode main']
+space = [
+  'mode main',
+  'exec-and-forget sketchybar --reload',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+backspace = [
+  'flatten-workspace-tree',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#focus
+h = 'focus --dfs-index 0'
+a = 'focus --dfs-index 1'
+e = 'focus --dfs-index 2'
+i = 'focus --dfs-index 3'
+f = 'focus --dfs-index 4'
+o = 'focus --dfs-index 5'
+u = 'focus --dfs-index 6'
+j = 'focus --dfs-index 7'
+
+ctrl-shift-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
+ctrl-shift-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
+ctrl-shift-alt-e = 'focus --boundaries-action wrap-around-the-workspace up'
+ctrl-shift-alt-i = 'focus --boundaries-action wrap-around-the-workspace right'
+#
+# See: https://nikitabobko.github.io/AeroSpace/commands#move
+alt-h = 'move left'
+alt-a = 'move down'
+alt-e = 'move up'
+alt-i = 'move right'
+
+ctrl-shift-alt-f = ['join-with left']
+ctrl-shift-alt-o = ['join-with down']
+ctrl-shift-alt-u = ['join-with up']
+ctrl-shift-alt-j = ['join-with right']
+
+[mode.workspace.binding]
+enter = ['layout floating', 'mode main']
+space = [
+  'mode main',
+  'exec-and-forget sketchybar --reload',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+backspace = [
+  'flatten-workspace-tree',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+
+h = 'workspace 1'
+a = 'workspace 2'
+e = 'workspace 3'
+i = 'workspace 4'
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
+alt-h = 'move-node-to-workspace 1'
+alt-a = 'move-node-to-workspace 2'
+alt-e = 'move-node-to-workspace 3'
+alt-i = 'move-node-to-workspace 4'
+
+ctrl-shift-alt-h = ['move-node-to-workspace 1', 'workspace 1']
+ctrl-shift-alt-a = ['move-node-to-workspace 2', 'workspace 2']
+ctrl-shift-alt-e = ['move-node-to-workspace 3', 'workspace 3']
+ctrl-shift-alt-i = ['move-node-to-workspace 4', 'workspace 4']
+
+f = 'workspace-back-and-forth'
+
+[mode.layout.binding]
+enter = ['layout floating', 'mode main']
+space = [
+  'mode main',
+  'exec-and-forget sketchybar --reload',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+backspace = [
+  'flatten-workspace-tree',
+] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+
+h = ['layout v_accordion']
+a = ['layout v_tiles']
+e = ['layout h_tiles']
+i = ['layout h_accordion']
+
+f = ['layout floating']
+u = ['fullscreen']
+o = [
+  'reload-config',
+  'exec-and-forget borders',
+  'exec-and-forget sketchybar --reload',
+  'mode main',
+]
+j = ['balance-sizes'] # reset layout
+
+ctrl-shift-alt-h = ['join-with left']
+ctrl-shift-alt-a = ['join-with down']
+ctrl-shift-alt-e = ['join-with up']
+ctrl-shift-alt-i = ['join-with right']
+ctrl-shift-alt-backspace = ['close-all-windows-but-current', 'mode main']
+
+
+alt-h = ['resize smart -120']
+alt-a = ['resize smart -60']
+alt-e = ['resize smart +60']
+alt-i = ['resize smart +120']
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Google Chrome|zoom.us'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'iTerm2|Code'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Wezterm|Brave Browser|Obsidian'
+run = 'move-node-to-workspace 3'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Slack|Mail|Things3'
+run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'HazeOver'
+run = ['layout floating']
