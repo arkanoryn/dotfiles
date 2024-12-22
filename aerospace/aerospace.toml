@@ -1,11 +1,5 @@
 # Info: This template is expect to work with a Meh key (ctrl-shift-alt pressed together)
 
-# sketchybar modes
-# sketchybar-default = ''
-# sketchybar-selection = ''
-# sketchybar-workspace = ''
-# sketchybar-layout = ''
-
 # Notify Sketchybar about workspace change
 exec-on-workspace-change = [
   '/bin/bash',
@@ -13,7 +7,6 @@ exec-on-workspace-change = [
   'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
   'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 hidpi=on',
 ]
-
 
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
@@ -24,7 +17,7 @@ after-login-command = []
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
-  'exec-and-forget sketchybar',
+  # 'exec-and-forget sketchybar',
   'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 hidpi=on',
 ]
 
@@ -81,7 +74,7 @@ inner.horizontal = 8
 inner.vertical = 8
 outer.left = 8
 outer.bottom = 4
-outer.top = 38
+outer.top = 48
 outer.right = 8
 
 # 'main' binding mode declaration
@@ -92,16 +85,16 @@ outer.right = 8
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 ctrl-shift-alt-h = [
   'mode selection',
-  'exec-and-forget sketchybar --bar color=0xffe36a14',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
+]
 ctrl-shift-alt-a = [
   'mode workspace',
-  'exec-and-forget sketchybar --bar color=0xff1ab82d',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
+]
 ctrl-shift-alt-e = [
   'mode layout',
-  'exec-and-forget sketchybar --bar color=0xff2772e8',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=LAYOUT',
+]
 
 # Application launcher
 # Brave
@@ -206,14 +199,16 @@ end tell'
 # All possible modifiers: cmd, alt, ctrl, shift
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 [mode.selection.binding]
-enter = ['layout floating', 'mode main']
+enter = [
+  'layout floating tiling',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+  'mode main',
+]
 space = [
   'mode main',
-  'exec-and-forget sketchybar --reload',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
-backspace = [
-  'flatten-workspace-tree',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+]
+backspace = ['flatten-workspace-tree']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
 h = 'focus --dfs-index 0'
@@ -242,14 +237,16 @@ ctrl-shift-alt-u = ['join-with up']
 ctrl-shift-alt-j = ['join-with right']
 
 [mode.workspace.binding]
-enter = ['layout floating', 'mode main']
+enter = [
+  'layout floating tiling',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+  'mode main',
+]
 space = [
   'mode main',
-  'exec-and-forget sketchybar --reload',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
-backspace = [
-  'flatten-workspace-tree',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+]
+backspace = ['flatten-workspace-tree']
 
 h = 'workspace 1'
 a = 'workspace 2'
@@ -270,26 +267,28 @@ ctrl-shift-alt-i = ['move-node-to-workspace 4', 'workspace 4']
 f = 'workspace-back-and-forth'
 
 [mode.layout.binding]
-enter = ['layout floating', 'mode main']
+enter = [
+  'layout floating tiling',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+  'mode main',
+]
 space = [
   'mode main',
-  'exec-and-forget sketchybar --reload',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
-backspace = [
-  'flatten-workspace-tree',
-] # --set aerospace_mode icon="MOVE"'] # an example working with sketchybar
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+]
+backspace = ['flatten-workspace-tree']
 
 h = ['layout v_accordion']
 a = ['layout v_tiles']
 e = ['layout h_tiles']
 i = ['layout h_accordion']
 
-f = ['layout floating']
+f = ['layout floating tiling']
 u = ['fullscreen']
 o = [
   'reload-config',
   'exec-and-forget borders',
-  'exec-and-forget sketchybar --reload',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
   'mode main',
 ]
 j = ['balance-sizes'] # reset layout
@@ -298,17 +297,17 @@ ctrl-shift-alt-h = ['join-with left']
 ctrl-shift-alt-a = ['join-with down']
 ctrl-shift-alt-e = ['join-with up']
 ctrl-shift-alt-i = ['join-with right']
-ctrl-shift-alt-backspace = ['close-all-windows-but-current', 'mode main']
+ctrl-shift-alt-backspace = [
+  'close-all-windows-but-current',
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+]
 
 
-alt-h = ['resize smart -120']
+alt-h = ['resize smart -160']
 alt-a = ['resize smart -60']
 alt-e = ['resize smart +60']
-alt-i = ['resize smart +120']
-
-[[on-window-detected]]
-if.app-name-regex-substring = 'Google Chrome|zoom.us'
-run = 'move-node-to-workspace 1'
+alt-i = ['resize smart +160']
 
 [[on-window-detected]]
 if.app-name-regex-substring = 'iTerm2|Code'

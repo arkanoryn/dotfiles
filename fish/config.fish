@@ -34,4 +34,3 @@ alias grb "git rebase"
 alias grb "git rebase --continue"
 
 echo "Welcome to Ark Corp!"
-
