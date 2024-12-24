@@ -1,6 +1,6 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export NVIM_APPNAME:lazyvim
+# SETUVAR --export NVIM_APPNAME:lazyvim
 SETUVAR --export STARSHIP_CONFIG:/Users/anynines/\x2econfig/starship/starship\x2etoml
 SETUVAR __fish_initialized:3400
 SETUVAR fish_color_autosuggestion:brblack

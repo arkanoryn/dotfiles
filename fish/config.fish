@@ -8,7 +8,9 @@ set -Ux STARSHIP_CONFIG ~/.config/starship/starship.toml
 starship init fish | source
 
 # NeoVim
-set -Ux NVIM_APPNAME lazyvim
+alias lvi "NVIM_APPNAME=LazyVim nvim"
+alias vi nvim
+# set -Ux NVIM_APPNAME lazyvim
 
 # Git aliases
 alias gss "git status -s"
@@ -26,6 +28,7 @@ alias gcan! "git commit -v -a --no-edit --amend"
 alias gcmsg "git commit -m"
 
 alias gcb "git checkout -b"
+alias gco "git checkout"
 alias gf "git fetch"
 
 alias glg "git log --stat"
