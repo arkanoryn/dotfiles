@@ -1,1 +1,3 @@
 path+=(/usr/local/sbin)
+. "$HOME/.config/cargo/env"
+. "$HOME/.cargo/env"
