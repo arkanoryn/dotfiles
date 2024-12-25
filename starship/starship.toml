@@ -8,8 +8,12 @@ palette = "catppuccin_mocha"
 command_timeout = 1000
 
 [character]
-vicmd_symbol = "[N] >>>"
+vimcmd_symbol = '[](bold italic blue)'
+vimcmd_replace_one_symbol = '[ ](italic rosewater)'
+vimcmd_replace_symbol = '[ ](bold italic rosewater)'
+vimcmd_visual_symbol = '[ 󰫙](bold italic mauve)'
 success_symbol = '[➜](bold green)'
+error_symbol = '[✗](bold red) '
 
 [directory]
 truncation_length = 3
