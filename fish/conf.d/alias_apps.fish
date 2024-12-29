@@ -7,11 +7,14 @@ alias lt "ls --tree"
 alias d cd
 alias , cd
 
-alias ,. "cd ~/.dotfiles/ && yh"
+alias ,. "cd ~/.dotfiles/"
+alias ,,. "cd ~/.dotfiles/ && yh"
 alias ,keyboards "cd ~/projects/qmk_keyboards/"
+alias ,,keyboards "cd ~/projects/qmk_keyboards/ && yh"
 alias ,qmk "cd ~/projects/qmk_root/"
 alias ,anynines "cd ~/projects/anynines/"
 alias ,move "cd ~/projects/anynines/move/"
+alias ,,move "cd ~/projects/anynines/move/ && yh"
 
 # NeoVim
 alias y "NVIM_APPNAME=LazyVim nvim"
