@@ -21,7 +21,7 @@ tags:
 
 ### Prefix
 
-Most of the Shortcuts are dependant on what tmux calls a `prefix`. From my understanding, it is the equivalent of the `leader` key in [[Vi]]
+Most of the Shortcuts are dependant on what tmux calls a `prefix`. From my understanding, it is the equivalent of the `leader` key in [[NeoVim]]
 In order for tmux to be consistent with [[Aerospace]] I wanted to use the [[Meh]] key I have on my custom keyboards. Unfortunately I seem to be unable to match `C-M-S-k`. So for now I'll stick with the default.
 
 > [!Info]+ Modifiers

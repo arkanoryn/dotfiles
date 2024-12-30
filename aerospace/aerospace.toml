@@ -59,9 +59,6 @@ automatically-unhide-macos-hidden-apps = true
 [key-mapping]
 preset = 'qwerty'
 
-# [key-mapping.key-notation-to-key-code]
-# meh = 'ctrl-shift-alt'
-
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
 # - Constant:     gaps.outer.top = 8
@@ -83,15 +80,15 @@ outer.right = 8
 # Fallback value (if you omit the key): mode.main.binding = {}
 [mode.main.binding]
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
-ctrl-shift-alt-h = [
+ctrl-shift-alt-p = [
   'mode selection',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
 ]
-ctrl-shift-alt-a = [
+ctrl-shift-alt-1 = [
   'mode workspace',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
 ]
-ctrl-shift-alt-e = [
+ctrl-shift-alt-comma = [
   'mode layout',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=LAYOUT',
 ]
@@ -196,9 +193,34 @@ tell application "Code"
 end tell'
 '''
 
+alt-h = 'focus --dfs-index 0'
+alt-a = 'focus --dfs-index 1'
+alt-e = 'focus --dfs-index 2'
+alt-i = 'focus --dfs-index 3'
+ctrl-shift-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
+ctrl-shift-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
+ctrl-shift-alt-e = 'focus --boundaries-action wrap-around-the-workspace up'
+ctrl-shift-alt-i = 'focus --boundaries-action wrap-around-the-workspace right'
+ctrl-shift-alt-f = 'workspace 1'
+ctrl-shift-alt-o = 'workspace 2'
+ctrl-shift-alt-u = 'workspace 3'
+ctrl-shift-alt-j = 'workspace 4'
+
 # All possible modifiers: cmd, alt, ctrl, shift
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 [mode.selection.binding]
+ctrl-shift-alt-p = [
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+]
+ctrl-shift-alt-1 = [
+  'mode workspace',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
+]
+ctrl-shift-alt-comma = [
+  'mode layout',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=LAYOUT',
+]
 enter = [
   'layout floating tiling',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
@@ -224,19 +246,31 @@ ctrl-shift-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
 ctrl-shift-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
 ctrl-shift-alt-e = 'focus --boundaries-action wrap-around-the-workspace up'
 ctrl-shift-alt-i = 'focus --boundaries-action wrap-around-the-workspace right'
-#
-# See: https://nikitabobko.github.io/AeroSpace/commands#move
-alt-h = 'move left'
-alt-a = 'move down'
-alt-e = 'move up'
-alt-i = 'move right'
 
 ctrl-shift-alt-f = ['join-with left']
 ctrl-shift-alt-o = ['join-with down']
 ctrl-shift-alt-u = ['join-with up']
 ctrl-shift-alt-j = ['join-with right']
 
+# See: https://nikitabobko.github.io/AeroSpace/commands#move
+alt-h = 'move left'
+alt-a = 'move down'
+alt-e = 'move up'
+alt-i = 'move right'
+
 [mode.workspace.binding]
+ctrl-shift-alt-p = [
+  'mode selection',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
+]
+ctrl-shift-alt-1 = [
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+]
+ctrl-shift-alt-comma = [
+  'mode layout',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=LAYOUT',
+]
 enter = [
   'layout floating tiling',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
@@ -267,6 +301,18 @@ ctrl-shift-alt-i = ['move-node-to-workspace 4', 'workspace 4']
 f = 'workspace-back-and-forth'
 
 [mode.layout.binding]
+ctrl-shift-alt-p = [
+  'mode selection',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
+]
+ctrl-shift-alt-1 = [
+  'mode workspace',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
+]
+ctrl-shift-alt-comma = [
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+]
 enter = [
   'layout floating tiling',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
@@ -303,11 +349,10 @@ ctrl-shift-alt-backspace = [
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
 ]
 
-
-alt-h = ['resize smart -160']
-alt-a = ['resize smart -60']
-alt-e = ['resize smart +60']
-alt-i = ['resize smart +160']
+ctrl-shift-alt-f = ['resize smart -160']
+ctrl-shift-alt-o = ['resize smart -60']
+ctrl-shift-alt-u = ['resize smart +60']
+ctrl-shift-alt-j = ['resize smart +160']
 
 [[on-window-detected]]
 if.app-name-regex-substring = 'iTerm2|Code'

@@ -1,3 +1,12 @@
+---
+tags:
+  - note
+  - tmux
+  - theme
+  - catppuccin
+  - glossary
+---
+
 Most of my tools are using the [Catppuccin](https://catppuccin.com/). Tmux is not going to make an exception here as Catppuccin offers a theme for tmux as well.
 
 At this point in time, my config is only using the default configuration offered by Catppuccin.
