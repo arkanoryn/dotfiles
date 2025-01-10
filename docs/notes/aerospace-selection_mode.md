@@ -11,7 +11,6 @@ The selection mode role is to work around the current window and move the select
 
 ![[keyboard-meh]]
 
-
 | **mod** | **key**     | **action**                                                                                |
 | ------- | ----------- | ----------------------------------------------------------------------------------------- |
 | `Ø`     | `'`         | Ø                                                                                         |

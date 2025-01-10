@@ -1,0 +1,246 @@
+layout:
+  { qmk_keyboard: splitkb/aurora/sweep/rev1, layout_name: LAYOUT_split_3x5_2 }
+layers:
+  'Aerospace | Main Mode':
+    - [
+        { t: '$$tabler:lock-password$$', h: '', s: '' },
+        { t: '$$tabler:brand-firefox$$', h: 'Brave', s: '' },
+        { t: '$$tabler:brand-notion$$', h: '', s: '' },
+        { t: '$$tabler:zoom-code$$', h: '', s: '' },
+        { t: '$$tabler:video$$', h: '', s: '' },
+        '',
+        { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '' },
+        { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '' },
+        { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '' },
+        { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '' },
+      ]
+    - [{ t: '$$tabler:alarm-average$$', h: 'Harvest', s: '' }, { t: '$$tabler:checklist$$', h: 'Things3', s: '' }, { t: '$$tabler:terminal-2$$', h: '', s: '' }, { t: '$$tabler:brand-slack$$', h: '', s: '' }, { t: '$$tabler:brand-chrome$$', h: '', s: '' }, '', { t: '$$tabler:select$$', s: 'Select', h: 'left' }, { t: '$$tabler:select$$', s: 'Select', h: 'down' }, { t: '$$tabler:select$$', s: 'Select', h: 'up' }, { t: '$$tabler:select$$', s: 'Select', h: 'right' }]
+    - [
+        { t: '$$tabler:terminal-2$$', h: 'WezTerm', s: '' },
+        { t: '$$tabler:eye-bolt$$', h: 'HazeOver', s: '' },
+        { t: '$$tabler:mail$$', h: '', s: '' },
+        { t: '$$tabler:brand-vscode$$', h: '', s: '' },
+        '',
+        '',
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'selection' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'workspace' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'layout' },
+        '',
+      ]
+    - [{t: '$$tabler:sparkles$$', h: '$$tabler:space$$', s: '', type: 'held' }, '', '', '']
+  'Aerospace | Selection Mode | No Mods':
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: '$$tabler:select$$', s: 'Select', h: '5' },
+        { t: '$$tabler:select$$', s: 'Select', h: '6' },
+        { t: '$$tabler:select$$', s: 'Select', h: '7' },
+        { t: '$$tabler:select$$', s: 'Select', h: '8' },
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:select$$', s: 'Select', h: '1' }, { t: '$$tabler:select$$', s: 'Select', h: '2' }, { t: '$$tabler:select$$', s: 'Select', h: '3' }, { t: '$$tabler:select$$', s: 'Select', h: '4' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      ]
+    - [{ t: '$$tabler:box-model$$', s: 'Change Mode', h: 'main' }, {t: '$$tabler:topology-star-3$$', h: '', s: ''}, {t: '$$tabler:restore$$', s: '', h: 'flatten workspace'}, {t: '$$tabler:transfer$$', h: 'tiling / floating', s: ''}]
+  'Aerospace | Selection Mode | Meh Mods':
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:select$$', s: 'Select', h: 'left' }, { t: '$$tabler:select$$', s: 'Select', h: 'down' }, { t: '$$tabler:select$$', s: 'Select', h: 'up' }, { t: '$$tabler:select$$', s: 'Select', h: 'right' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'main' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'workspace' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'layout' },
+        '',
+      ]
+    - [{t: '$$tabler:sparkles$$', h: '$$tabler:space$$', s: '', type: 'held' }, '', '', '']
+  'Aerospace | Selection Mode | ALT Mod':
+    - [
+        '',
+        '',
+        { t: '$$phosphor:bold/option$$', h: 'alt', s: '', type: 'held' },
+        '',
+        '',
+        '',
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:arrow-bar-to-right$$', s: 'Move Win.', h: 'left' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Move Win.', h: 'down' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Move Win.', h: 'up' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Move Win.', h: 'right' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      ]
+    - ['', '', '', '']
+  'Aerospace | Workspace Mode | No Mods':
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: $$tabler:brand-asana$$, s: 'Swap Space', h: 'back-forth' },
+        '',
+        '',
+        '',
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '1' }, { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '2' }, { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '3' }, { t: '$$tabler:brand-asana$$', s: 'Go to Space', h: '4' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      ]
+    - [{ t: '$$tabler:box-model$$', s: 'Change Mode', h: 'main' }, {t: '$$tabler:topology-star-3$$', h: '', s: ''}, {t: '$$tabler:restore$$', s: '', h: 'flatten workspace'}, {t: '$$tabler:transfer$$', h: 'tiling / floating', s: ''}]
+  'Aerospace | Workspace Mode | Meh Mods':
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+        { t: '$$tabler:arrow-merge$$', s: 'Join With', h: '' },
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: 'and follow' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: 'and follow' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: 'and follow' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: 'and follow' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'main' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'workspace' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'layout' },
+        '',
+      ]
+    - [{t: '$$tabler:sparkles$$', h: '$$tabler:space$$', s: '', type: 'held' }, '', '', '']
+  'Aerospace | Workspace Mode | ALT Mod':
+    - [
+        '',
+        '',
+        { t: '$$phosphor:bold/option$$', h: 'alt', s: '', type: 'held' },
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: '' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: '' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: '' }, { t: '$$tabler:arrow-bar-to-right$$', s: 'Win to Space', h: '' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      ]
+    - ['', '', '', '']
+  'Aerospace | Layout Mode | No Mods':
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        {t: '$$tabler:transfer$$', h: 'tiling / floating', s: ''},
+        { t: $$tabler:restore$$, s: 'reload config' },
+        '',
+        { t: $$tabler:scale$$, s: 'Balance Win' },
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:layout$$', s: 'Layout', h: 'acc. vert.' }, { t: '$$tabler:layout$$', s: 'Layout', h: 'til. vert.' }, { t: '$$tabler:layout$$', s: 'Layout', h: 'til. horz.' }, { t: '$$tabler:layout$$', s: 'Layout', h: 'acc. horz.' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      ]
+    - [{ t: '$$tabler:box-model$$', s: 'Change Mode', h: 'main' }, {t: '$$tabler:topology-star-3$$', h: '', s: ''}, {t: '$$tabler:restore$$', s: '', h: 'flatten workspace'}, {t: '$$tabler:transfer$$', h: 'tiling / floating', s: ''}]
+  'Aerospace | Layout Mode | Meh Mods':
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: '$$tabler:window-minimize$$', s: 'Downsize', h: '' },
+        { t: '$$tabler:window-minimize$$', s: 'Downsize', h: '' },
+        { t: '$$tabler:window-maximize$$', s: 'Upsize', h: '' },
+        { t: '$$tabler:window-maximize$$', s: 'Upsize', h: '' },
+      ]
+    - ['', '', '', '', '', '', { t: '$$tabler:arrow-merge$$', s: 'Join With', h: 'left' }, { t: '$$tabler:arrow-merge$$', s: 'Join With', h: 'down' }, { t: '$$tabler:arrow-merge$$', s: 'Join With', h: 'up' }, { t: '$$tabler:arrow-merge$$', s: 'Join With', h: 'right' }]
+    - [
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'main' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'workspace' },
+        { t: '$$tabler:box-model$$', s: 'Change Mode', h: 'layout' },
+        '',
+      ]
+    - [{t: '$$tabler:sparkles$$', h: '$$tabler:space$$', s: '', type: 'held' }, '', { t: $$tabler:circle-dashed-x$$, s: 'Close all win', h: 'but curr.' }, '']

@@ -42,6 +42,14 @@ In order for tmux to be consistent with [[Aerospace]] I wanted to use the [[Meh]
 | `tmux rename-session <new session name>` |  | rename the session to <session name> |
 | `tmux kill-session -t <session name>` |  | kill the session <session name> |
 
+Some of the configurations and shortcuts the tools I am using create are documented under
+the `/docs` folder.
+While all files are simple markdown ones, the folder is an
+[Obsidian](https://obsidian.md/) folder. You might want to open it with that
+application instead of a regular app, as it is mostly built as atomic notes with
+all notes being embedded in the map of contents.
+
+
 #### Keyboard Shortcuts
 
 |  Command          | Description                                                                                                       |

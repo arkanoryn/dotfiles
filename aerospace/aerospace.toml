@@ -258,6 +258,11 @@ alt-a = 'move down'
 alt-e = 'move up'
 alt-i = 'move right'
 
+alt-f = ['join-with left']
+alt-o = ['join-with down']
+alt-u = ['join-with up']
+alt-j = ['join-with right']
+
 [mode.workspace.binding]
 ctrl-shift-alt-p = [
   'mode selection',
@@ -297,6 +302,11 @@ ctrl-shift-alt-h = ['move-node-to-workspace 1', 'workspace 1']
 ctrl-shift-alt-a = ['move-node-to-workspace 2', 'workspace 2']
 ctrl-shift-alt-e = ['move-node-to-workspace 3', 'workspace 3']
 ctrl-shift-alt-i = ['move-node-to-workspace 4', 'workspace 4']
+
+ctrl-shift-alt-f = ['join-with left']
+ctrl-shift-alt-o = ['join-with down']
+ctrl-shift-alt-u = ['join-with up']
+ctrl-shift-alt-j = ['join-with right']
 
 f = 'workspace-back-and-forth'
 

@@ -48,8 +48,8 @@ stow .
 
 ## Documentation
 
-Some of the configurations and shortcuts that they create are documented under
-the `/docs` folder.
+Some of the configurations and shortcuts the tools I am using create are
+documented under the `/docs` folder.
 While all files are simple markdown ones, the folder is an
 [Obsidian](https://obsidian.md/) folder. You might want to open it with that
 application instead of a regular app, as it is mostly built as atomic notes with
