@@ -1,12 +1,8 @@
 switch (uname)
-    case Darwin # macOS
-        fish_add_path /opt/homebrew/bin
-end
-
-switch (uname)
     case Linux
         set -g fish_greeting "[Linux] Welcome to ArkCorp's $hostname!"
     case Darwin
+        fish_add_path /opt/homebrew/bin
         set -g fish_greeting "[MacOS] Welcome to ArkCorp's $hostname!"
     case '*'
         set -g fish_greeting "[Unknown] $hostname is running an un-parametered fish.\nCheckout ~/.config/fish/config.fish"
@@ -22,3 +18,6 @@ function starship_transient_rprompt_func
 end
 starship init fish | source
 enable_transience
+
+# Zoxide initialization
+zoxide init --cmd cd fish | source
