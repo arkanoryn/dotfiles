@@ -94,7 +94,10 @@ ctrl-shift-alt-comma = [
 ]
 
 # Application launcher
-# Brave
+# If the application is not yet open, we want to open it. Otherwise, we want
+# to select it. If there are multiple windows opened, it is not working as
+# well as I'd like, but most of the time it's working as expected because
+# I rarely have the same app in different workspaces.
 ctrl-shift-alt-b = '''exec-and-forget osascript -e '
 tell application "1Password"
     activate

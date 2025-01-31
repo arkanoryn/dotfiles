@@ -8,18 +8,27 @@
 brew install stow # to manage all the configuration folders
 
 # terminal packages
-brew install brew install --cask wezterm
-brew install fish
-brew install starship
+brew install brew install --cask wezterm \
+  && brew install fish \
+  && brew install starship \
+  && brew install eza \
+  && brew install zoxide \
+  && brew install bat \
+  && brew install fzf \
 
 # mac windows management packages
 brew install --cask nikitabobko/tap/aerospace
-brew install lua && brew tap FelixKratz/formulae && brew install sketchybar
-brew install borders
+brew install lua \
+  && brew tap FelixKratz/formulae \
+  && brew install sketchybar \
+  && brew install borders
 
 # LazyVim Dependencies
-brew install ripgrep && brew install fd && brew install fzf
-brew install neovim
+brew install ripgrep 
+  && brew install fd \
+  # fzf might be skipped if already installed with the terminal packages
+  && brew install fzf \ 
+  && brew install neovim
 ```
 
 * [Stow](https://www.gnu.org/software/stow/manual/stow.html): a symlink farm manager

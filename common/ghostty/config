@@ -1,5 +1,8 @@
 theme = catppuccin-mocha
 
-command = /usr/bin/fish --login --interactive
+shell-integration = fish
 
 background-opacity = 0.9
+
+font-family = "FiraCode Nerd Font Mono Ret"
+font-size = 16
