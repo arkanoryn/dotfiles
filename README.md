@@ -1,4 +1,4 @@
-# Getting Started
+# Getting Started [MacOS]
 
 ## Pre-requisites
 
@@ -49,10 +49,18 @@ Install a font from [nerdfonts.com/font-downloads](nerdfonts.com/font-downloads)
 
 ## Installation / Setup
 
-From the root of this repository, run the following command:
+Packages have been spread between `MacOS` specific packages and settings and common ones.
+You can decide to link all of them to your own `.config` folder, or only some of them.
+
+To do so, `cd` into `macOS` and run the command below. Do the same for `common`.
 
 ```sh
 stow .
+```
+If you want to only link _some_ packages, `cd` into `common` or `macOS` and run the command:
+
+```sh
+stow <folder>
 ```
 
 ## Documentation
@@ -66,7 +74,9 @@ all notes being embedded in the map of contents.
 
 ---
 
-# ArchLinux
+# Getting Started [ArchLinux]
+
+Before running these dotfiles, you should ensure that the following packages have been installed.
 
 ```sh
 yay -S libva-nvidia-driver \
@@ -98,10 +108,10 @@ yay -S libva-nvidia-driver \
 
 ### .dotfiles
 
-- [ ] Fix fish to be usable in both archlinux and macOS
-- [ ] eza
-- [ ] zoxide
-- [ ] bat
+- [x] Fix fish to be usable in both archlinux and macOS
+- [x] eza
+- [x] zoxide
+- [x] bat
 
 ### Hyprland
 
