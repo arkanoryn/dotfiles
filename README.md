@@ -135,11 +135,16 @@ imagemagick
 
 ### Other apps
 - [ ] login
-- [ ] wallpapers
-- [ ] waybar
+- [x] wallpapers
+- [x] waybar
 - [ ] swaync
 - [ ] hyprshot
 - [ ] hyprlock
 - [ ] hypridle
 - [ ] hyprpaper
+- [ ] swwww
 - [ ] yazi
+
+### Waybar
+
+A lot of work to do on the waybar,but it's a good starting point for now.
