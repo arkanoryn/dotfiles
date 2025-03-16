@@ -79,8 +79,8 @@ all notes being embedded in the map of contents.
 Before running these dotfiles, you should ensure that the following packages have been installed.
 
 ```sh
-yay -S libva-nvidia-driver \
-    nvidia-settings \
+yay -S libva-nvidia-driver \ #if you run an nvidia Graphic Card
+    nvidia-settings \ # same as above
     ripgrep \
     fd \
     fzf \
@@ -97,13 +97,29 @@ yay -S libva-nvidia-driver \
     stow \
     waybar \
     ttf-font-awesome \
-    yazi \
     swaync \
     pamixer \
     pavucontrol \
     tree \
     man-db
 ```
+
+> [!info]
+> _yazi requires the following packages to run as expected._
+
+```sh
+yay -S yazi \
+ffmpeg \
+7zip \
+jq \
+poppler \
+fd \
+ripgrep \
+fzf \
+zoxide \
+imagemagick
+```
+
 ## Todos
 
 ### .dotfiles
