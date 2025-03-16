@@ -54,3 +54,57 @@ While all files are simple markdown ones, the folder is an
 [Obsidian](https://obsidian.md/) folder. You might want to open it with that
 application instead of a regular app, as it is mostly built as atomic notes with
 all notes being embedded in the map of contents.
+
+---
+
+# ArchLinux
+
+```sh
+yay -S libva-nvidia-driver \
+    nvidia-settings \
+    ripgrep \
+    fd \
+    fzf \
+    zen-browser-bin \
+    neovim \
+    fish \
+    starship\
+    ghostty \
+    less \
+    tree \
+    eza \
+    zoxide \
+    bat \
+    stow \
+    waybar \
+    ttf-font-awesome \
+    yazi \
+    swaync \
+    pamixer \
+    pavucontrol \
+    tree \
+    man-db
+```
+## Todos
+
+### .dotfiles
+
+- [ ] Fix fish to be usable in both archlinux and macOS
+- [ ] eza
+- [ ] zoxide
+- [ ] bat
+
+### Hyprland
+
+### Bindings
+
+### Other apps
+- [ ] login
+- [ ] wallpapers
+- [ ] waybar
+- [ ] swaync
+- [ ] hyprshot
+- [ ] hyprlock
+- [ ] hypridle
+- [ ] hyprpaper
+- [ ] yazi

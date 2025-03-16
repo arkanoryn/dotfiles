@@ -1,0 +1,5 @@
+theme = catppuccin-mocha
+
+command = /usr/bin/fish --login --interactive
+
+background-opacity = 0.9

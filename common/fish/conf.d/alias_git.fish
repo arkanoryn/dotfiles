@@ -23,7 +23,6 @@ abbr -a ggl git pull (__git.current_branch)
 abbr -a ggp git push origin (__git.current_branch)
 abbr -a ggf git push --force origin (__git.current_branch)
 
-
 abbr -a gd git diff
 abbr -a gds git diff --staged
 
