@@ -4,3 +4,7 @@ oh-my-zsh/
 *.log
 
 __pycache__/
+
+.zsh_history
+
+common/fish/fish_variables

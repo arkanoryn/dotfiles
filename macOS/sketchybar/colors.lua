@@ -32,7 +32,7 @@ local catppuccin = {
 	},
 }
 
-local primary = catppuccin.teal
+local primary = catppuccin.yellow
 local success = catppuccin.green
 local warning = catppuccin.yellow
 local error = catppuccin.maroon
@@ -40,6 +40,16 @@ local error = catppuccin.maroon
 local text = {
 	default = catppuccin.text.default,
 	inactive = catppuccin.text.overlay0,
+}
+
+local front_app = {
+	icon = primary,
+	text = text.inactive,
+}
+
+local network = {
+	upload = success,
+	download = error,
 }
 
 local background = {
@@ -106,11 +116,13 @@ local volume = {
 }
 
 return {
-	white = 0xffcad3f5,
-	transparent = 0x00000000,
+	aerospace = aerospace,
 	apple = apple,
 	bar = bar,
+	front_app = front_app,
+	network = network,
 	popup = popup,
-	aerospace = aerospace,
+	transparent = 0x00000000,
 	volume = volume,
+	white = 0xffcad3f5,
 }

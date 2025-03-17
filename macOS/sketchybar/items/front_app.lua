@@ -1,26 +1,28 @@
+local colors = require("colors")
+local app_icons = require("helpers.app_icons")
+
 local front_app = sbar.add("item", {
-  icon = {
-    drawing = false
-  },
-  label = {
-    font = {
-      style = "Black",
-      size = 12.0,
-    }
-  }
+	icon = {
+		drawing = true,
+		color = colors.front_app.icon,
+		font = "sketchybar-app-font:Regular:14.0",
+	},
+	label = {
+		color = colors.front_app.text,
+		font = {
+			style = "Black",
+			size = 18.0,
+		},
+	},
 })
 
 front_app:subscribe("front_app_switched", function(env)
-  front_app:set({
-    label = {
-      string = env.INFO
-    }
-  })
-
-  -- Or equivalently:
-  -- sbar.set(env.NAME, {
-  --   label = {
-  --     string = env.INFO
-  --   }
-  -- })
+	front_app:set({
+		icon = {
+			string = app_icons[env.INFO],
+		},
+		label = {
+			string = env.INFO,
+		},
+	})
 end)
