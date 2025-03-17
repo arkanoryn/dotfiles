@@ -61,6 +61,7 @@ else
     alias y nvim
     alias yh "nvim ."
 end
+
 alias vi nvim
 alias s nvim
 alias st "nvim ."
