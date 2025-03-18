@@ -41,7 +41,7 @@ abbr mkdir "mkdir -p"
 
 switch (uname)
     #case Linux
-    case MacOS
+    case Darwin
         alias ,keyboards "cd ~/projects/qmk_keyboards/"
         alias ,,keyboards "cd ~/projects/qmk_keyboards/ && yh"
         alias ,qmk "cd ~/projects/qmk_root/"
@@ -61,7 +61,7 @@ else
     alias y nvim
     alias yh "nvim ."
 end
-alis vi nvim
+alias vi nvim
 alias s nvim
 alias st "nvim ."
 
