@@ -1,6 +1,7 @@
 switch (uname)
     case Linux
         set EDITOR nvim
+        set DOTFILES "~/.dotfiles"
     case Darwin
         set EDITOR "NVIM_APPNAME=LazyVim nvim"
         set DOTFILES "~/.dotfiles"
@@ -48,32 +49,29 @@ end
 abbr mkdir "mkdir -p"
 
 # NeoVim
-if path is ~/.config/lazyvim
-    alias y $EDITOR
-    alias yh "$EDITOR ."
-else
-    alias y nvim
-    alias yh "nvim ."
-end
-
+alias y $EDITOR
+alias yh "$EDITOR ."
 alias vi $EDITOR
-alias s nvim
+alias s nvim # useful if there is a distinction between LazyVim and vanilla nvim
 alias st "nvim ."
 
 switch (uname)
-    #case Linux
+    case Linux
+        alias ,. "cd ~/.dotfiles"
+        alias ,,. "cd ~/.dotfiles/ && $EDITOR"
     case Darwin
         alias ,keyboards "cd ~/projects/qmk_keyboards/"
-        alias ,,keyboards "cd ~/projects/qmk_keyboards/ && yh"
+        alias ,,keyboards "cd ~/projects/qmk_keyboards/ && $EDITOR ."
         alias ,qmk "cd ~/projects/qmk_root/"
         alias ,anynines "cd ~/projects/anynines/"
         alias ,move "cd ~/projects/anynines/move/"
-        alias ,,move "cd ~/projects/anynines/move/ && yh"
+        alias ,,move "cd ~/projects/anynines/move/ && $EDITOR ."
         alias ,. "cd ~/.dotfiles"
-        alias ,,. "cd ~/.dotfiles/ && yh"
+        alias ,,. "cd ~/.dotfiles/ && $EDITOR ."
 end
 
 alias ,config "cd ~/.config"
+alias ,,config "cd ~/.config && $EDITOR ."
 alias econfig "$EDITOR ~/.config"
 alias edotfiles "$EDITOR $DOTFILES"
 
