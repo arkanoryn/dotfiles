@@ -1,3 +1,11 @@
+switch (uname)
+    case Linux
+        set EDITOR nvim
+    case Darwin
+        set EDITOR "NVIM_APPNAME=LazyVim nvim"
+        set DOTFILES "~/.dotfiles"
+end
+
 alias reload='exec fish'
 
 if type -q eza
@@ -39,6 +47,19 @@ end
 
 abbr mkdir "mkdir -p"
 
+# NeoVim
+if path is ~/.config/lazyvim
+    alias y $EDITOR
+    alias yh "$EDITOR ."
+else
+    alias y nvim
+    alias yh "nvim ."
+end
+
+alias vi $EDITOR
+alias s nvim
+alias st "nvim ."
+
 switch (uname)
     #case Linux
     case Darwin
@@ -48,23 +69,13 @@ switch (uname)
         alias ,anynines "cd ~/projects/anynines/"
         alias ,move "cd ~/projects/anynines/move/"
         alias ,,move "cd ~/projects/anynines/move/ && yh"
-    case '*'
         alias ,. "cd ~/.dotfiles"
         alias ,,. "cd ~/.dotfiles/ && yh"
 end
 
-# NeoVim
-if path is ~/.config/lazyvim
-    alias y "NVIM_APPNAME=LazyVim nvim"
-    alias yh "NVIM_APPNAME=LazyVim nvim ."
-else
-    alias y nvim
-    alias yh "nvim ."
-end
-
-alias vi nvim
-alias s nvim
-alias st "nvim ."
+alias ,config "cd ~/.config"
+alias econfig "$EDITOR ~/.config"
+alias edotfiles "$EDITOR $DOTFILES"
 
 ## qmk compiles
 alias sweep-full "cd users/v1/scripts/generator/ && python3 main.py && cd ~/projects/qmk_keyboards && qmk flash -kb splitkb/aurora/sweep/rev1 -k"
