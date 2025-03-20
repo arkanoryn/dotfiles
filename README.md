@@ -148,3 +148,9 @@ imagemagick
 ### Waybar
 
 A lot of work to do on the waybar,but it's a good starting point for now.
+
+### Audio Control
+
+- [ ] use pipewire (and remove any un-necessary other app)
+- [ ] make the controller floating under the area (by default) instead of opening another tiled window
+
