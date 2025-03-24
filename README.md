@@ -81,6 +81,7 @@ Before running these dotfiles, you should ensure that the following packages hav
 ```sh
 yay -S libva-nvidia-driver \ #if you run an nvidia Graphic Card
     nvidia-settings \ # same as above
+    qt5-wayland qt6-wayland  qt5ct nwg-look kvantum \ # for graphical interfaces
     ripgrep \
     fd \
     fzf \
@@ -97,11 +98,12 @@ yay -S libva-nvidia-driver \ #if you run an nvidia Graphic Card
     stow \
     waybar \
     ttf-font-awesome \
-    swaync \
+    libnotify swaync \
     pamixer \
     pavucontrol \
     tree \
-    man-db
+    man-db \
+    sddm-theme-sugar-candy
 ```
 
 > [!info]
@@ -119,6 +121,9 @@ fzf \
 zoxide \
 imagemagick
 ```
+> [!WARNING]
+> Read the [Nvidia guide](https://wiki.hyprland.org/Nvidia/) as there are
+> special rules/configurations that can not be done from just the .dotfiles.
 
 ## Todos
 
