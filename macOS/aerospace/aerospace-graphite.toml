@@ -80,15 +80,15 @@ outer.right = 8
 # Fallback value (if you omit the key): mode.main.binding = {}
 [mode.main.binding]
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
-ctrl-shift-alt-m = [
+ctrl-shift-alt-p = [
   'mode selection',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
 ]
-ctrl-shift-alt-comma = [
+ctrl-shift-alt-1 = [
   'mode workspace',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-comma = [
   'mode layout',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=LAYOUT',
 ]
@@ -98,63 +98,63 @@ ctrl-shift-alt-period = [
 # to select it. If there are multiple windows opened, it is not working as
 # well as I'd like, but most of the time it's working as expected because
 # I rarely have the same app in different workspaces.
-ctrl-shift-alt-q = '''exec-and-forget osascript -e '
+ctrl-shift-alt-b = '''exec-and-forget osascript -e '
 tell application "1Password"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-w = '''exec-and-forget osascript -e '
+ctrl-shift-alt-l = '''exec-and-forget osascript -e '
 tell application "Brave Browser"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-e = '''exec-and-forget osascript -e '
+ctrl-shift-alt-d = '''exec-and-forget osascript -e '
 tell application "Obsidian"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-r = '''exec-and-forget osascript -e '
+ctrl-shift-alt-w = '''exec-and-forget osascript -e '
 tell application "Alfred"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-t = '''exec-and-forget osascript -e '
+ctrl-shift-alt-z = '''exec-and-forget osascript -e '
 tell application "zoom.us"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-a = '''exec-and-forget osascript -e '
+ctrl-shift-alt-n = '''exec-and-forget osascript -e '
 tell application "Harvest"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-s = '''exec-and-forget osascript -e '
+ctrl-shift-alt-r = '''exec-and-forget osascript -e '
 tell application "Things3"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-d = '''exec-and-forget osascript -e '
+ctrl-shift-alt-t = '''exec-and-forget osascript -e '
 tell application "iTerm"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-f = '''exec-and-forget osascript -e '
+ctrl-shift-alt-s = '''exec-and-forget osascript -e '
 tell application "Slack"
     activate
     if result is not {} then set index of item 1 of result to 1
@@ -168,7 +168,7 @@ tell application "Google Chrome"
 end tell'
 '''
 
-ctrl-shift-alt-z = '''exec-and-forget osascript -e '
+ctrl-shift-alt-q = '''exec-and-forget osascript -e '
 tell application "WezTerm"
     activate
     if result is not {} then set index of item 1 of result to 1
@@ -182,52 +182,45 @@ tell application "HazeOver"
 end tell'
 '''
 
-ctrl-shift-alt-c = '''exec-and-forget osascript -e '
+ctrl-shift-alt-m = '''exec-and-forget osascript -e '
 tell application "Mail"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-v = '''exec-and-forget osascript -e '
+ctrl-shift-alt-c = '''exec-and-forget osascript -e '
 tell application "Code"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
 '''
 
-ctrl-shift-alt-b = '''exec-and-forget osascript -e '
-tell application "Ghostty"
-    activate
-    if result is not {} then set index of item 1 of result to 1
-end tell'
-'''
-
-alt-j = 'focus --dfs-index 0'
-alt-k = 'focus --dfs-index 1'
-alt-l = 'focus --dfs-index 2'
-alt-semicolon = 'focus --dfs-index 3'
-ctrl-shift-alt-j = 'focus --boundaries-action wrap-around-the-workspace left'
-ctrl-shift-alt-k = 'focus --boundaries-action wrap-around-the-workspace down'
-ctrl-shift-alt-l = 'focus --boundaries-action wrap-around-the-workspace up'
-ctrl-shift-alt-semicolon = 'focus --boundaries-action wrap-around-the-workspace right'
-ctrl-shift-alt-u = 'workspace 1'
-ctrl-shift-alt-i = 'workspace 2'
-ctrl-shift-alt-o = 'workspace 3'
-ctrl-shift-alt-p = 'workspace 4'
+alt-h = 'focus --dfs-index 0'
+alt-a = 'focus --dfs-index 1'
+alt-e = 'focus --dfs-index 2'
+alt-i = 'focus --dfs-index 3'
+ctrl-shift-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
+ctrl-shift-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
+ctrl-shift-alt-e = 'focus --boundaries-action wrap-around-the-workspace up'
+ctrl-shift-alt-i = 'focus --boundaries-action wrap-around-the-workspace right'
+ctrl-shift-alt-f = 'workspace 1'
+ctrl-shift-alt-o = 'workspace 2'
+ctrl-shift-alt-u = 'workspace 3'
+ctrl-shift-alt-j = 'workspace 4'
 
 # All possible modifiers: cmd, alt, ctrl, shift
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 [mode.selection.binding]
-ctrl-shift-alt-m = [
+ctrl-shift-alt-p = [
   'mode main',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
 ]
-ctrl-shift-alt-comma = [
+ctrl-shift-alt-1 = [
   'mode workspace',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-comma = [
   'mode layout',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=LAYOUT',
 ]
@@ -243,46 +236,46 @@ space = [
 backspace = ['flatten-workspace-tree']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-j = 'focus --dfs-index 0'
-k = 'focus --dfs-index 1'
-l = 'focus --dfs-index 2'
-semicolon = 'focus --dfs-index 3'
-u = 'focus --dfs-index 4'
-i = 'focus --dfs-index 5'
-o = 'focus --dfs-index 6'
-p = 'focus --dfs-index 7'
+h = 'focus --dfs-index 0'
+a = 'focus --dfs-index 1'
+e = 'focus --dfs-index 2'
+i = 'focus --dfs-index 3'
+f = 'focus --dfs-index 4'
+o = 'focus --dfs-index 5'
+u = 'focus --dfs-index 6'
+j = 'focus --dfs-index 7'
 
-ctrl-shift-alt-j = 'focus --boundaries-action wrap-around-the-workspace left'
-ctrl-shift-alt-k = 'focus --boundaries-action wrap-around-the-workspace down'
-ctrl-shift-alt-l = 'focus --boundaries-action wrap-around-the-workspace up'
-ctrl-shift-alt-semicolon = 'focus --boundaries-action wrap-around-the-workspace right'
+ctrl-shift-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
+ctrl-shift-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
+ctrl-shift-alt-e = 'focus --boundaries-action wrap-around-the-workspace up'
+ctrl-shift-alt-i = 'focus --boundaries-action wrap-around-the-workspace right'
 
-ctrl-shift-alt-u = ['join-with left']
-ctrl-shift-alt-i = ['join-with down']
-ctrl-shift-alt-o = ['join-with up']
-ctrl-shift-alt-p = ['join-with right']
+ctrl-shift-alt-f = ['join-with left']
+ctrl-shift-alt-o = ['join-with down']
+ctrl-shift-alt-u = ['join-with up']
+ctrl-shift-alt-j = ['join-with right']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
-alt-j = 'move left'
-alt-k = 'move down'
-alt-l = 'move up'
-alt-semicolon = 'move right'
+alt-h = 'move left'
+alt-a = 'move down'
+alt-e = 'move up'
+alt-i = 'move right'
 
-alt-u = ['join-with left']
-alt-i = ['join-with down']
-alt-o = ['join-with up']
-alt-p = ['join-with right']
+alt-f = ['join-with left']
+alt-o = ['join-with down']
+alt-u = ['join-with up']
+alt-j = ['join-with right']
 
 [mode.workspace.binding]
-ctrl-shift-alt-m = [
+ctrl-shift-alt-p = [
   'mode selection',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
 ]
-ctrl-shift-alt-comma = [
+ctrl-shift-alt-1 = [
   'mode main',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-comma = [
   'mode layout',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=LAYOUT',
 ]
@@ -297,39 +290,39 @@ space = [
 ]
 backspace = ['flatten-workspace-tree']
 
-j = 'workspace 1'
-k = 'workspace 2'
-l = 'workspace 3'
-semicolon = 'workspace 4'
+h = 'workspace 1'
+a = 'workspace 2'
+e = 'workspace 3'
+i = 'workspace 4'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-alt-j = 'move-node-to-workspace 1'
-alt-k = 'move-node-to-workspace 2'
-alt-l = 'move-node-to-workspace 3'
-alt-semicolon = 'move-node-to-workspace 4'
+alt-h = 'move-node-to-workspace 1'
+alt-a = 'move-node-to-workspace 2'
+alt-e = 'move-node-to-workspace 3'
+alt-i = 'move-node-to-workspace 4'
 
-ctrl-shift-alt-j = ['move-node-to-workspace 1', 'workspace 1']
-ctrl-shift-alt-k = ['move-node-to-workspace 2', 'workspace 2']
-ctrl-shift-alt-l = ['move-node-to-workspace 3', 'workspace 3']
-ctrl-shift-alt-semicolon = ['move-node-to-workspace 4', 'workspace 4']
+ctrl-shift-alt-h = ['move-node-to-workspace 1', 'workspace 1']
+ctrl-shift-alt-a = ['move-node-to-workspace 2', 'workspace 2']
+ctrl-shift-alt-e = ['move-node-to-workspace 3', 'workspace 3']
+ctrl-shift-alt-i = ['move-node-to-workspace 4', 'workspace 4']
 
-ctrl-shift-alt-u = ['join-with left']
-ctrl-shift-alt-i = ['join-with down']
-ctrl-shift-alt-o = ['join-with up']
-ctrl-shift-alt-p = ['join-with right']
+ctrl-shift-alt-f = ['join-with left']
+ctrl-shift-alt-o = ['join-with down']
+ctrl-shift-alt-u = ['join-with up']
+ctrl-shift-alt-j = ['join-with right']
 
 f = 'workspace-back-and-forth'
 
 [mode.layout.binding]
-ctrl-shift-alt-m = [
+ctrl-shift-alt-p = [
   'mode selection',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
 ]
-ctrl-shift-alt-comma = [
+ctrl-shift-alt-1 = [
   'mode workspace',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-comma = [
   'mode main',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
 ]
@@ -344,35 +337,35 @@ space = [
 ]
 backspace = ['flatten-workspace-tree']
 
-j = ['layout v_accordion']
-k = ['layout v_tiles']
-l = ['layout h_tiles']
-semicolon = ['layout h_accordion']
+h = ['layout v_accordion']
+a = ['layout v_tiles']
+e = ['layout h_tiles']
+i = ['layout h_accordion']
 
-u = ['layout floating tiling']
-i = [
+f = ['layout floating tiling']
+u = ['fullscreen']
+o = [
   'reload-config',
   'exec-and-forget borders',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
   'mode main',
 ]
-o = ['fullscreen']
-p = ['balance-sizes'] # reset layout
+j = ['balance-sizes'] # reset layout
 
-ctrl-shift-alt-j = ['join-with left']
-ctrl-shift-alt-k = ['join-with down']
-ctrl-shift-alt-l = ['join-with up']
-ctrl-shift-alt-semicolon = ['join-with right']
+ctrl-shift-alt-h = ['join-with left']
+ctrl-shift-alt-a = ['join-with down']
+ctrl-shift-alt-e = ['join-with up']
+ctrl-shift-alt-i = ['join-with right']
 ctrl-shift-alt-backspace = [
   'close-all-windows-but-current',
   'mode main',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
 ]
 
-ctrl-shift-alt-u = ['resize smart -160']
-ctrl-shift-alt-i = ['resize smart -60']
-ctrl-shift-alt-o = ['resize smart +60']
-ctrl-shift-alt-p = ['resize smart +160']
+ctrl-shift-alt-f = ['resize smart -160']
+ctrl-shift-alt-o = ['resize smart -60']
+ctrl-shift-alt-u = ['resize smart +60']
+ctrl-shift-alt-j = ['resize smart +160']
 
 [[on-window-detected]]
 if.app-name-regex-substring = 'iTerm2|Code'
