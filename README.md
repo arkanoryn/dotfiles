@@ -142,11 +142,12 @@ imagemagick
 - [ ] login
 - [x] wallpapers
 - [x] waybar
-- [ ] swaync
-- [ ] hyprshot
 - [ ] hyprlock
 - [ ] hypridle
 - [ ] hyprpaper
+- [ ] dunst
+- [ ] swaync
+- [ ] hyprshot
 - [ ] swwww
 - [ ] yazi
 
