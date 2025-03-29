@@ -1,0 +1,42 @@
+#custom-up1,
+#custom-up2,
+#custom-up3end,
+#custom-up3,
+#custom-up4 {
+  font-size: 29.1px;
+}
+
+#custom-up1 {
+  color: @level4-bg;
+  background-color: @main-bg;
+}
+
+#custom-up2 {
+  color: @level3-bg;
+  background-color: @level2-bg;
+}
+
+#custom-up3 {
+  color: @level2-bg;
+  background-color: @level3-bg;
+}
+
+#custom-up3end {
+  color: @level2-bg;
+  background-color: @main-bg;
+}
+
+
+#custom-up4 {
+  color: @level3-bg;
+  background-color: @main-bg;
+}
+
+#custom-upin1 {
+  font-size: 29.1px;
+  color: @level3-bg;
+  background-color: @main-bg;
+  padding-left: 0.2px;
+  text-shadow: 3px 0 2px rgba(0, 0, 0, 0.4);
+}
+

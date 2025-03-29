@@ -1,0 +1,86 @@
+{
+  "hyprland/window": {
+    "format": "{}",
+    "min-length": 25,
+    "max-length": 25,
+    "rotate": 90,
+
+    "rewrite": {
+      // Desktop
+      "": 
+      "<span foreground='#8aadf4'> </span> Hyprland",
+
+      // Terminal
+      "~(.*)": "  Terminal",
+      "zsh": "  Terminal",
+      "fish": "  Terminal",
+      "kitty": "  Terminal",
+      "ghostty": "  Terminal",
+
+      "tmux(.*)":
+      "<span foreground='#a6e3a1'> </span> Tmux",
+
+      // Browser
+
+      "(.*)Mozilla Firefox":
+      "<span foreground='#ed8796'>󰈹 </span> Firefox",
+      "(.*) — Mozilla Firefox":
+      "<span foreground='#ed8796'>󰈹 </span> $1",
+
+      "(.*)Zen Browser":
+      "<span foreground='#f5a97f'>󰺕 </span> Zen Browser",
+      "(.*) — Zen Browser":
+      "<span foreground='#f5a97f'>󰺕 </span> $1",
+
+      // Development
+
+      "yh": 
+      "<span foreground='#a6da95'> </span> Neovim",
+      "nvim": 
+      "<span foreground='#a6da95'> </span> Neovim",
+      "nvim (.*)": 
+      "<span foreground='#a6da95'> </span> $1",
+
+      "vim": 
+      "<span foreground='#a6da95'> </span> Vim",
+      "vim (.*)": 
+      "<span foreground='#a6da95'> </span> $1",
+
+      // Media
+
+      "(.*)Spotify": 
+      "<span foreground='#a6da95'> </span> Spotify",
+      "(.*)Spotify Premium": 
+      "<span foreground='#a6da95'> </span> Spotify Premium",
+
+      "OBS(.*)": 
+      "<span foreground='#a5adcb'> </span> OBS Studio",
+
+      "VLC media player": 
+      "<span foreground='#f5a97f'>󰕼 </span> VLC Media Player",
+      "(.*) - VLC media player": 
+      "<span foreground='#f5a97f'>󰕼 </span> $1",
+
+      "(.*) - mpv": 
+      "<span foreground='#c6a0f6'> </span> $1",
+
+      "qView": "  qView",
+
+      "(.*).jpg": "  $1.jpg",
+      "(.*).png": "  $1.png",
+      "(.*).svg": "  $1.svg",
+
+      // Social
+
+      "vesktop": 
+      "<span foreground='#8aadf4'> </span> Discord",
+
+      "• Discord(.*)": "Discord$1",
+      "(.*)Discord(.*)": 
+      "<span foreground='#8aadf4'> </span> $1Discord$2",
+
+      // System
+      "Authenticate": "  Authenticate"
+    }
+  }
+}

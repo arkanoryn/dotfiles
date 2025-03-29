@@ -1,0 +1,40 @@
+#custom-down1,
+#custom-down2,
+#custom-down2end,
+#custom-down3,
+#custom-down4 {
+  font-size: 29.1px;
+}
+
+#custom-down1 {
+  color: @level4-bg;
+  background-color: @main-bg;
+}
+
+#custom-down2 {
+  color: @level3-bg;
+  background-color: @level2-bg;
+}
+
+#custom-down2end {
+  color: @level3-bg;
+  background-color: @main-bg;
+}
+
+#custom-down3 {
+  color: @level2-bg;
+  background-color: @level3-bg;
+}
+
+#custom-down4 {
+  color: @level3-bg;
+  background-color: @main-bg;
+}
+
+#custom-downin1 {
+  font-size: 29.1px;
+  color: @level3-bg;
+  background-color: @main-bg;
+  padding-left: 0.2px;
+  text-shadow: 3px 0 2px rgba(0, 0, 0, 0.4);
+}

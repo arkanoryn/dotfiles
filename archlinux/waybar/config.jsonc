@@ -8,378 +8,64 @@
   "passthrough": false,
   "gtk-layer-shell": true,
   "reload_style_on_change": true,
+  "include": [
+    "~/.config/waybar/modules/arrows/down.jsonc",
+    "~/.config/waybar/modules/arrows/up.jsonc",
+    "~/.config/waybar/modules/clock.jsonc",
+    "~/.config/waybar/modules/cpu.jsonc",
+    "~/.config/waybar/modules/current-window.jsonc",
+    "~/.config/waybar/modules/gpu.jsonc",
+    "~/.config/waybar/modules/memory.jsonc",
+    "~/.config/waybar/modules/submap.jsonc",
+    "~/.config/waybar/modules/workspaces.jsonc",
+  ],
 
   "modules-left": [
-    // "custom/paddw",
     "memory",               // memory
-    "cpu"                  // cpu
-    // "custom/cpuinfo",       // cpu temperature
-    // "gpu"                  // gpu
-    // "custom/gpuinfo",       // gpu temperature
+    "custom/down2",
+    "custom/cpuinfo",       // cpu temperature
+    "cpu",                  // cpu
+    "custom/down3",
+    "custom/gpuinfo",       // gpu
+    "custom/down4"
   ],
 
   "modules-center": [
-    // "custom/paddc",
-    // "custom/left2",
-    //
-    // "custom/left3",
-    //
-    // "custom/left4",
-    // "custom/leftin1",
-    //
-    "hyprland/workspaces",
-    "hyprland/submap",
-    "custom/left5",
-    "custom/distro",        // distro icon
-    "custom/right2",
-    "hyprland/window"
+    "custom/up3end",
+    "hyprland/window",
 
-    // "custom/rightin1",
+    "custom/up2",
+    "hyprland/submap",
+
+    "custom/upin1",
+
+    "custom/up1",
+    "custom/distro",        // distro icon
+    "custom/down1",
+
+    "custom/downin1",
+    "hyprland/workspaces",
+    "custom/down2end"
+  ],
+
+  "modules-right": [
     // "idle_inhibitor",       // idle inhibitor
-    // "clock#time",           // time
-    // "custom/right3",
+    "custom/up3end",
+    "clock#time",           // time
+
+    "custom/up2",
+    "clock#date"           // date
     //
-    // "clock#date",           // date
-    // "custom/right4",
-    //
+    // song
+    // notification
     // "custom/wifi",          // wi-fi
     // "bluetooth",            // bluetooth
     // "custom/update",        // system update
     // "custom/right5"
   ],
 
-  "modules-right": [
-    // "idle_inhibitor",       // idle inhibitor
-    "clock#time",           // time
-    "custom/right3",
-
-    "clock#date",           // date
-    "custom/right4",
-  ],
-
-  // <<--< Padding >-->>
-
-  "custom/paddw": {
-    "format": " ",
-    "rotate": 90,
-    "tooltip": false
-  },
-
-  "custom/paddc": {
-    "format": " ",
-    "rotate": 90,
-    "tooltip": false
-  },
-
-  // Left Arrows
-
-  "custom/left1": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/left2": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/left3": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/left4": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/left5": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/left6": {
-    "rotate": 270,
-    "format": "",
-    "tooltip": false
-  },
-  "rotate": 270,
-  "custom/left7": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/left8": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-
-  // Right Arrows
-
-  "custom/right1": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/right2": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/right3": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/right4": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-  "custom/right5": {
-    "format": "",
-    "rotate": 270,
-    "tooltip": false
-  },
-
-  // Left Inverse
-
-  "custom/leftin1": {
-    "format": "",
-    "tooltip": false
-  },
-  "custom/leftin2": {
-    "format": "",
-    "tooltip": false
-  },
-
-  // Right Inverse
-
-  "custom/rightin1": {
-    "format": "",
-    "tooltip": false
-  },
-
   "custom/distro": {
     "format": " ",
     "tooltip": false
-  },
-
-  "cpu": {
-    "interval": 10,
-    "format": "󰍛 {usage}%",
-    "rotate": 90,
-    "format-alt": "{icon0}{icon1}{icon2}{icon3}",
-    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
-  },
-
-  "memory": {
-    "states": {
-      "c": 90, // critical
-      "h": 60, // high
-      "m": 30, // medium
-    },
-    "interval": 30,
-    "format": "󰾆 {percentage}%",
-    "rotate": 90,
-    "format-m": "󰾅 {percentage}%",
-    "format-h": "󰓅 {percentage}%",
-    "format-c": " {percentage}%",
-    "format-alt": "󰾆 {used}GB",
-    // "max-length": 10,
-    "tooltip": true,
-    "tooltip-format": "󰾆 {percentage}%\n {used:0.1f}GB/{total:0.1f}GB"
-  },
-
-  "custom/cpuinfo": {
-    "exec": " cpuinfo.sh",
-    "return-type": "json",
-    "format": "{}",
-    "rotate": 0,
-    "interval": 5, // once every 5 seconds
-    "tooltip": true,
-    "max-length": 1000
-  },
-
-  "custom/gpuinfo": {
-    "exec": " gpuinfo.sh",
-    "return-type": "json",
-    "format": "{}",
-    "rotate": 0,
-    "interval": 5, // once every 5 seconds
-    "tooltip": true,
-    "max-length": 1000,
-    "on-click": "gpuinfo.sh --toggle",
-  },
-
-  "custom/gpuinfo#nvidia": {
-    "exec": " gpuinfo.sh --use nvidia ",
-    "return-type": "json",
-    "format": "{}",
-    "rotate": 0,
-    "interval": 5, // once every 5 seconds
-    "tooltip": true,
-    "max-length": 1000,
-  },
-
-  "hyprland/workspaces": {
-    "disable-scroll": true,
-    "rotate": 90,
-    "all-outputs": true,
-    "active-only": false,
-    "on-click": "activate",
-    "disable-scroll": false,
-    "on-scroll-up": "hyprctl dispatch workspace -1",
-    "on-scroll-down": "hyprctl dispatch workspace +1",
-    "show-special": true,
-    "special-visible-only": true,
-    "format": "{icon}\n{windows}",
-    "format-window-separator": "\n",
-    "window-rewrite-default": "",
-    "window-rewrite": {
-      "title<.*youtube.*>": "", // Windows whose titles contain "youtube"
-      "title<*github.*>": "", //  title contains "github".
-      "Firefox": "󰈹", // Windows whose classes are "firefox"
-      "Zen Browser": "<span foreground='#f5a97f'>󰺕</span>", // Windows whose classes are "Zen Browser"
-      "Brave": "󱁝", // Windows whose classes are "firefox"
-      "ghostty": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
-      "code": "󰨞",
-    },
-    "persistent-workspaces": {
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-    }
-  },
-
-  "hyprland/window": {
-    "format": "{}",
-    "min-length": 35,
-    "max-length": 35,
-    "rotate": 90,
-
-    "rewrite": {
-      // Desktop
-      "": 
-      "<span foreground='#8aadf4'> </span> Hyprland",
-
-      // Terminal
-      "~(.*)": "  Terminal",
-      "zsh": "  Terminal",
-      "fish": "  Terminal",
-      "kitty": "  Terminal",
-      "ghostty": "  Terminal",
-
-      "tmux(.*)":
-      "<span foreground='#a6e3a1'> </span> Tmux",
-
-      // Browser
-
-      "(.*)Mozilla Firefox":
-      "<span foreground='#ed8796'>󰈹 </span> Firefox",
-      "(.*) — Mozilla Firefox":
-      "<span foreground='#ed8796'>󰈹 </span> $1",
-
-      "(.*)Zen Browser":
-      "<span foreground='#f5a97f'>󰺕 </span> Zen Browser",
-      "(.*) — Zen Browser":
-      "<span foreground='#f5a97f'>󰺕 </span> $1",
-
-      // Development
-
-      "nvim": 
-      "<span foreground='#a6da95'> </span> Neovim",
-      "nvim (.*)": 
-      "<span foreground='#a6da95'> </span> $1",
-
-      "vim": 
-      "<span foreground='#a6da95'> </span> Vim",
-      "vim (.*)": 
-      "<span foreground='#a6da95'> </span> $1",
-
-      // Media
-
-      "(.*)Spotify": 
-      "<span foreground='#a6da95'> </span> Spotify",
-      "(.*)Spotify Premium": 
-      "<span foreground='#a6da95'> </span> Spotify Premium",
-
-      "OBS(.*)": 
-      "<span foreground='#a5adcb'> </span> OBS Studio",
-
-      "VLC media player": 
-      "<span foreground='#f5a97f'>󰕼 </span> VLC Media Player",
-      "(.*) - VLC media player": 
-      "<span foreground='#f5a97f'>󰕼 </span> $1",
-
-      "(.*) - mpv": 
-      "<span foreground='#c6a0f6'> </span> $1",
-
-      "qView": "  qView",
-
-      "(.*).jpg": "  $1.jpg",
-      "(.*).png": "  $1.png",
-      "(.*).svg": "  $1.svg",
-
-      // Social
-
-      "vesktop": 
-      "<span foreground='#8aadf4'> </span> Discord",
-
-      "• Discord(.*)": "Discord$1",
-      "(.*)Discord(.*)": 
-      "<span foreground='#8aadf4'> </span> $1Discord$2",
-
-      // System
-      "Authenticate": "  Authenticate"
-    }
-  },
-
-  "hyprland/submap": {
-    "format": "{}",
-    "min-length": 8,
-    "max-length": 8,
-    "tooltip": false,
-    "rotate": 90
-  },
-
-  "clock#time": {
-    "format": "{:%H:%M}",
-    "tooltip": false,
-    // "tooltip-format": "Standard Time: {:%I:%M %p}",
-    "rotate": 90,
-    "min-length": 6,
-    "max-length": 6
-  },
-
-  "clock#date": {
-    "format": "󰨳 {:%m-%d}",
-    "tooltip-format": "<tt>{calendar}</tt>",
-
-    "calendar": {
-      "mode": "month",
-      "mode-mon-col": 6,
-      "on-click-right": "mode",
-
-      "format": {
-        "months": 
-        "<span color='#b4befe'><b>{}</b></span>",
-        "weekdays": 
-        "<span color='#a6adc8' font='7'>{}</span>",
-        "today": 
-        "<span color='#f38ba8'><b>{}</b></span>"
-      }
-    },
-
-    "actions": {
-      "on-click": "mode",
-      "on-click-right": "mode"
-    },
-
-    "rotate": 90,
-    "min-length": 8,
-    "max-length": 8
   },
 }

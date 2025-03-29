@@ -68,6 +68,11 @@
 @define-color battery         @surface0;
 @define-color power           @overlay2;
 
+@define-color level1-bg      @mantle;
+@define-color level2-bg      @base;
+@define-color level3-bg      @surface0;
+@define-color level4-bg      @overlay2;
+
 /* State Colors */
 
 @define-color warning         @yellow;

@@ -226,7 +226,7 @@ generate_json() {
   temp_color=$(get_temp_color "${temperature}")
 
   # Create the JSON string with colored temperature
-  local json="{\"text\":\"${thermo} ${temp_color}\", \"tooltip\":\"${emoji} ${primary_gpu}\n${thermo} Temperature: ${temp_color}"
+  local json="{\"text\":\"${speedo} ${utilization}% ${thermo} ${temp_color}\", \"tooltip\":\"${emoji} ${primary_gpu}\n${thermo} Temperature: ${temp_color}"
 
   #TODO Add Something incase needed.
   declare -A tooltip_parts
