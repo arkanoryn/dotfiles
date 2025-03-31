@@ -25,34 +25,30 @@ local netstat_up = sbar.add("item", {
 	position = "right",
 	width = width,
 	icon = { drawing = false },
-	label = { color = colors.network.upload },
 })
 
 sbar.add("item", {
 	position = "right",
 	icon = {
 		string = "",
-		font = "Fira Code Nerd Font Mono:Regular:16.0",
+		font = "FiraCode Nerd Font Mono:Regular:16.0",
 		color = colors.network.upload,
 	},
-	label = { drawing = false },
 })
 
 local netstat_down = sbar.add("item", {
 	position = "right",
 	width = width,
 	icon = { drawing = false },
-	label = { color = colors.red },
 })
 
 sbar.add("item", {
 	position = "right",
 	icon = {
 		string = "",
-		font = "Fira Code Nerd Font Mono:Regular:16.0",
+		font = "FiraCode Nerd Font Mono:Regular:16.0",
 		color = colors.network.download,
 	},
-	label = { drawing = false },
 })
 
 sbar.add("event", "netstat_update")
@@ -62,10 +58,11 @@ sbar.exec("~/.config/sketchybar/plugins/netstat.sh")
 netstat_up:subscribe("netstat_update", function(env)
 	local download = formatBytes(env.DOWNLOAD)
 	local upload = formatBytes(env.UPLOAD)
+
 	netstat_up:set({
-		label = { string = upload },
+		label = { string = upload, color = colors.network.upload },
 	})
 	netstat_down:set({
-		label = { string = download },
+		label = { string = download, color = colors.network.download },
 	})
 end)

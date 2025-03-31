@@ -13,8 +13,8 @@ local sf_pro = {
 }
 
 local fira_code = {
-	text = "Fira Code Nerd Font", -- Used for text
-	numbers = "Fira Code Nerd Font Mono", -- Used for numbers
+	text = "FiraCode Nerd Font", -- Used for text
+	numbers = "FiraCode Nerd Font Mono", -- Used for numbers
 	size = 20,
 	style_map = {
 		["Regular"] = "Retina",
