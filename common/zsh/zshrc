@@ -133,3 +133,4 @@ function nvims() {
 }
 
 bindkey -s ^a "nvims\n"
+. "$HOME/.local/bin/env"

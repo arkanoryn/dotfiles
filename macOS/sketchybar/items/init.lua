@@ -2,10 +2,15 @@
 -- center: [workspaces] | nutch | [aerospace_modes] [notifications]
 -- right: battery | volume | date
 
+-- left
 require("items.apple")
+require("items.front_app")
+
+-- center
 require("items.workspaces")
 require("items.aerospace_modes")
-require("items.front_app")
+
+-- right
 require("items.calendar")
 require("items.uname")
 require("items.volume")
