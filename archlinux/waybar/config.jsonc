@@ -21,25 +21,27 @@
   ],
 
   "modules-left": [
-    "memory",               // memory
-    "custom/down2",
-    "custom/cpuinfo",       // cpu temperature
-    "cpu",                  // cpu
-    "custom/down3",
-    "custom/gpuinfo",       // gpu
-    "custom/down4"
+    // Logout
+    "group/metrics",
+    "custom/down2"
+    // Change Background
   ],
 
   "modules-center": [
+    // current song
     "custom/up3end",
+    // Reduce size and only show icon
     "hyprland/window",
 
     "custom/up2",
+    // Rework Submap with icons
     "hyprland/submap",
 
     "custom/upin1",
 
     "custom/up1",
+    // Privacy
+    // Rework distro with notifications notes for update
     "custom/distro",        // distro icon
     "custom/down1",
 
@@ -51,21 +53,38 @@
   "modules-right": [
     // "idle_inhibitor",       // idle inhibitor
     "custom/up3end",
+    // Group: time, date
     "clock#time",           // time
 
     "custom/up2",
     "clock#date"           // date
-    //
-    // song
-    // notification
-    // "custom/wifi",          // wi-fi
-    // "bluetooth",            // bluetooth
-    // "custom/update",        // system update
-    // "custom/right5"
+
+    //Tray
+    // notification (center)
+    // Network (wifi, bluetooth, connexion speed)
   ],
 
   "custom/distro": {
     "format": " ",
     "tooltip": false
   },
+
+  "group/metrics": {
+    "orientation": "vertical",
+    "drawer": {
+      "transition-duration": 100,
+      "children-class": "groups-metrics",
+      "click-to-reveal": false
+    },
+    "modules": [
+      "memory",               // memory
+      "custom/down2",
+      "custom/cpuinfo",       // cpu temperature
+      "cpu",                  // cpu
+      "custom/down3",
+      "custom/gpuinfo"       // gpu
+      // "custom/down4"
+      // Disk
+    ]
+  }
 }

@@ -6,12 +6,11 @@
 
 @import "themes/current-theme.css";
 
-
 * {
   /* font-family: "JetBrainsMono Nerd Font"; */
   font-family: "FiraCode Nerd Font";
   font-weight: bold;
-  font-size: 14px;
+  font-size: 10px;
   min-height: 0;
   padding: 0;
   border: none;
@@ -23,6 +22,7 @@
 window#waybar > box {
   background-color: @main-bg;
 }
+
 /* <<--< Drop Shadow >-->> */
 
 window#waybar {
@@ -52,7 +52,7 @@ tooltip label {
   padding-bottom: 5px;
   padding-left: 5px;
   text-shadow: 0 0 1.5px rgba(0, 0, 0, 1);
-  font-size: 23px;
+  font-size: 20px;
 }
 
 #idle_inhibitor {
@@ -62,7 +62,6 @@ tooltip label {
 #idle_inhibitor:hover {
   color: @hover-fg;
 }
-
 
 #custom-power {
   border-radius: 10px;
