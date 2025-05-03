@@ -50,13 +50,13 @@ return {
 	-- Appareance
 	color_scheme = "Catppuccin Mocha",
 	enable_tab_bar = false,
-	font_size = 16.0,
+	font_size = 14.0,
 	font = wezterm.font("FiraCode Nerd Font", { weight = "Medium" }),
 
 	macos_window_background_blur = 30,
 	initial_cols = 120,
 	initial_rows = 40,
-	window_background_opacity = 0.8,
+	window_background_opacity = 0.9,
 	window_decorations = "RESIZE",
 	window_close_confirmation = "NeverPrompt",
 	adjust_window_size_when_changing_font_size = false,
