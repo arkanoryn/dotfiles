@@ -1,6 +1,5 @@
-local colors = require("colors")
 local sbar = require("sketchybar")
-local paths = require("helpers/paths")
+local paths = require("config.paths")
 
 local keyboard_mode = sbar.add("item", "keyboard_mode", {
 	position = "center",
@@ -22,6 +21,6 @@ sbar.exec(paths.plugin_dir .. "keyboard.sh state")
 
 keyboard_mode:subscribe("keyboard_state_update", function(env)
 	keyboard_mode:set({
-		label = { string = state_to_label(env.KEYBOARD_STATE) }, -- color = colors.network.upload },
+		label = { string = state_to_label(env.KEYBOARD_STATE) },
 	})
 end)

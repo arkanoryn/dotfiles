@@ -1,6 +1,6 @@
-local colors = require("colors")
-local settings = require("settings")
-local app_icons = require("helpers.app_icons")
+local colors = require("config.colors")
+local settings = require("config.settings")
+local app_icons = require("config.app_icons")
 local sbar = require("sketchybar")
 
 sbar.add("event", "aerospace_workspace_change")
@@ -21,7 +21,7 @@ local function add_workspace(monitor_id, workspace_id)
 		display = monitor_id,
 		position = "center",
 		icon = {
-			font = { family = settings.font.numbers, size = 18 },
+			font = { family = settings.default_font.numbers, size = 18 },
 			string = workspace_id,
 			padding_left = 14,
 			padding_right = 7,

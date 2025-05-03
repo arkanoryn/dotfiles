@@ -1,4 +1,4 @@
-local colors = require("colors")
+local colors = require("config.colors")
 local sbar = require("sketchybar")
 
 -- valid MODES are: MAIN, SELECTION, WORKSPACE, LAYOUT

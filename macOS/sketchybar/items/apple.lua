@@ -1,5 +1,5 @@
-local icons = require("icons")
-local colors = require("colors")
+local icons = require("config.icons")
+local colors = require("config.colors")
 
 local popup_toggle = "sketchybar --set $NAME popup.drawing=toggle"
 

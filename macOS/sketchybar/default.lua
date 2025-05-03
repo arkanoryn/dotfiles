@@ -1,12 +1,12 @@
-local settings = require("settings")
-local colors = require("colors")
+local settings = require("config.settings")
+local colors = require("config.colors")
 
 -- Equivalent to the --default domain
 sbar.default({
 	updates = "when_shown",
 	icon = {
 		font = {
-			family = settings.font.text,
+			family = settings.default_font.text,
 			style = "Bold",
 			size = 14.0,
 		},
@@ -16,7 +16,7 @@ sbar.default({
 	},
 	label = {
 		font = {
-			family = settings.font.text,
+			family = settings.default_font.text,
 			style = "Semibold",
 			size = 13.0,
 		},

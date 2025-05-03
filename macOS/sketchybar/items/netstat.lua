@@ -1,4 +1,4 @@
-local colors = require("colors")
+local colors = require("config.colors")
 local sbar = require("sketchybar")
 local width = 50
 

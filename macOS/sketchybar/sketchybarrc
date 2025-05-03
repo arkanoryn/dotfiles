@@ -11,7 +11,6 @@ sbar = require("sketchybar")
 -- This improves startup times drastically, try removing both the begin and end
 -- config calls to see the difference -- yeah..
 sbar.begin_config()
-require("helpers")
 require("init")
 sbar.hotload(true)
 sbar.end_config()
