@@ -10,6 +10,8 @@ local keyboard_mode = sbar.add("item", "keyboard_mode", {
 local function state_to_label(state)
 	if state == "qwerty" then
 		return "󰌌"
+	elseif state == "laptop" then
+		return "󰌢"
 	elseif state == "graphite" then
 		return ""
 	end
@@ -24,3 +26,9 @@ keyboard_mode:subscribe("keyboard_state_update", function(env)
 		label = { string = state_to_label(env.KEYBOARD_STATE) },
 	})
 end)
+
+return {
+	set = function(properties)
+		keyboard_mode:set(properties)
+	end,
+}

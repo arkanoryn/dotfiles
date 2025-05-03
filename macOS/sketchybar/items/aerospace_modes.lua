@@ -43,3 +43,9 @@ end
 aerospace_mode:subscribe({ "aerospace_mode_change" }, change_color_by_mode)
 
 sbar.trigger("aerospace_mode_change", { MODE_CHANGE = current_mode })
+
+return {
+	set = function(properties)
+		aerospace_mode:set(properties)
+	end,
+}

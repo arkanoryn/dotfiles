@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 QWERTY_KEYMAP="qwerty"
+LAPTOP_KEYMAP="laptop"
 GRAPHITE_KEYMAP="graphite"
 DEFAULT_KEYMAP=$QWERTY_KEYMAP
 
@@ -19,9 +20,10 @@ fetch_current_keymap() {
   fi
 }
 
-swap_keymaps() {
-  # Swap the configuration for aerospace
+# Swap the configuration for aerospace and reload the config
+update_aerospace() {
   cp "$AEROSPACE_DIR"aerospace-"$1".toml "$AEROSPACE_DIR"aerospace.toml
+  aerospace reload-config
 }
 
 notify_sketchybar_with_keyboard_state() {
@@ -42,13 +44,14 @@ if [ "$1" = "swapped" ]; then
   if [ "$current_keymap" = "$QWERTY_KEYMAP" ]; then
     new_keymap="$GRAPHITE_KEYMAP"
   elif [ "$current_keymap" = "$GRAPHITE_KEYMAP" ]; then
+    new_keymap="$LAPTOP_KEYMAP"
+  elif [ "$current_keymap" = "$LAPTOP_KEYMAP" ]; then
     new_keymap="$QWERTY_KEYMAP"
   else
     new_keymap="$DEFAULT_KEYMAP"
   fi
 
-  swap_keymaps "$new_keymap"
+  update_aerospace "$new_keymap"
   update_keymap_config "$new_keymap"
-  aerospace reload-config
   notify_sketchybar_with_keyboard_state $new_keymap
 fi

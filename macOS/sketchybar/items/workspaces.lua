@@ -151,3 +151,11 @@ end)
 local focused_workspace = ok and tonumber(ws) or -1
 
 sbar.trigger("aerospace_workspace_change", { FOCUSED_WORKSPACE = focused_workspace })
+
+return {
+	set = function(properties)
+		for id = 1, 4 do
+			workspaces[id]:set(properties)
+		end
+	end,
+}

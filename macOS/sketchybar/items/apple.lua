@@ -32,3 +32,9 @@ apple_prefs:subscribe("mouse.clicked", function(_)
 	sbar.exec("open -a 'System Preferences'")
 	apple_logo:set({ popup = { drawing = false } })
 end)
+
+return {
+	set = function(properties)
+		apple_logo:set(properties)
+	end,
+}

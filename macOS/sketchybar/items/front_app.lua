@@ -26,3 +26,9 @@ front_app:subscribe("front_app_switched", function(env)
 		},
 	})
 end)
+
+return {
+	set = function(properties)
+		front_app:set(properties)
+	end,
+}

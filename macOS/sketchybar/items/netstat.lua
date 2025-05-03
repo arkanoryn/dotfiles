@@ -28,7 +28,7 @@ local netstat_up = sbar.add("item", {
 	icon = { drawing = false },
 })
 
-sbar.add("item", {
+local netstat_up_icon = sbar.add("item", {
 	position = "right",
 	icon = {
 		string = "",
@@ -43,7 +43,7 @@ local netstat_down = sbar.add("item", {
 	icon = { drawing = false },
 })
 
-sbar.add("item", {
+local netstat_down_icon = sbar.add("item", {
 	position = "right",
 	icon = {
 		string = "",
@@ -67,3 +67,14 @@ netstat_up:subscribe("netstat_update", function(env)
 		label = { string = download, color = colors.network.download },
 	})
 end)
+
+return {
+	set_netstat_up = function(properties)
+		netstat_up:set(properties)
+		netstat_up_icon:set(properties)
+	end,
+	set_netstat_down = function(properties)
+		netstat_down:set(properties)
+		netstat_down_icon:set(properties)
+	end,
+}
