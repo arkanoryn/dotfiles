@@ -1,3 +1,4 @@
+# GRAPHITE config
 # Info: This template is expect to work with a Meh key (ctrl-shift-alt pressed together)
 
 # Notify Sketchybar about workspace change
@@ -148,7 +149,7 @@ end tell'
 '''
 
 ctrl-shift-alt-t = '''exec-and-forget osascript -e '
-tell application "iTerm"
+tell application "WezTerm"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
@@ -169,7 +170,7 @@ end tell'
 '''
 
 ctrl-shift-alt-q = '''exec-and-forget osascript -e '
-tell application "WezTerm"
+tell application "Ghostty"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
@@ -184,13 +185,6 @@ end tell'
 
 ctrl-shift-alt-m = '''exec-and-forget osascript -e '
 tell application "Mail"
-    activate
-    if result is not {} then set index of item 1 of result to 1
-end tell'
-'''
-
-ctrl-shift-alt-v = '''exec-and-forget osascript -e '
-tell application "WezTerm"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
@@ -327,13 +321,6 @@ ctrl-shift-alt-p = [
 ]
 ctrl-shift-alt-period = [
   'mode workspace',
-  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
-]
-ctrl-shift-alt-comma = [
-  'mode main',
-  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
-]
-enter = [
   'layout floating tiling',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
   'mode main',

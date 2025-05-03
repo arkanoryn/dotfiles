@@ -1,3 +1,4 @@
+# QWERTY Config
 # Info: This template is expect to work with a Meh key (ctrl-shift-alt pressed together)
 
 # Notify Sketchybar about workspace change
@@ -148,7 +149,7 @@ end tell'
 '''
 
 ctrl-shift-alt-d = '''exec-and-forget osascript -e '
-tell application "iTerm"
+tell application "WezTerm"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
@@ -191,13 +192,6 @@ end tell'
 
 ctrl-shift-alt-v = '''exec-and-forget osascript -e '
 tell application "Code"
-    activate
-    if result is not {} then set index of item 1 of result to 1
-end tell'
-'''
-
-ctrl-shift-alt-b = '''exec-and-forget osascript -e '
-tell application "Ghostty"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
