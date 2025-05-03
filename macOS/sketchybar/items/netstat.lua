@@ -1,5 +1,6 @@
 local colors = require("colors")
-local width = 40
+local sbar = require("sketchybar")
+local width = 50
 
 local function formatBytes(bytes)
 	if bytes == 0 then
