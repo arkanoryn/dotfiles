@@ -69,11 +69,13 @@ tooltip label {
 }
 
 @import "modules/themes/arrows/down.css";
+@import "modules/themes/arrows/pipe.css";
 @import "modules/themes/arrows/up.css";
 @import "modules/themes/clock.css";
 @import "modules/themes/cpu.css";
 @import "modules/themes/current-window.css";
 @import "modules/themes/gpu.css";
 @import "modules/themes/memory.css";
+@import "modules/themes/scripts.css";
 @import "modules/themes/submap.css";
 @import "modules/themes/workspaces.css";

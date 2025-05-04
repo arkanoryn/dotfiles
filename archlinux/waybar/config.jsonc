@@ -10,7 +10,9 @@
   "reload_style_on_change": true,
   "include": [
     "~/.config/waybar/modules/arrows/down.jsonc",
+    "~/.config/waybar/modules/arrows/pipe.jsonc",
     "~/.config/waybar/modules/arrows/up.jsonc",
+    "~/.config/waybar/modules/group-scripts.jsonc",
     "~/.config/waybar/modules/clock.jsonc",
     "~/.config/waybar/modules/cpu.jsonc",
     "~/.config/waybar/modules/current-window.jsonc",
@@ -23,8 +25,9 @@
   "modules-left": [
     // Logout
     "group/metrics",
-    "custom/down2"
-    // Change Background
+    "custom/down2",
+    "group/scripts",
+    "custom/down3end"
   ],
 
   "modules-center": [
@@ -34,7 +37,6 @@
     "hyprland/window",
 
     "custom/up2",
-    // Rework Submap with icons
     "hyprland/submap",
 
     "custom/upin1",
@@ -78,10 +80,10 @@
     },
     "modules": [
       "memory",               // memory
-      "custom/down2",
+      "custom/pipe",
       "custom/cpuinfo",       // cpu temperature
       "cpu",                  // cpu
-      "custom/down3",
+      "custom/pipe",
       "custom/gpuinfo"       // gpu
       // "custom/down4"
       // Disk

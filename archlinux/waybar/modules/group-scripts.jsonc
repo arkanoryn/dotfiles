@@ -1,0 +1,30 @@
+{
+  "group/scripts": {
+    "orientation": "vertical",
+    "drawer": {
+      "transition-duration": 100,
+      "children-class": "groups-scripts",
+      "click-to-reveal": false
+    },
+    "modules": [
+      "custom/change_wallpaper",
+      "custom/change_keymap"
+    ]
+  },
+  "custom/change_wallpaper": {
+    "format": "󰸉",
+    "tooltip": false,
+    "rotate": 0,
+    "min-length": 6,
+    "max-length": 6,
+    "on-click": "wallpaper.sh"
+  },
+  "custom/change_keymap": {
+    "format": "",
+    "tooltip": false,
+    "rotate": 0,
+    "min-length": 6,
+    "max-length": 6,
+     // "on-click": "wallpaper.sh"
+  }
+}

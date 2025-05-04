@@ -4,6 +4,7 @@
 #custom-cpuinfo {
   opacity: 1;
   color: @module-fg;
-  background-color: @level2-bg;
+  background-color: @level3-bg;
   padding-top: 6px;
+  padding-bottom: 6px;
 }

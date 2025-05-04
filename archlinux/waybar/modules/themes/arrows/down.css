@@ -2,6 +2,7 @@
 #custom-down2,
 #custom-down2end,
 #custom-down3,
+#custom-down3end,
 #custom-down4 {
   font-size: 29.1px;
 }
@@ -24,6 +25,11 @@
 #custom-down3 {
   color: @level2-bg;
   background-color: @level3-bg;
+}
+
+#custom-down3end {
+  color: @level2-bg;
+  background-color: @main-bg;
 }
 
 #custom-down4 {

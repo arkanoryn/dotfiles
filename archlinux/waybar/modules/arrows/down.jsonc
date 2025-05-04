@@ -19,6 +19,11 @@
     "rotate": 90,
     "tooltip": false
   },
+  "custom/down3end": {
+    "format": "",
+    "rotate": 90,
+    "tooltip": false
+  },
   "custom/down4": {
     "format": "",
     "rotate": 90,
