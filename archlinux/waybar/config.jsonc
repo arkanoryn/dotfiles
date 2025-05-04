@@ -1,0 +1,71 @@
+// -*- mode: json -*-
+{
+  "layer": "top",
+  "position": "left",
+  "mod": "dock",
+  "width": 37,
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "reload_style_on_change": true,
+  "include": [
+    "~/.config/waybar/modules/arrows/down.jsonc",
+    "~/.config/waybar/modules/arrows/up.jsonc",
+    "~/.config/waybar/modules/clock.jsonc",
+    "~/.config/waybar/modules/cpu.jsonc",
+    "~/.config/waybar/modules/current-window.jsonc",
+    "~/.config/waybar/modules/gpu.jsonc",
+    "~/.config/waybar/modules/memory.jsonc",
+    "~/.config/waybar/modules/submap.jsonc",
+    "~/.config/waybar/modules/workspaces.jsonc",
+  ],
+
+  "modules-left": [
+    "memory",               // memory
+    "custom/down2",
+    "custom/cpuinfo",       // cpu temperature
+    "cpu",                  // cpu
+    "custom/down3",
+    "custom/gpuinfo",       // gpu
+    "custom/down4"
+  ],
+
+  "modules-center": [
+    "custom/up3end",
+    "hyprland/window",
+
+    "custom/up2",
+    "hyprland/submap",
+
+    "custom/upin1",
+
+    "custom/up1",
+    "custom/distro",        // distro icon
+    "custom/down1",
+
+    "custom/downin1",
+    "hyprland/workspaces",
+    "custom/down2end"
+  ],
+
+  "modules-right": [
+    // "idle_inhibitor",       // idle inhibitor
+    "custom/up3end",
+    "clock#time",           // time
+
+    "custom/up2",
+    "clock#date"           // date
+    //
+    // song
+    // notification
+    // "custom/wifi",          // wi-fi
+    // "bluetooth",            // bluetooth
+    // "custom/update",        // system update
+    // "custom/right5"
+  ],
+
+  "custom/distro": {
+    "format": " ",
+    "tooltip": false
+  },
+}

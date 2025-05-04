@@ -1,0 +1,4 @@
+body {
+    --file-line-width: 50rem;
+    /* adjust as desired and px are fine here as well; the default is 700px */
+}

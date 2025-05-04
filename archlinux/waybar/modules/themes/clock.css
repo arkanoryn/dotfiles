@@ -1,0 +1,24 @@
+@import "../../themes/current-theme.css";
+
+#clock.date,
+#clock.time {
+  opacity: 1;
+  color: @module-fg;
+  padding-top: 6px;
+  padding-left: 2px;
+}
+
+#clock.time {
+  background: @level2-bg;
+  margin-left: -2px;
+  padding-bottom: 5px;
+}
+
+#clock.date {
+  background: @level3-bg;
+  padding-bottom: 5px;
+}
+
+#clock.date:hover {
+  color: @hover-fg;
+}

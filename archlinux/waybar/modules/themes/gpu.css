@@ -1,0 +1,9 @@
+@import "../../themes/current-theme.css";
+
+#custom-gpuinfo {
+  opacity: 1;
+  color: @module-fg;
+  background-color: @level3-bg;
+  padding-top: 6px;
+}
+

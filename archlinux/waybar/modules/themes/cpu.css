@@ -1,0 +1,9 @@
+@import "../../themes/current-theme.css";
+
+#cpu,
+#custom-cpuinfo {
+  opacity: 1;
+  color: @module-fg;
+  background-color: @level2-bg;
+  padding-top: 6px;
+}

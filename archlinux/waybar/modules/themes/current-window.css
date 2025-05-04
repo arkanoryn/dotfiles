@@ -1,0 +1,11 @@
+@import "../../themes/current-theme.css";
+
+#window {
+  opacity: 1;
+  font-size: 11px;
+  color: @module-fg;
+  background-color: @level2-bg;
+  padding-left: 8px;
+  padding-top: 6px;
+}
+

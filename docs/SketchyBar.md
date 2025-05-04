@@ -1,0 +1,1 @@
+See [GitHub repository](https://github.com/FelixKratz/sketchybar)
