@@ -1,9 +1,9 @@
 {
   "hyprland/submap": {
     "format": "{}",
-    "min-length": 8,
-    "max-length": 8,
-    "tooltip": false,
+    "min-length": 3,
+    "max-length": 3,
+    "tooltip": true,
     "always-on": true,
     "rotate": 90
   },
