@@ -39,16 +39,24 @@ read -p "Do you run an nVidia GPU? " -n 1 -r
 echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   paru -S --noconfirm --needed llibva-nvidia-driver nvidia-settingsibva-nvidia-driver nvidia-settings >>"${logfile_path}"
+  k
 fi
 
 # Install Graphical interfaces packages
 echo "Installing GUI packages..."
-sudo pacman -S qt5-wayland qt6-wayland qt5ct nwg-look kvantum >>"${logfile_path}"
+sudo pacman -S kvantum \
+  nwg-look \
+  qt5ct \
+  qt5-wayland \
+  qt6-wayland >>"${logfile_path}"
 
 # Install fonts
 echo "Installing the font packages..."
-paru -S --noconfirm --needed ttf-symbola ttf-twemoji >>"${logfile_path}"
-sudo pacman -S --noconfirm --needed noto-fonts-cjk noto-fonts-emoji >>"${logfile_path}"
+paru -S --noconfirm --needed ttf-symbola \
+  ttf-twemoji >>"${logfile_path}"
+sudo pacman -S --noconfirm --needed noto-fonts-cjk \
+  noto-fonts-emoji \
+  woff2-font-awesome >>"${logfile_path}"
 
 echo "Installing the packages to enable my personal look..."
 sudo pacman -S --noconfirm --needed libnotify \

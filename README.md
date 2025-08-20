@@ -76,63 +76,21 @@ all notes being embedded in the map of contents.
 
 # Getting Started [ArchLinux]
 
-Before running these dotfiles, you should ensure that the following packages have been installed.
+Before running these dotfiles, you must ensure that the relevant packages have been installed.
+
+To simplify the work, a shellscript has been written and can be found in `./archlinux/`
 
 ```sh
-yay -S libva-nvidia-driver \ #if you run an nvidia Graphic Card
-    nvidia-settings \ # same as above
-    qt5-wayland qt6-wayland  qt5ct nwg-look kvantum \ # for graphical interfaces
-    ripgrep \
-    fd \
-    fzf \
-    zen-browser-bin \
-    neovim \
-    fish \
-    starship\
-    ghostty \
-    less \
-    tree \
-    eza \
-    zoxide \
-    bat \
-    stow \
-    waybar \
-    woff2-font-awesome \
-    libnotify swaync \
-    pamixer \
-    pavucontrol \
-    tree \
-    man-db \
-    sddm-theme-sugar-candy
+./archlinux/setup.sh
 ```
 
-> [!info]
-> _yazi requires the following packages to run as expected._
 
-```sh
-yay -S yazi \
-ffmpeg \
-7zip \
-jq \
-poppler \
-fd \
-ripgrep \
-fzf \
-zoxide \
-imagemagick
-```
 > [!WARNING]
+> _yazi requires the following packages to run as expected._
 > Read the [Nvidia guide](https://wiki.hyprland.org/Nvidia/) as there are
 > special rules/configurations that can not be done from just the .dotfiles.
 
 ## Todos
-
-### .dotfiles
-
-- [x] Fix fish to be usable in both archlinux and macOS
-- [x] eza
-- [x] zoxide
-- [x] bat
 
 ### Hyprland
 
