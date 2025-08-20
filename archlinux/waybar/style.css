@@ -76,6 +76,7 @@ tooltip label {
 @import "modules/themes/current-window.css";
 @import "modules/themes/gpu.css";
 @import "modules/themes/memory.css";
+@import "modules/themes/power.css";
 @import "modules/themes/scripts.css";
 @import "modules/themes/submap.css";
 @import "modules/themes/workspaces.css";

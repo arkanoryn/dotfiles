@@ -3,7 +3,8 @@
 #custom-down2end,
 #custom-down3,
 #custom-down3end,
-#custom-down4 {
+#custom-down4,
+#custom-down5 {
   font-size: 29.1px;
 }
 
@@ -35,6 +36,11 @@
 #custom-down4 {
   color: @level3-bg;
   background-color: @main-bg;
+}
+
+#custom-down5 {
+  color: @level1-bg;
+  background-color: @level3-bg;
 }
 
 #custom-downin1 {
