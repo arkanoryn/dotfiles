@@ -97,7 +97,7 @@ yay -S libva-nvidia-driver \ #if you run an nvidia Graphic Card
     bat \
     stow \
     waybar \
-    ttf-font-awesome \
+    woff2-font-awesome \
     libnotify swaync \
     pamixer \
     pavucontrol \
