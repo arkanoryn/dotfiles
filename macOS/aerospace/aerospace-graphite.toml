@@ -1,4 +1,3 @@
-# GRAPHITE config
 # Info: This template is expect to work with a Meh key (ctrl-shift-alt pressed together)
 
 # Notify Sketchybar about workspace change
@@ -85,7 +84,7 @@ ctrl-shift-alt-p = [
   'mode selection',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-1 = [
   'mode workspace',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
 ]
@@ -149,7 +148,7 @@ end tell'
 '''
 
 ctrl-shift-alt-t = '''exec-and-forget osascript -e '
-tell application "WezTerm"
+tell application "iTerm"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
@@ -170,7 +169,7 @@ end tell'
 '''
 
 ctrl-shift-alt-q = '''exec-and-forget osascript -e '
-tell application "Ghostty"
+tell application "WezTerm"
     activate
     if result is not {} then set index of item 1 of result to 1
 end tell'
@@ -211,13 +210,14 @@ ctrl-shift-alt-u = 'workspace 3'
 ctrl-shift-alt-j = 'workspace 4'
 
 # All possible modifiers: cmd, alt, ctrl, shift
+# All possible modifiers: cmd, alt, ctrl, shift
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 [mode.selection.binding]
 ctrl-shift-alt-p = [
   'mode main',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-1 = [
   'mode workspace',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=WORKSPACE',
 ]
@@ -272,7 +272,7 @@ ctrl-shift-alt-p = [
   'mode selection',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-1 = [
   'mode main',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
 ]
@@ -319,7 +319,7 @@ ctrl-shift-alt-p = [
   'mode selection',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=SELECTION',
 ]
-ctrl-shift-alt-period = [
+ctrl-shift-alt-1 = [
   'mode workspace',
   'layout floating tiling',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
@@ -327,7 +327,9 @@ ctrl-shift-alt-period = [
 ]
 space = [
   'mode main',
+  'layout floating tiling',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
+  'mode main',
 ]
 backspace = ['flatten-workspace-tree']
 
