@@ -132,11 +132,11 @@ fi
 read -p "Do you want to install Brave? " -n 1 -r
 echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  yay -Sy brave-bin --noconfirm --needed >>"${logfile_path}"
+  paru -Sy brave-bin --noconfirm --needed >>"${logfile_path}"
 fi
 
 read -p "Do you want to install Zen? " -n 1 -r
 echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  yay -Sy zen-browser-bin --noconfirm --needed >>"${logfile_path}"
+  paru -Sy zen-browser-bin --noconfirm --needed >>"${logfile_path}"
 fi
