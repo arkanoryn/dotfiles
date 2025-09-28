@@ -1,6 +1,12 @@
 switch (uname)
     case Linux
         set -g fish_greeting "[Linux] Welcome to ArkCorp's $hostname!"
+
+        if type -q tmux
+            if not test -n "$TMUX"
+                tmux attach-session -t default || tmux new-session -s default
+            end
+        end
     case Darwin
         fish_add_path /opt/homebrew/bin
         set -g fish_greeting "[MacOS] Welcome to ArkCorp's $hostname!"
