@@ -3,7 +3,7 @@ theme = Catppuccin Mocha
 shell-integration = fish
 command = ~/.config/ghostty/startup.sh
 
-background-opacity = 0.98
+background-opacity = 0.95
 
 font-family = "FiraCode Nerd Font Mono Ret"
-font-size = 14
+font-size = 11
