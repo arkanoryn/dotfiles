@@ -2,6 +2,8 @@ switch (uname)
     case Linux
         set -g fish_greeting "[Linux] Welcome to ArkCorp's $hostname!"
 
+        set -gx OPENSSL_CONF /etc/ssl/openssl.cnf
+        set -gx OPENSSL_MODULES /usr/lib/ssl/engines-3
         if type -q tmux
             if not test -n "$TMUX"
                 tmux attach-session -t default || tmux new-session -s default
@@ -27,3 +29,16 @@ enable_transience
 
 # Zoxide initialization
 zoxide init --cmd cd fish | source
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+if test -f /opt/miniconda3/bin/conda
+    eval /opt/miniconda3/bin/conda "shell.fish" hook $argv | source
+else
+    if test -f "/opt/miniconda3/etc/fish/conf.d/conda.fish"
+        . "/opt/miniconda3/etc/fish/conf.d/conda.fish"
+    else
+        set -x PATH /opt/miniconda3/bin $PATH
+    end
+end
+# <<< conda initialize <<<
