@@ -327,7 +327,6 @@ ctrl-shift-alt-1 = [
 ]
 space = [
   'mode main',
-  'layout floating tiling',
   'exec-and-forget sketchybar --trigger aerospace_mode_change MODE_CHANGE=MAIN',
   'mode main',
 ]
