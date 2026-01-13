@@ -27,3 +27,8 @@ enable_transience
 
 # Zoxide initialization
 zoxide init --cmd cd fish | source
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/anynines/.lmstudio/bin
+# End of LM Studio CLI section
+
