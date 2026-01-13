@@ -12,5 +12,7 @@ common/fish/fish_variables
 # this is an internal config file for sketchybar, when swapping keyboard layout.
 macOS/sketchybar/keymap.conf
 macOS/aerospace/aerospace.toml
+macOS/aerospace/.layout_config.conf
 
 archlinux/waybar2
+
