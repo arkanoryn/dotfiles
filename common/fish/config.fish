@@ -9,9 +9,25 @@ switch (uname)
         #         tmux attach-session -t default || tmux new-session -s default
         #     end
         # end
+        # >>> conda initialize >>>
+        # !! Contents within this block are managed by 'conda init' !!
+        if test -f /opt/miniconda3/bin/conda
+            eval /opt/miniconda3/bin/conda "shell.fish" hook $argv | source
+        else
+            if test -f "/opt/miniconda3/etc/fish/conf.d/conda.fish"
+                . "/opt/miniconda3/etc/fish/conf.d/conda.fish"
+            else
+                set -x PATH /opt/miniconda3/bin $PATH
+            end
+        end
+        # <<< conda initialize <<<
     case Darwin
         fish_add_path /opt/homebrew/bin
         set -g fish_greeting "[MacOS] Welcome to ArkCorp's $hostname!"
+
+        # Added by LM Studio CLI (lms)
+        set -gx PATH $PATH $HOME/.lmstudio/bin
+        # End of LM Studio CLI section
     case '*'
         set -g fish_greeting "[Unknown] $hostname is running an un-parametered fish.\nCheckout ~/.config/fish/config.fish"
 end
@@ -29,16 +45,3 @@ enable_transience
 
 # Zoxide initialization
 zoxide init --cmd cd fish | source
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-if test -f /opt/miniconda3/bin/conda
-    eval /opt/miniconda3/bin/conda "shell.fish" hook $argv | source
-else
-    if test -f "/opt/miniconda3/etc/fish/conf.d/conda.fish"
-        . "/opt/miniconda3/etc/fish/conf.d/conda.fish"
-    else
-        set -x PATH /opt/miniconda3/bin $PATH
-    end
-end
-# <<< conda initialize <<<

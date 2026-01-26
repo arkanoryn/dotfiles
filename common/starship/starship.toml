@@ -103,7 +103,6 @@ cherry_pick = '[🍒 PICKING](bold red)'
 disabled = false
 deleted_style = "bg:maroon bold crust"
 added_style = 'bg:green bold crust'
-style = "bg:yellow"
 format = '[ +$added ]($added_style)[](bg:maroon fg:green)[ -$deleted ]($deleted_style)'
 
 [nodejs]
