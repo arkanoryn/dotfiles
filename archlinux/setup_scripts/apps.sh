@@ -55,6 +55,17 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
 fi
 
+# Install LazyVim dependencies
+read -p "Do you want to install LazyVim dependencies? (node, npm, linters)" -n 1 -r
+echo # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  # Install Node.js and npm
+  sudo pacman -S nodejs npm --needed --noconfirm >>"${logfile_path}"
+  
+  # Install global npm packages for LazyVim linting/formatting
+  npm install -g markdownlint-cli >>"${logfile_path}"
+fi
+
 # Different app
 read -p "Do you want to install Discord? " -n 1 -r
 echo # (optional) move to a new line

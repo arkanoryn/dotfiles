@@ -1,6 +1,6 @@
 switch (uname)
     case Linux
-        set EDITOR nvim
+        set EDITOR "NVIM_APPNAME=lazyvim nvim"
         set DOTFILES "~/.dotfiles"
     case Darwin
         set EDITOR "NVIM_APPNAME=LazyVim nvim"
@@ -49,9 +49,9 @@ end
 abbr mkdir "mkdir -p"
 
 # NeoVim
-alias y $EDITOR
-alias yh "$EDITOR ."
-alias vi $EDITOR
+abbr y $EDITOR
+abbr yh "$EDITOR ."
+abbr vi $EDITOR
 alias s nvim # useful if there is a distinction between LazyVim and vanilla nvim
 alias st "nvim ."
 
