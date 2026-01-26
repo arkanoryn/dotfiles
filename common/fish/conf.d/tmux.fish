@@ -1,6 +1,7 @@
 # global variables
 set -q fish_tmux_autostart || set -g fish_tmux_autostart false
 set -q fish_tmux_autostarted || set -gx fish_tmux_autostarted false
+set -q fish_tmux_initialized || set -gx fish_tmux_initialized false
 # set the configuration path
 if test -e "$HOME/.tmux.conf"
     set -q fish_tmux_config || set -gx fish_tmux_config "$HOME/.tmux.conf"
@@ -10,8 +11,22 @@ else
     set -q fish_tmux_config || set -gx fish_tmux_config "$HOME/.tmux.conf"
 end
 
-# aliases
-alias tmux=_fish_tmux_plugin_run
+# Lazy-load wrapper for tmux - defers initialization until first use
+function __tmux_lazy_init
+    if test "$fish_tmux_initialized" != true
+        set -gx fish_tmux_initialized true
+        # Load the actual initialization after first call
+        _fish_tmux_create_aliases
+    end
+end
+
+# Create a wrapper alias that triggers lazy-loading
+alias tmux=_fish_tmux_lazy_wrapper
+
+function _fish_tmux_lazy_wrapper
+    __tmux_lazy_init
+    _fish_tmux_plugin_run $argv
+end
 function _fish_tmux_create_aliases --on-variable fish_tmux_no_alias
     if test "$fish_tmux_no_alias" != true
         function _build_tmux_alias
@@ -54,7 +69,7 @@ function _fish_tmux_create_aliases --on-variable fish_tmux_no_alias
         functions -e tds tksv tl tmuxconf ta tad ts tkss
     end
 end
-_fish_tmux_create_aliases
+# Don't auto-initialize on startup; wait for lazy-load trigger
 
 # wrapper function for tmux
 function _fish_tmux_plugin_run

@@ -2,25 +2,13 @@ switch (uname)
     case Linux
         set -g fish_greeting "[Linux] Welcome to ArkCorp's $hostname!"
 
-        set -gx OPENSSL_CONF /etc/ssl/openssl.cnf
-        set -gx OPENSSL_MODULES /usr/lib/ssl/engines-3
+        # set -gx OPENSSL_CONF /etc/ssl/openssl.cnf
+        # set -gx OPENSSL_MODULES /usr/lib/ssl/engines-3
         # if type -q tmux
         #     if not test -n "$TMUX"
         #         tmux attach-session -t default || tmux new-session -s default
         #     end
         # end
-        # >>> conda initialize >>>
-        # !! Contents within this block are managed by 'conda init' !!
-        if test -f /opt/miniconda3/bin/conda
-            eval /opt/miniconda3/bin/conda "shell.fish" hook $argv | source
-        else
-            if test -f "/opt/miniconda3/etc/fish/conf.d/conda.fish"
-                . "/opt/miniconda3/etc/fish/conf.d/conda.fish"
-            else
-                set -x PATH /opt/miniconda3/bin $PATH
-            end
-        end
-        # <<< conda initialize <<<
     case Darwin
         fish_add_path /opt/homebrew/bin
         set -g fish_greeting "[MacOS] Welcome to ArkCorp's $hostname!"
@@ -43,10 +31,6 @@ end
 starship init fish | source
 enable_transience
 
-# Zoxide initialization
-zoxide init --cmd cd fish | source
-
 # Added by LM Studio CLI (lms)
-set -gx PATH $PATH /Users/anynines/.lmstudio/bin
+set -gx PATH $PATH $HOME/.lmstudio/bin
 # End of LM Studio CLI section
-
