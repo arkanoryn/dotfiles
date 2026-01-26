@@ -108,6 +108,7 @@ To simplify the work, a shellscript has been written and can be found in `./arch
 - [ ] hyprshot
 - [ ] swwww
 - [ ] yazi
+- [ ] elephant/walker
 
 ### Waybar
 
