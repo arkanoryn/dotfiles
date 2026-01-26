@@ -57,6 +57,7 @@ To do so, `cd` into `macOS` and run the command below. Do the same for `common`.
 ```sh
 stow .
 ```
+
 If you want to only link _some_ packages, `cd` into `common` or `macOS` and run the command:
 
 ```sh
@@ -84,37 +85,7 @@ To simplify the work, a shellscript has been written and can be found in `./arch
 ./archlinux/setup.sh
 ```
 
-
 > [!WARNING]
 > _yazi requires the following packages to run as expected._
 > Read the [Nvidia guide](https://wiki.hyprland.org/Nvidia/) as there are
 > special rules/configurations that can not be done from just the .dotfiles.
-
-## Todos
-
-### Hyprland
-
-### Bindings
-
-### Other apps
-- [ ] login
-- [x] wallpapers
-- [x] waybar
-- [ ] hyprlock
-- [ ] hypridle
-- [ ] hyprpaper
-- [ ] dunst
-- [ ] swaync
-- [ ] hyprshot
-- [ ] swwww
-- [ ] yazi
-
-### Waybar
-
-A lot of work to do on the waybar,but it's a good starting point for now.
-
-### Audio Control
-
-- [ ] use pipewire (and remove any un-necessary other app)
-- [ ] make the controller floating under the area (by default) instead of opening another tiled window
-
