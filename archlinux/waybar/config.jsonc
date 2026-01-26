@@ -1,0 +1,118 @@
+// -*- mode: json -*-
+{
+  "layer": "top",
+  "position": "left",
+  "mod": "dock",
+  "width": 37,
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "reload_style_on_change": true,
+  "include": [
+    "~/.config/waybar/modules/arrows/down.jsonc",
+    "~/.config/waybar/modules/arrows/pipe.jsonc",
+    "~/.config/waybar/modules/arrows/up.jsonc",
+    "~/.config/waybar/modules/group-scripts.jsonc",
+    "~/.config/waybar/modules/clock.jsonc",
+    "~/.config/waybar/modules/cpu.jsonc",
+    "~/.config/waybar/modules/current-window.jsonc",
+    "~/.config/waybar/modules/gpu.jsonc",
+    "~/.config/waybar/modules/memory.jsonc",
+    "~/.config/waybar/modules/pending_updates.jsonc",
+    "~/.config/waybar/modules/power.jsonc",
+    "~/.config/waybar/modules/submap.jsonc",
+    "~/.config/waybar/modules/workspaces.jsonc",
+  ],
+
+  "modules-left": [
+    "custom/power",
+    "custom/down5",
+    "group/metrics",
+    "custom/down2",
+    "group/scripts",
+    "custom/down3end"
+  ],
+
+  "modules-center": [
+    // current song
+    "custom/up3end",
+    "hyprland/window",
+
+    "custom/up2",
+    "hyprland/submap",
+
+    "custom/upin1",
+
+    "custom/up1",
+    // Privacy
+    // Rework distro with notifications notes for update
+    "custom/distro",        // distro icon
+    "custom/down1",
+
+    "custom/downin1",
+    "hyprland/workspaces",
+    "custom/down2end"
+  ],
+
+  "modules-right": [
+    // "idle_inhibitor",       // idle inhibitor
+    "custom/pending_updates",
+    "pulseaudio",
+    "custom/up3end",
+    // Group: time, date
+    "clock#time",           // time
+
+    "custom/up2",
+    "clock#date"           // date
+
+    // cliphist
+    // notification (center)
+    // Network (wifi, bluetooth, connexion speed)
+  ],
+
+  "custom/distro": {
+    "format": " ",
+    "tooltip": false
+  },
+
+  "group/metrics": {
+    "orientation": "vertical",
+    "drawer": {
+      "transition-duration": 100,
+      "children-class": "groups-metrics",
+      "click-to-reveal": false
+    },
+    "modules": [
+      "memory",               // memory
+      "custom/pipe",
+      "custom/cpuinfo",       // cpu temperature
+      "cpu",                  // cpu
+      "custom/pipe",
+      "custom/gpuinfo"       // gpu
+      // "custom/down4"
+      // Disk
+    ]
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}",
+    "rotate": 0,
+    "format-muted": "婢",
+    "on-click": "pavucontrol -t 3",
+    "on-click-right": "volumecontrol.sh -s ''",
+    "on-click-middle": "volumecontrol.sh -o m",
+    "on-scroll-up": "volumecontrol.sh -o i",
+    "on-scroll-down": "volumecontrol.sh -o d",
+    "tooltip-format": "{icon} {desc} // {volume}%",
+    "scroll-step": 5,
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": ["", "", ""]
+    }
+  }
+}

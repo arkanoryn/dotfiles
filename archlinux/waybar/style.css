@@ -1,0 +1,82 @@
+/*
+** /!\ This theme is inspired and mostly "stolen" from the "mechabar" theme
+** from sejjy. I can only invite you to visit their dotfile:
+** https://github.com/sejjy/mechabar
+*/
+
+@import "themes/current-theme.css";
+
+* {
+  /* font-family: "JetBrainsMono Nerd Font"; */
+  font-family: "FiraCode Nerd Font";
+  font-weight: bold;
+  font-size: 10px;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  margin: 0;
+}
+
+/* <<--< Main Background >-->> */
+
+window#waybar > box {
+  background-color: @main-bg;
+}
+
+/* <<--< Drop Shadow >-->> */
+
+window#waybar {
+  background: @shadow;
+}
+
+/* <<--< Tooltip >-->> */
+
+tooltip {
+  background: @main-bg;
+  border: solid;
+  border-width: 1.5px;
+  border-radius: 8px;
+  border-color: @main-br;
+}
+tooltip label {
+  color: @main-fg;
+  font-weight: normal;
+  margin: -1.5px 3px;
+}
+
+/* Distro Icon */
+
+#custom-distro {
+  color: @distro-fg;
+  background: @distro-bg;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  text-shadow: 0 0 1.5px rgba(0, 0, 0, 1);
+  font-size: 20px;
+}
+
+#idle_inhibitor {
+  background: @time;
+  padding: 0 0 0 7px;
+}
+#idle_inhibitor:hover {
+  color: @hover-fg;
+}
+
+#custom-power {
+  border-radius: 10px;
+  padding: 0 6px 0 9px;
+}
+
+@import "modules/themes/arrows/down.css";
+@import "modules/themes/arrows/pipe.css";
+@import "modules/themes/arrows/up.css";
+@import "modules/themes/clock.css";
+@import "modules/themes/cpu.css";
+@import "modules/themes/current-window.css";
+@import "modules/themes/gpu.css";
+@import "modules/themes/memory.css";
+@import "modules/themes/power.css";
+@import "modules/themes/scripts.css";
+@import "modules/themes/submap.css";
+@import "modules/themes/workspaces.css";

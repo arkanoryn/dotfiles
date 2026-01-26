@@ -1,0 +1,32 @@
+{
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "rotate": 90,
+    "all-outputs": true,
+    "active-only": false,
+    "on-click": "activate",
+    "disable-scroll": false,
+    "on-scroll-up": "hyprctl dispatch workspace -1",
+    "on-scroll-down": "hyprctl dispatch workspace +1",
+    "show-special": true,
+    "special-visible-only": true,
+    "format": "{icon}\n{windows}",
+    "format-window-separator": "\n",
+    "window-rewrite-default": "",
+    "window-rewrite": {
+      "title<.*youtube.*>": "", // Windows whose titles contain "youtube"
+      "title<*github.*>": "", //  title contains "github".
+      "Firefox": "󰈹", // Windows whose classes are "firefox"
+      "Zen Browser": "<span foreground='#f5a97f'>󰺕</span>", // Windows whose classes are "Zen Browser"
+      "Brave": "󱁝", // Windows whose classes are "firefox"
+      "ghostty": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
+      "code": "󰨞",
+    },
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+    }
+  },
+}

@@ -1,0 +1,12 @@
+{
+  "custom/pending_updates": {
+    "exec": " pending_update.sh",
+    "return-type": "json",
+    "format": "{}",
+    // "rotate": 90,
+    "interval": 7200, // once every 2 hours (7200 secs)
+    "tooltip": false,
+    "min-length": 6,
+    "max-length": 6
+  }
+}

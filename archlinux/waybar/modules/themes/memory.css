@@ -1,0 +1,9 @@
+@import "../../themes/current-theme.css";
+
+#memory {
+  opacity: 1;
+  color: @module-fg;
+  background-color: @level3-bg;
+  padding-top: 8px;
+}
+

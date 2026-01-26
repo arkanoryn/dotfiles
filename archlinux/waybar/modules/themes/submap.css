@@ -1,0 +1,26 @@
+@import "../../themes/current-theme.css";
+
+/* submap */
+
+#submap.Default,
+#submap.layout,
+#submap.workspace {
+  opacity: 1;
+  font-size: 11px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+#submap.Default {
+  background-color: @level3-bg;
+  color: @module-fg;
+}
+
+#submap.layout {
+  background-color: @green;
+  color: @base;
+}
+
+#submap.workspace {
+  background-color: @peach;
+}

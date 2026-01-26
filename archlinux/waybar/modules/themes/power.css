@@ -1,0 +1,10 @@
+@import "../../themes/current-theme.css";
+
+#custom-power {
+  opacity: 1;
+  color: @module-fg;
+  background-color: @level1-bg;
+  padding: 4px 0 4px 4px;
+}
+
+

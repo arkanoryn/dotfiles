@@ -1,30 +1,91 @@
-# Fonts
-Install a font from [nerdfonts.com/font-downloads](nerdfonts.com/font-downloads)
+# Getting Started [MacOS]
 
-# ZSH
-Using the [oh-my-zsh distribution](https://ohmyz.sh/#install).
-See website for instructions and then create symlink of the different config files from `/zsh`
+## Pre-requisites
 
-```bash
-ln -s <dotfile_path>/zsh/zshenv ~/.zshenv
-ln -s <dotfile_path>/zsh/zshrc ~/.zshrc
-ln -s <dotfile_path>/zsh/zprofile ~/.zprofile
-ln -s <dotfile_path>/zsh/p10k.zsh ~/.p10k.zsh
+### Packages
+
+```sh
+brew install stow # to manage all the configuration folders
+
+# terminal packages
+brew install brew install --cask wezterm \
+  && brew install fish \
+  && brew install starship \
+  && brew install eza \
+  && brew install zoxide \
+  && brew install bat \
+  && brew install fzf \
+
+# mac windows management packages
+brew install --cask nikitabobko/tap/aerospace
+brew install lua \
+  && brew tap FelixKratz/formulae \
+  && brew install sketchybar \
+  && brew install borders
+
+# LazyVim Dependencies
+brew install ripgrep 
+  && brew install fd \
+  # fzf might be skipped if already installed with the terminal packages
+  && brew install fzf \ 
+  && brew install neovim
 ```
 
-# Git
-- [ ] move `~/.config/git/gitignore` to `.dotfile`
+* [Stow](https://www.gnu.org/software/stow/manual/stow.html): a symlink farm manager
+* [WezTerm](https://wezfurlong.org/wezterm/): a terminal emulator
+* [Fish](https://fishshell.com/): a command line shell
+* [Starship](https://starship.rs/): a minimal, blazing-fast, and infinitely
+  customizable prompt for any shell!
+* [AeroSpace](https://github.com/nikitabobko/AeroSpace): a tiling window manager
+* [SketchyBar](https://felixkratz.github.io/SketchyBar/): a fancy bar to work with
+  AeroSpace
 
-- Auto correction
-```bash
-git config --global user.name "<your_name>"
-git config --global user.email "<your_email>"
-git config --global help.autocorrect 1            # enable autocorrect
-git config --global core.autocrlf true            # fix end of files
+### Fonts
+
+Install a font from [nerdfonts.com/font-downloads](nerdfonts.com/font-downloads).
+
+> Info
+> Wezterm requires `FiraCode`. This can be changed from the Wezterm config file.
+
+## Installation / Setup
+
+Packages have been spread between `MacOS` specific packages and settings and common ones.
+You can decide to link all of them to your own `.config` folder, or only some of them.
+
+To do so, `cd` into `macOS` and run the command below. Do the same for `common`.
+
+```sh
+stow .
 ```
 
-- global gitignore
-```bash
-ln -s git/gitignore ~/.config/git/gitignore
-git config --global core.excludesfile <global.gitignore.file>
+If you want to only link _some_ packages, `cd` into `common` or `macOS` and run the command:
+
+```sh
+stow <folder>
 ```
+
+## Documentation
+
+Some of the configurations and shortcuts the tools I am using create are
+documented under the `/docs` folder.
+While all files are simple markdown ones, the folder is an
+[Obsidian](https://obsidian.md/) folder. You might want to open it with that
+application instead of a regular app, as it is mostly built as atomic notes with
+all notes being embedded in the map of contents.
+
+---
+
+# Getting Started [ArchLinux]
+
+Before running these dotfiles, you must ensure that the relevant packages have been installed.
+
+To simplify the work, a shellscript has been written and can be found in `./archlinux/`
+
+```sh
+./archlinux/setup.sh
+```
+
+> [!WARNING]
+> _yazi requires the following packages to run as expected._
+> Read the [Nvidia guide](https://wiki.hyprland.org/Nvidia/) as there are
+> special rules/configurations that can not be done from just the .dotfiles.

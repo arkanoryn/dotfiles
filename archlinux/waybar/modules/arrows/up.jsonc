@@ -1,0 +1,32 @@
+{
+  "custom/up1": {
+    "format": "",
+    "rotate": 90,
+    "tooltip": false
+  },
+  "custom/up2": {
+    "format": "",
+    "rotate": 90,
+    "tooltip": false
+  },
+  "custom/up3": {
+    "format": "",
+    "rotate": 90,
+    "tooltip": false
+  },
+  "custom/up3end": {
+    "format": "",
+    "rotate": 90,
+    "tooltip": false
+  },
+  "custom/up4": {
+    "format": "",
+    "rotate": 90,
+    "tooltip": false
+  },
+  "custom/upin1": {
+    "format": "",
+    "rotate": 90,
+    "tooltip": false
+  },
+}

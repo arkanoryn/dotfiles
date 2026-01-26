@@ -1,0 +1,10 @@
+@import "../../themes/current-theme.css";
+
+#custom-change_wallpaper,
+#custom-change_keymap {
+  opacity: 1;
+  color: @module-fg;
+  background-color: @level2-bg;
+  padding-top: 6px;
+  padding-top: 6px;
+}

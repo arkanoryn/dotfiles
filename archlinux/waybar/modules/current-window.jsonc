@@ -1,0 +1,78 @@
+{
+  "hyprland/window": {
+    "format": "{}",
+    "min-length": 4,
+    "max-length": 4,
+    "tooltip": true,
+
+    "rewrite": {
+      // Desktop
+      "": 
+      "<span foreground='#8aadf4'>  </span>",
+
+      // Terminal
+      "~(.*)": "  ",
+      "zsh": "  ",
+      "fish": " 󰈺 ",
+      "kitty": "  ",
+      "ghostty": "  ",
+
+      // "tmux(.*)":
+      // "<span foreground='#a6e3a1'> </span> Tmux",
+
+      // Browser
+
+      "(.*)Mozilla Firefox":
+      "<span foreground='#ed8796'> 󰈹 </span>",
+      "(.*) — Mozilla Firefox":
+      "<span foreground='#ed8796'> 󰈹 </span>",
+
+      "(.*)Zen Browser":
+      "<span foreground='#f5a97f'> 󰺕 </span>",
+      "(.*) — Zen Browser":
+      "<span foreground='#f5a97f'> 󰺕 </span>",
+
+      "(.*)Brave":
+      "<span foreground='#ed8796'> 󱏛 </span>",
+      "(.*) — Brave":
+      "<span foreground='#ed8796'> 󱏛 </span>",
+
+      // Development
+
+      "yh":
+      "<span foreground='#a6da95'>  </span>",
+      "nvim":
+      "<span foreground='#a6da95'>  </span>",
+      "nvim (.*)":
+      "<span foreground='#a6da95'>  </span>",
+
+      // Media
+
+      "VLC media player": 
+      "<span foreground='#f5a97f'> 󰕼 </span>",
+      "(.*) - VLC media player": 
+      "<span foreground='#f5a97f'> 󰕼 </span>",
+
+      "(.*) - mpv": 
+      "<span foreground='#c6a0f6'>  </span>",
+
+      // "qView": "  qView",
+      //
+      // "(.*).jpg": "  $1.jpg",
+      // "(.*).png": "  $1.png",
+      // "(.*).svg": "  $1.svg",
+
+      // Social
+
+      // "vesktop": 
+      // "<span foreground='#8aadf4'> </span> Discord",
+      //
+      // "• Discord(.*)": "Discord$1",
+      // "(.*)Discord(.*)": 
+      // "<span foreground='#8aadf4'> </span> $1Discord$2",
+      //
+      // // System
+      // "Authenticate": "  Authenticate"
+    }
+  }
+}
