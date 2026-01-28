@@ -6,4 +6,5 @@ command = ~/.config/ghostty/startup.sh
 background-opacity = 0.95
 
 font-family = "FiraCode Nerd Font Mono Ret"
-font-size = 11
+font-size = 12
+keybind = shift+enter=text:\x1b[13;2u

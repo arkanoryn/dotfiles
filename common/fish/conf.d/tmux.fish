@@ -1,6 +1,7 @@
 # global variables
 set -q fish_tmux_autostart || set -g fish_tmux_autostart false
 set -q fish_tmux_autostarted || set -gx fish_tmux_autostarted false
+set -q fish_tmux_initialized || set -gx fish_tmux_initialized false
 # set the configuration path
 if test -e "$HOME/.tmux.conf"
     set -q fish_tmux_config || set -gx fish_tmux_config "$HOME/.tmux.conf"
@@ -10,8 +11,23 @@ else
     set -q fish_tmux_config || set -gx fish_tmux_config "$HOME/.tmux.conf"
 end
 
-# aliases
-alias tmux=_fish_tmux_plugin_run
+# Lazy-load wrapper for tmux - defers initialization until first use
+function __tmux_lazy_init
+    if test "$fish_tmux_initialized" != true
+        set -gx fish_tmux_initialized true
+        # Load the actual initialization after first call
+        _fish_tmux_create_aliases
+    end
+end
+
+# Create a wrapper alias that triggers lazy-loading
+alias tmux=_fish_tmux_lazy_wrapper
+
+function _fish_tmux_lazy_wrapper
+    __tmux_lazy_init
+    _fish_tmux_plugin_run $argv
+end
+
 function _fish_tmux_create_aliases --on-variable fish_tmux_no_alias
     if test "$fish_tmux_no_alias" != true
         function _build_tmux_alias
@@ -44,17 +60,18 @@ function _fish_tmux_create_aliases --on-variable fish_tmux_no_alias
         # `-t` and `-s` flag for tmux commands require argument
         # so we remove the flag when called without argument and run normally when called with argument
         # see: https://github.com/ohmyzsh/ohmyzsh/issues/12230
-        _build_tmux_alias "ta" "attach" "-t"
-        _build_tmux_alias "tad" "attach -d" "-t"
-        _build_tmux_alias "ts" "new-session" "-s"
-        _build_tmux_alias "tkss" "kill-session" "-t"
+        _build_tmux_alias ta attach -t
+        _build_tmux_alias tad "attach -d" -t
+        _build_tmux_alias ts new-session -s
+        _build_tmux_alias tkss kill-session -t
 
         functions -e _build_tmux_alias # remove this function after use
     else
         functions -e tds tksv tl tmuxconf ta tad ts tkss
     end
 end
-_fish_tmux_create_aliases
+
+# Don't auto-initialize on startup; wait for lazy-load trigger
 
 # wrapper function for tmux
 function _fish_tmux_plugin_run
@@ -72,19 +89,19 @@ function _fish_tmux_plugin_run
     set -q fish_tmux_unicode || set fish_tmux_unicode false
 
     if test -e /usr/share/terminfo/t/tmux
-        set -q fish_tmux_fixterm_without_256color || set fish_tmux_fixterm_without_256color "tmux"
+        set -q fish_tmux_fixterm_without_256color || set fish_tmux_fixterm_without_256color tmux
     else
-        set -q fish_tmux_fixterm_without_256color || set fish_tmux_fixterm_without_256color "screen"
+        set -q fish_tmux_fixterm_without_256color || set fish_tmux_fixterm_without_256color screen
     end
 
     if test -e /usr/share/terminfo/t/tmux-256color
-        set -q fish_tmux_fixterm_with_256color || set fish_tmux_fixterm_with_256color "tmux-256color"
+        set -q fish_tmux_fixterm_with_256color || set fish_tmux_fixterm_with_256color tmux-256color
     else
-        set -q fish_tmux_fixterm_with_256color || set fish_tmux_fixterm_with_256color "screen-256color"
+        set -q fish_tmux_fixterm_with_256color || set fish_tmux_fixterm_with_256color screen-256color
     end
 
     # determine if the terminal supports 256 color
-    if test (tput colors) = "256"
+    if test (tput colors) = 256
         set -gx fish_tmux_term $fish_tmux_fixterm_with_256color
     else
         set -gx fish_tmux_term $fish_tmux_fixterm_without_256color
@@ -108,7 +125,7 @@ function _fish_tmux_plugin_run
     test "$fish_tmux_iterm2" = true && set -a tmux_cmd -CC
     test "$fish_tmux_unicode" = true && set -a tmux_cmd -u
 
-    test "$fish_tmux_detached" = true && set _detached "-d"
+    test "$fish_tmux_detached" = true && set _detached -d
 
     if test "$fish_tmux_autoname_session" = true
         # name the session after the basename of current directory
@@ -116,7 +133,7 @@ function _fish_tmux_plugin_run
         # if the current directory is the home directory, name it 'HOME'
         test "$PWD" = "$HOME" && set session_name HOME
         # if the current directory is the root directory, name it 'ROOT'
-        test "$PWD" = "/" && set session_name ROOT
+        test "$PWD" = / && set session_name ROOT
     else
         set session_name "$fish_tmux_default_session_name"
     end
@@ -165,17 +182,7 @@ end
 
 # this will autostart tmux if $fish_tmux_autostart is set to `true` using the `--on-variable` function option
 function _fish_tmux_plugin_run_autostart --on-variable fish_tmux_autostart
-    if test "$fish_tmux_autostart" = true && \
-    test -z "$TMUX" && \
-    test -z "$INSIDE_EMACS" && \
-    test -z "$EMACS" && \
-    test -z "$VIM" && \
-    test -z "$NVIM" && \
-    test -z "$INTELLIJ_ENVIRONMENT_READER" && \
-    test -z "$VSCODE_RESOLVING_ENVIRONMENT" && \
-    test "$TERM_PROGRAM" != 'vscode' && \
-    test "$TERM_PROGRAM" != 'zed' && \
-    test "$TERMINAL_EMULATOR" != 'JetBrains-JediTerm'
+    if test "$fish_tmux_autostart" = true && test -z "$TMUX" && test -z "$INSIDE_EMACS" && test -z "$EMACS" && test -z "$VIM" && test -z "$NVIM" && test -z "$INTELLIJ_ENVIRONMENT_READER" && test -z "$VSCODE_RESOLVING_ENVIRONMENT" && test "$TERM_PROGRAM" != vscode && test "$TERM_PROGRAM" != zed && test "$TERMINAL_EMULATOR" != JetBrains-JediTerm
         set -q fish_tmux_autostart_once || set fish_tmux_autostart_once true
 
         if test "$fish_tmux_autostart_once" = false || test ! "$fish_tmux_autostarted" = true

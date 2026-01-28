@@ -1,8 +1,5 @@
 {
-  "extras": [
-    "lazyvim.plugins.extras.editor.harpoon2",
-    "lazyvim.plugins.extras.lang.markdown"
-  ],
+  "extras": [],
   "news": {
     "NEWS.md": "10960"
   },

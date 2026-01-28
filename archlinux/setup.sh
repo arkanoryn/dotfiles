@@ -2,13 +2,18 @@
 
 tmp_path="${HOME}/.tmp"
 logfile_path="${tmp_path}/log.txt"
+<<<<<<< HEAD
 qmk_path="${HOME}/code/qmk"
+=======
+qmk_path="${HOME}/Code/qmk"
+>>>>>>> master
 
 echo "Creating a log file in #{logfile_path}..."
 mkdir "${tmp_path}"
 touch "${logfile_path}"
 echo "$(date +"%Y-%m-%d %H:%M:%S")" >"${logfile_path}"
 
+<<<<<<< HEAD
 # First, update the machine
 sudo pacman -Syu >>"${logfile_path}"
 
@@ -140,3 +145,10 @@ echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   paru -Sy zen-browser-bin --noconfirm --needed >>"${logfile_path}"
 fi
+=======
+. ./setup_scripts/arch_default.sh
+
+. ./setup_scripts/hyprland.sh
+
+. ./setup_scripts/apps.sh
+>>>>>>> master
