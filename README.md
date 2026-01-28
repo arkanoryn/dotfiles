@@ -56,6 +56,36 @@ To do so, `cd` into `macOS` and run the command below. Do the same for `common`.
 
 ```sh
 stow .
+<<<<<<< HEAD
+```
+If you want to only link _some_ packages, `cd` into `common` or `macOS` and run the command:
+
+```sh
+stow <folder>
+```
+
+## Documentation
+
+Some of the configurations and shortcuts the tools I am using create are
+documented under the `/docs` folder.
+While all files are simple markdown ones, the folder is an
+[Obsidian](https://obsidian.md/) folder. You might want to open it with that
+application instead of a regular app, as it is mostly built as atomic notes with
+all notes being embedded in the map of contents.
+
+---
+
+# Getting Started [ArchLinux]
+
+Before running these dotfiles, you must ensure that the relevant packages have been installed.
+
+To simplify the work, a shellscript has been written and can be found in `./archlinux/`
+
+```sh
+./archlinux/setup.sh
+```
+
+=======
 ```
 
 If you want to only link _some_ packages, `cd` into `common` or `macOS` and run the command:
@@ -89,3 +119,5 @@ To simplify the work, a shellscript has been written and can be found in `./arch
 > _yazi requires the following packages to run as expected._
 > Read the [Nvidia guide](https://wiki.hyprland.org/Nvidia/) as there are
 > special rules/configurations that can not be done from just the .dotfiles.
+<<<<<<< HEAD
+

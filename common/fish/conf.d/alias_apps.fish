@@ -1,5 +1,6 @@
 switch (uname)
     case Linux
+        set EDITOR nvim
         set EDITOR "NVIM_APPNAME=lazyvim nvim"
         set DOTFILES "~/.dotfiles"
     case Darwin
@@ -62,20 +63,33 @@ function __init_fzf_abbr --description "Initialize fzf abbreviations on first us
 end
 
 # Trigger lazy-loading when abbreviations are first used
-abbr --erase l 2>/dev/null; abbr l "__init_eza_abbr; l"
-abbr --erase ls 2>/dev/null; abbr ls "__init_eza_abbr; ls"
-abbr --erase la 2>/dev/null; abbr la "__init_eza_abbr; la"
-abbr --erase ll 2>/dev/null; abbr ll "__init_eza_abbr; ll"
-abbr --erase ld 2>/dev/null; abbr ld "__init_eza_abbr; ld"
-abbr --erase lt 2>/dev/null; abbr lt "__init_eza_abbr; lt"
-abbr --erase lt1 2>/dev/null; abbr lt1 "__init_eza_abbr; lt1"
-abbr --erase lt2 2>/dev/null; abbr lt2 "__init_eza_abbr; lt2"
-abbr --erase lta 2>/dev/null; abbr lta "__init_eza_abbr; lta"
-abbr --erase lta1 2>/dev/null; abbr lta1 "__init_eza_abbr; lta1"
-abbr --erase lta2 2>/dev/null; abbr lta2 "__init_eza_abbr; lta2"
+abbr --erase l 2>/dev/null
+abbr l "__init_eza_abbr; l"
+abbr --erase ls 2>/dev/null
+abbr ls "__init_eza_abbr; ls"
+abbr --erase la 2>/dev/null
+abbr la "__init_eza_abbr; la"
+abbr --erase ll 2>/dev/null
+abbr ll "__init_eza_abbr; ll"
+abbr --erase ld 2>/dev/null
+abbr ld "__init_eza_abbr; ld"
+abbr --erase lt 2>/dev/null
+abbr lt "__init_eza_abbr; lt"
+abbr --erase lt1 2>/dev/null
+abbr lt1 "__init_eza_abbr; lt1"
+abbr --erase lt2 2>/dev/null
+abbr lt2 "__init_eza_abbr; lt2"
+abbr --erase lta 2>/dev/null
+abbr lta "__init_eza_abbr; lta"
+abbr --erase lta1 2>/dev/null
+abbr lta1 "__init_eza_abbr; lta1"
+abbr --erase lta2 2>/dev/null
+abbr lta2 "__init_eza_abbr; lta2"
 
-abbr --erase cat 2>/dev/null; abbr cat "__init_bat_abbr; cat"
-abbr --erase fzf 2>/dev/null; abbr fzf "__init_fzf_abbr; fzf"
+abbr --erase cat 2>/dev/null
+abbr cat "__init_bat_abbr; cat"
+abbr --erase fzf 2>/dev/null
+abbr fzf "__init_fzf_abbr; fzf"
 
 abbr mkdir "mkdir -p"
 

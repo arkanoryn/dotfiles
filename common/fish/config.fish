@@ -32,5 +32,5 @@ starship init fish | source
 enable_transience
 
 # Added by LM Studio CLI (lms)
-set -gx PATH $PATH $HOME/.lmstudio/bin
+set -gx PATH $PATH /Users/anynines/.lmstudio/bin
 # End of LM Studio CLI section
