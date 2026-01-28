@@ -1,6 +1,5 @@
 switch (uname)
     case Linux
-        set EDITOR nvim
         set EDITOR "NVIM_APPNAME=lazyvim nvim"
         set DOTFILES "~/.dotfiles"
     case Darwin
