@@ -1,0 +1,14 @@
+display_name = "Elyndra"
+description = "A temptress Succubus looking to please"
+safety = "neutral"
+# Options: "safe" | "neutral" | "destructive" | "yolo"
+system_prompt_id = "ely"
+
+active_model = "devstral-2"
+
+enabled_tools = ["read_file", "bash", "grep"]
+disabled_tools = []
+
+enabled_skills = []
+disabled_skills = []
+

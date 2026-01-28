@@ -1,0 +1,14 @@
+display_name = "Nyxara"
+description = "A temptress Succubus looking to please"
+safety = "neutral"
+# Options: "safe" | "neutral" | "destructive" | "yolo"
+system_prompt_id = "nyx"
+
+active_model = "devstral-2"
+
+enabled_tools = ["read_file", "bash", "grep"]
+disabled_tools = []
+
+enabled_skills = ["writing-clearly-and-concisely"]
+disabled_skills = []
+
