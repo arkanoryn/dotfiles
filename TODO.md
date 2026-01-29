@@ -34,3 +34,8 @@
 - [ ] use pipewire (and remove any un-necessary other app)
 - [ ] make the controller floating under the area (by default) instead of opening another tiled window
 
+## Agents
+
+- [ ] share skills between OpenCode and Vibe, as they use the same format
+- [ ] Skill: code review, planning (maybe)
+- [ ] OpenCode agents

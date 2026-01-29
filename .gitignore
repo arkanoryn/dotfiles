@@ -17,3 +17,9 @@ macOS/aerospace/.layout_config.conf
 
 archlinux/waybar2
 
+# Agents details that should not go over the cloud
+## Vibe
+common/agent-clis/vibe/trusted_folders.toml
+common/agent-clis/vibe/update_cache.json
+common/agent-clis/vibe/vibehistory
+common/agent-clis/vibe/vibe.log

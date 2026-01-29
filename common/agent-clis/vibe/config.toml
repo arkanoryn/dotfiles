@@ -17,7 +17,6 @@ tool_paths = []
 mcp_servers = []
 enabled_tools = []
 disabled_tools = []
-skill_paths = ["~/.vibe-override"]
 enabled_skills = []
 disabled_skills = []
 
