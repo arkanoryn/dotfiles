@@ -47,3 +47,8 @@
   - [ ] Technical Writer
   - [ ] 
 
+## Agents
+
+- [ ] share skills between OpenCode and Vibe, as they use the same format
+- [ ] Skill: code review, planning (maybe)
+- [ ] OpenCode agents
