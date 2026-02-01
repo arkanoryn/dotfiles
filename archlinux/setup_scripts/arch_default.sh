@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 tmp_path="${HOME}/.tmp"
 logfile_path="${tmp_path}/log.txt"

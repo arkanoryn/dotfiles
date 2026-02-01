@@ -14,3 +14,5 @@ echo "$(date +"%Y-%m-%d %H:%M:%S")" >"${logfile_path}"
 . ./setup_scripts/hyprland.sh
 
 . ./setup_scripts/apps.sh
+
+. ./setup_scripts/llm_agents.sh

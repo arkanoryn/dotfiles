@@ -1,3 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tmp_path="${HOME}/.tmp"
+logfile_path="${tmp_path}/log.txt"
+
 read -p "Do you want to install yazi (terminal file manager)? " -n 1 -r
 echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -61,7 +67,7 @@ echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   # Install Node.js and npm
   sudo pacman -S nodejs npm --needed --noconfirm >>"${logfile_path}"
-  
+
   # Install global npm packages for LazyVim linting/formatting
   npm install -g markdownlint-cli >>"${logfile_path}"
 fi
@@ -76,5 +82,19 @@ fi
 read -p "Do you want to install Brave? " -n 1 -r
 echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  paru -Sy brave-bin --noconfirm --needed >>"${logfile_path}"
+  sudo paru -Sy brave-bin --noconfirm --needed >>"${logfile_path}"
+fi
+
+read -p "Do you want to install OpenCode? " -n 1 -r
+echo # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  sudo paru -Sy opencode-bin --noconfirm --needed >>"${logfile_path}"
+fi
+
+read -p "Do you want to install MistralVibe 2.0? " -n 1 -r
+echo # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  sudo pacman -Sy python python-pip --noconfirm --needed >>"${logfile_path}"
+  pip install uv
+  uv tool install mistral-vibe >>"${logfile_path}"
 fi

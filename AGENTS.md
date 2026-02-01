@@ -2,15 +2,23 @@
 
 This repository is a personal dotfiles configuration using stow for managing system configurations. It contains Lua, Fish shell, Bash, and configuration files.
 
+## CRITICAL: FORBIDDEN FILES
+
+- ALWAYS read the `AGENTS.md` in full BEFORE any further action
+- ALWAYS read the `.gitignore` BEFORE any further action
+- NEVER read a file included in the .gitignore
+- NEVER read a file including `*priv*`, `*private*`, `*credential*`, `*secret*` in its name
+- NEVER read the `.env` file
+
 ## CRITICAL: LazyVim Configuration Setup
 
-The LazyVim configuration is located at `/home/arkanoryn/.dotfiles/common/lazyvim/lua/` and must be explicitly loaded via the `NVIM_APPNAME` environment variable. The shell is configured with:
+The LazyVim configuration is located at `$HOME/.dotfiles/common/lazyvim/lua/` and must be explicitly loaded via the `NVIM_APPNAME` environment variable. The shell is configured with:
 
 ```fish
 set EDITOR "NVIM_APPNAME=lazyvim nvim"
 ```
 
-**IMPORTANT**: Never examine or modify `~/.config/nvim/` directly—it may contain user-specific overrides. Always work with the `/home/arkanoryn/.dotfiles/common/lazyvim/` source files instead. Changes made directly to dotfiles will be symlinked to `~/.config/` via `stow`.
+**IMPORTANT**: Never examine or modify `~/.config/nvim/` directly—it may contain user-specific overrides. Always work with the `$HOME/.dotfiles/common/lazyvim/` source files instead. Changes made directly to dotfiles will be symlinked to `~/.config/` via `stow`.
 
 ### Common LazyVim Issues & Solutions
 
