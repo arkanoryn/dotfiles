@@ -1,9 +1,9 @@
 switch (uname)
     case Linux
-        set EDITOR "NVIM_APPNAME=lazyvim nvim"
+        set -gx EDITOR "env NVIM_APPNAME=lazyvim nvim"
         set DOTFILES "~/.dotfiles"
     case Darwin
-        set EDITOR "NVIM_APPNAME=LazyVim nvim"
+        set -gx EDITOR "env NVIM_APPNAME=LazyVim nvim"
         set DOTFILES "~/.dotfiles"
 end
 

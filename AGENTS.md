@@ -12,13 +12,13 @@ This repository is a personal dotfiles configuration using stow for managing sys
 
 ## CRITICAL: LazyVim Configuration Setup
 
-The LazyVim configuration is located at `$HOME/.dotfiles/common/lazyvim/lua/` and must be explicitly loaded via the `NVIM_APPNAME` environment variable. The shell is configured with:
+The LazyVim configuration is located at `~/.dotfiles/common/lazyvim/lua/` and must be explicitly loaded via the `NVIM_APPNAME` environment variable. The shell is configured with:
 
 ```fish
 set EDITOR "NVIM_APPNAME=lazyvim nvim"
 ```
 
-**IMPORTANT**: Never examine or modify `~/.config/nvim/` directly—it may contain user-specific overrides. Always work with the `$HOME/.dotfiles/common/lazyvim/` source files instead. Changes made directly to dotfiles will be symlinked to `~/.config/` via `stow`.
+**IMPORTANT**: Never examine or modify `~/.config/nvim/` directly—it may contain user-specific overrides. Always work with the `~/.dotfiles/common/lazyvim/` source files instead. Changes made directly to dotfiles will be symlinked to `~/.config/` via `stow`.
 
 ### Common LazyVim Issues & Solutions
 
@@ -30,12 +30,12 @@ set EDITOR "NVIM_APPNAME=lazyvim nvim"
 **Treesitter Errors**
 - Treesitter module errors usually resolve with a full `Lazy! sync` followed by restarting nvim
 - Don't override LazyVim's default treesitter config unless absolutely necessary
-- Clear lazy cache if needed: `rm -rf /home/arkanoryn/.local/share/lazyvim/lazy`
+- Clear lazy cache if needed: `rm -rf ~/.local/share/lazyvim/lazy`
 
 ## Build, Lint, and Test Commands
 
 ### Lua (LazyVim & Neovim Config)
-- **Format**: `stylua /home/arkanoryn/.dotfiles/common/lazyvim`
+- **Format**: `stylua ~/.dotfiles/common/lazyvim`
 - **Lint**: Use Neovim's built-in LSP or enable `lua_ls` via Mason
 - **No formal tests** - configurations are validated by Neovim startup
 
@@ -146,7 +146,7 @@ This is a configuration repository without formal unit tests. Validation occurs 
 ## File Structure
 
 ```
-/home/arkanoryn/.dotfiles/
+~/.dotfiles/
 ├── common/                 # Cross-platform configs
 │   ├── lazyvim/           # Neovim/LazyVim Lua configs
 │   ├── fish/              # Fish shell configs

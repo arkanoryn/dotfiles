@@ -36,10 +36,12 @@
 
 ## Agents
 
-- [ ] share skills between OpenCode and Vibe, as they use the same format
+- [X] share skills between OpenCode and Vibe, as they use the same format
+- [X] replace vibe with `alias dev-vibe='uv run /home/arkanoryn/Code/mistral-vibe/vibe/cli/entrypoint.py'`
+```
 - [ ] Skills: 
   - [ ] code review
-  - [ ] 
+  - [ ] Clean Code
   - [ ] planning (maybe) [apex?]
 - [ ] OpenCode agents
   - [ ] Reviewer
