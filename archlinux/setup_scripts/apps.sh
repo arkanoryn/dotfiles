@@ -178,23 +178,3 @@ install_browser() {
   5) log "Skipped browser installation" ;;
   esac
 }
-
-read -p "Do you want to install Brave? " -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sudo paru -Sy brave-bin --noconfirm --needed >>"${logfile_path}"
-fi
-
-read -p "Do you want to install OpenCode? " -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sudo paru -Sy opencode-bin --noconfirm --needed >>"${logfile_path}"
-fi
-
-read -p "Do you want to install MistralVibe 2.0? " -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sudo pacman -Sy python python-pip --noconfirm --needed >>"${logfile_path}"
-  pip install uv
-  uv tool install mistral-vibe >>"${logfile_path}"
-fi

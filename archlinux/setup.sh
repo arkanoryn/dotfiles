@@ -128,6 +128,11 @@ case $setup_choice in
   ;;
 esac
 
+# TODO: fix the scripts
+. ./setup_scripts/apps.sh
+
+. ./setup_scripts/llm_agents.sh
+
 echo -e "\n[✅] Arch Linux setup completed successfully!"
 echo "Setup finished at: $(date +'%Y-%m-%d %H:%M:%S')"
 echo "Log file available at: ${UTILS_LOGFILE_PATH}"
