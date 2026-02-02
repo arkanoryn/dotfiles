@@ -9,19 +9,19 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
 
-**Personal skills live in agent-specific directories (`~/.opencode/skills` for OpenCode, `~/.vibe/skills` for Vibe)** 
+**Personal skills live in a shared directory (`~/.dotfiles/common/agents/shared/skills`)** 
 
 You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
 
 **Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.
 
-**REQUIRED BACKGROUND:** You MUST understand superpowers:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.
+**REQUIRED BACKGROUND:** You MUST understand `/test-driven-development` before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.
 
 **Official guidance:** For Anthropic's official skill authoring best practices, see anthropic-best-practices.md. This document provides additional patterns and guidelines that complement the TDD-focused approach in this skill.
 
 ## What is a Skill?
 
-A **skill** is a reference guide for proven techniques, patterns, or tools. Skills help future Vibe instances find and apply effective approaches.
+A **skill** is a reference guide for proven techniques, patterns, or tools. Skills help future Agentic CLI instances (Mistral Vibe, OpenCode) find and apply effective approaches.
 
 **Skills are:** Reusable techniques, patterns, tools, reference guides
 
@@ -99,7 +99,7 @@ skills/
 - `description`: Third-person, describes ONLY when to use (NOT what it does)
   - Start with "Use when..." to focus on triggering conditions
   - Include specific symptoms, situations, and contexts
-  - **NEVER summarize the skill's process or workflow** (see CSO section for why)
+  - **NEVER summarize the skill's process or workflow** (see ACSO section for why)
   - Keep under 500 characters if possible
 
 ```markdown
@@ -137,13 +137,13 @@ Concrete results
 ```
 
 
-## Vibe Search Optimization (CSO)
+## Agentic CLI Search Optimization (ACSO)
 
-**Critical for discovery:** Future Vibe needs to FIND your skill
+**Critical for discovery:** Future Agentic CLI needs to FIND your skill
 
 ### 1. Rich Description Field
 
-**Purpose:** Vibe reads description to decide which skills to load for a given task. Make it answer: "Should I read this skill right now?"
+**Purpose:** Agentic CLI reads description to decide which skills to load for a given task. Make it answer: "Should I read this skill right now?"
 
 **Format:** Start with "Use when..." to focus on triggering conditions
 
@@ -151,14 +151,14 @@ Concrete results
 
 The description should ONLY describe triggering conditions. Do NOT summarize the skill's process or workflow in the description.
 
-**Why this matters:** Testing revealed that when a description summarizes the skill's workflow, Vibe may follow the description instead of reading the full skill content. A description saying "code review between tasks" caused Vibe to do ONE review, even though the skill's flowchart clearly showed TWO reviews (spec compliance then code quality).
+**Why this matters:** Testing revealed that when a description summarizes the skill's workflow, Agentic CLI may follow the description instead of reading the full skill content. A description saying "code review between tasks" caused Agentic CLI to do ONE review, even though the skill's flowchart clearly showed TWO reviews (spec compliance then code quality).
 
-When the description was changed to just "Use when executing implementation plans with independent tasks" (no workflow summary), Vibe correctly read the flowchart and followed the two-stage review process.
+When the description was changed to just "Use when executing implementation plans with independent tasks" (no workflow summary), Agentic CLI correctly read the flowchart and followed the two-stage review process.
 
-**The trap:** Descriptions that summarize workflow create a shortcut Vibe will take. The skill body becomes documentation Vibe skips.
+**The trap:** Descriptions that summarize workflow create a shortcut Agentic CLI will take. The skill body becomes documentation Agentic CLI skips.
 
 ```yaml
-# ❌ BAD: Summarizes workflow - Vibe may follow this instead of reading skill
+# ❌ BAD: Summarizes workflow - Agentic CLI may follow this instead of reading skill
 description: Use when executing plans - dispatches subagent per task with code review between tasks
 
 # ❌ BAD: Too much process detail
@@ -198,7 +198,7 @@ description: Use when using React Router and handling authentication redirects
 
 ### 2. Keyword Coverage
 
-Use words Vibe would search for:
+Use words Agentic CLI would search for:
 - Error messages: "Hook timed out", "ENOTEMPTY", "race condition"
 - Symptoms: "flaky", "hanging", "zombie", "pollution"
 - Synonyms: "timeout/hang/freeze", "cleanup/teardown/afterEach"
@@ -522,7 +522,7 @@ Make it easy for agents to self-check when rationalizing:
 **All of these mean: Delete code. Start over with TDD.**
 ```
 
-### Update CSO for Violation Symptoms
+### Update ACSO for Violation Symptoms
 
 Add to description: symptoms of when you're ABOUT to violate the rule:
 
@@ -634,7 +634,7 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 
 ## Discovery Workflow
 
-How future Vibe finds your skill:
+How future Agentic CLI finds your skill:
 
 1. **Encounters problem** ("tests are flaky")
 3. **Finds SKILL** (description matches)

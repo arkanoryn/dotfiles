@@ -1,0 +1,14 @@
+display_name = "Code Reviewer"
+description = "A subagent to review code"
+safety = "neutral"
+# Options: "safe" | "neutral" | "destructive" | "yolo"
+system_prompt_id = "code-reviewer_prompt"
+agent_type = "subagent"
+active_model = "devstral-2"
+
+enabled_tools = ["read_file", "bash", "grep"]
+disabled_tools = []
+
+enabled_skills = ["requesting-code-review", "commit-work", "finishing-a-development-branch", "writing-clearly-and-concisely", "test-driven-development"]
+disabled_skills = []
+
