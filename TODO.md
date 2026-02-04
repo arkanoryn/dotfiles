@@ -7,7 +7,7 @@
 
 ## Lazyvim
 
-- [ ] Fix Avante (not working)
+- [x] Fix Avante (not working)
 - [X] Fix markdown errors on save etc
 
 ## Hyprland
@@ -16,34 +16,34 @@
 
 ### Other apps
 
-- [ ] login
-- [ ] elephant/walker
-- [ ] hyprpaper
-- [ ] hyprlock
-- [ ] hypridle
-- [ ] dunst
-- [ ] swaync
-- [ ] hyprshot
-- [ ] swwww
-- [ ] yazi
+- [x] login
+- [x] elephant/walker
+- [x] hyprpaper
+- [x] hyprlock
+- [x] hypridle
+- [x] dunst
+- [x] swaync
+- [x] hyprshot
+- [x] swwww
+- [x] yazi
 - [x] wallpapers
 - [x] waybar
 
 ### Audio Control
 
-- [ ] use pipewire (and remove any un-necessary other app)
-- [ ] make the controller floating under the area (by default) instead of opening another tiled window
+- [x] use pipewire (and remove any un-necessary other app)
+- [x] make the controller floating under the area (by default) instead of opening another tiled window
 
 ## Agents
 
 - [X] share skills between OpenCode and Vibe, as they use the same format
 - [X] replace vibe with `alias dev-vibe='uv run /home/arkanoryn/Code/mistral-vibe/vibe/cli/entrypoint.py'`
 ```
-- [ ] Skills: 
-  - [ ] code review
-  - [ ] Clean Code
-  - [ ] planning (maybe) [apex?]
-- [ ] OpenCode agents
-  - [ ] Reviewer
-  - [ ] Technical Writer
-  - [ ] 
+- [x] Skills: 
+  - [x] code review
+  - [x] Clean Code
+  - [x] planning (maybe) [apex?]
+- [x] OpenCode agents
+  - [x] Reviewer
+  - [x] Technical Writer
+  - [x] 
