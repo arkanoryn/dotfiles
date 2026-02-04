@@ -38,40 +38,12 @@
 
 - [X] share skills between OpenCode and Vibe, as they use the same format
 - [X] replace vibe with `alias dev-vibe='uv run /home/arkanoryn/Code/mistral-vibe/vibe/cli/entrypoint.py'`
-```
-- [x] Skills: 
-  - [x] code review
-  - [x] Clean Code
-  - [x] planning (maybe) [apex?]
-- [x] OpenCode agents
-  - [x] Reviewer
-  - [x] Technical Writer
-  - [x] 
-## Documentation Steps
+- [ ] Skills: 
+  - [ ] code review
+  - [ ] Clean Code
+  - [ ] planning (maybe) [apex?]
+- [ ] OpenCode agents
+  - [ ] Reviewer
+  - [ ] Technical Writer
+  - [ ] 
 
-## Step 0:
-
-Status: Done
-
-- [x] create a new branch `documentation`
-- [x] Update the current step Status to Done
-
-## Step 1: Arch Linux
-
-Status: Done
-
-- [x] Explore the code base in archlinux/
-- [x] Once done exploring archlinux/
-- [x] Document all your exploration from the code under @docs/archlinux
-- [x] commit the work with a relevant commit message
-- [x] Once done, update the current step Status to Done
-
-## Step 2: MacOS
-
-Status: Done
-
-- [x] Explore the code base in macOS/
-- [x] Once done exploring, tell it to read all the files in docs/
-- [x] Document all your exploration from the code under @docs/macos
-- [x] commit the work with a relevant commit message
-- [x] Once done, update the current step Status to Done

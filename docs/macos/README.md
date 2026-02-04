@@ -49,6 +49,10 @@ macOS/
 └── .stowrc
 ```
 
+### .stowrc File
+
+The \`.stowrc\` file contains configuration for GNU Stow, which manages symlinking of dotfiles. It specifies files and directories to ignore during the stow process.
+
 ## AeroSpace Configuration
 
 AeroSpace is a tiling window manager for macOS that provides efficient window management and workspace organization. The configuration is split into multiple files for different keyboard layouts:
@@ -182,3 +186,7 @@ If you encounter issues, check logs, verify dependencies, review configuration, 
 - The configurations assume a specific directory structure and may need adjustments for your system
 - Some configurations reference files or directories that may not exist by default
 - The setup scripts are designed for a fresh macOS installation and may need modifications for existing systems
+
+## Comparison with Arch Linux Setup
+
+For a comparison of equivalent tools and workflows between macOS and Arch Linux, see the [[Arch Linux Configuration]] documentation.

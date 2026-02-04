@@ -674,6 +674,25 @@ The agents configuration includes settings for LLM (Language Model) agents, prim
 - **Cross-Platform**: Consistent behavior on both Arch Linux and macOS
 - **Extensible Architecture**: Easy to add new agents and skills
 
+
+### Agent Usage Examples
+
+**Zephyra (Coding Assistant):**
+\`\`\`bash
+vibe --agent zephyra "Write a Python function to parse JSON with error handling"
+\`\`\`
+
+**Elyndra (Writing Specialist):**
+\`\`\`bash
+vibe --agent elyndra "Help me write a better commit message for these changes"
+\`\`\`
+
+**Nyxara (Code Review Expert):**
+\`\`\`bash
+vibe --agent nyxara "Please review this pull request for security issues"
+\`\`\`
+
+
 ### Agent Details
 
 **Zephyra:**
@@ -743,6 +762,17 @@ The agent configuration follows a modular approach:
 - **Resource Usage**: Optimized for development workflows
 - **Response Quality**: Tuned for technical accuracy and relevance
 - **Workflow Integration**: Designed to enhance rather than disrupt development processes
+
+
+### Quick Start Guide
+
+1. **Install Mistral Vibe** and configure agents
+2. **Basic Usage:**
+   \`\`\`bash
+   vibe "Help me implement a REST API in Python"
+   vibe --agent nyxara "Help me draft a README for this project"
+   \`\`\`
+
 
 ## Usage
 

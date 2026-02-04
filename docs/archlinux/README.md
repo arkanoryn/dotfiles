@@ -5,8 +5,8 @@ This directory contains documentation for the Arch Linux-specific configurations
 ## Overview
 
 The `archlinux/` directory contains configurations for:
-- **Hyprland**: A dynamic tiling Wayland compositor
-- **Waybar**: A highly customizable Wayland bar
+- **Hyprland**: A dynamic tiling Wayland compositor (macOS equivalent: [[AeroSpace]])
+- **Waybar**: A highly customizable Wayland bar (macOS equivalent: [[SketchyBar]])
 - **SwayNC**: A notification center for Wayland
 - **Scripts**: Various utility scripts for system management
 - **Setup Scripts**: Scripts to automate the setup of the Arch Linux environment
@@ -91,6 +91,12 @@ The keybindings are designed to be efficient and intuitive. The main modifier is
 - `meh + M`: Enter workspace mode
 - `meh + comma`: Enter layout mode
 - `meh + N`: Enter selection mode
+
+
+### Apps Directory
+
+The \`apps/\` directory contains configuration files for specific applications that integrate with Hyprland. This includes application-specific rules, window management preferences, and custom launch configurations.
+
 
 ## Waybar Configuration
 
@@ -222,3 +228,8 @@ If you encounter issues:
 - The configurations assume a specific directory structure and may need adjustments for your system
 - Some configurations reference files or directories that may not exist by default
 - The setup scripts are designed for a fresh Arch Linux installation and may need modifications for existing systems
+
+
+## Comparison with macOS Setup
+
+For a comparison of equivalent tools and workflows between Arch Linux and macOS, see the [[macOS Configuration]] documentation.
