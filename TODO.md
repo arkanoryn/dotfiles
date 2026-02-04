@@ -47,3 +47,21 @@
   - [x] Reviewer
   - [x] Technical Writer
   - [x] 
+## Documentation Steps
+
+## Step 0:
+
+Status: Done
+
+- [x] create a new branch `documentation`
+- [x] Update the current step Status to Done
+
+## Step 1: Arch Linux
+
+Status: Done
+
+- [x] Explore the code base in archlinux/
+- [x] Once done exploring archlinux/
+- [x] Document all your exploration from the code under @docs/archlinux
+- [x] commit the work with a relevant commit message
+- [x] Once done, update the current step Status to Done
