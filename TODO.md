@@ -65,3 +65,13 @@ Status: Done
 - [x] Document all your exploration from the code under @docs/archlinux
 - [x] commit the work with a relevant commit message
 - [x] Once done, update the current step Status to Done
+
+## Step 2: MacOS
+
+Status: Done
+
+- [x] Explore the code base in macOS/
+- [x] Once done exploring, tell it to read all the files in docs/
+- [x] Document all your exploration from the code under @docs/macos
+- [x] commit the work with a relevant commit message
+- [x] Once done, update the current step Status to Done
