@@ -68,8 +68,10 @@ If you are duplicating existing documentation in @docs: remove the old version f
 
 ## Step 4: Review
 
-Spawn a separate and clear Agent to REVIEW all the work that has been done.
-Give it the proper instructions so that it can make the best review possible.
-Give it the CRITICAL section from this document
-Ask it to compile a review document "./review-feedback.md" for me to review, including an improvement plan if he believes any is necessary.
+Status: Done
+
+- [x] Spawn a separate and clear Agent to REVIEW all the work that has been done.
+- [x] Give it the proper instructions so that it can make the best review possible.
+- [x] Give it the CRITICAL section from this document
+- [x] Ask it to compile a review document "./review-feedback.md" for me to review, including an improvement plan if he believes any is necessary.
 
