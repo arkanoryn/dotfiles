@@ -5,11 +5,13 @@ This directory contains documentation for the Arch Linux-specific configurations
 ## Overview
 
 The `archlinux/` directory contains configurations for:
-- **Hyprland**: A dynamic tiling Wayland compositor (macOS equivalent: [[AeroSpace]])
-- **Waybar**: A highly customizable Wayland bar (macOS equivalent: [[SketchyBar]])
-- **SwayNC**: A notification center for Wayland
+- **Hyprland**: A dynamic tiling Wayland compositor (see [Hyprland documentation](hyprland.md), macOS equivalent: [[AeroSpace]])
+- **Waybar**: A highly customizable Wayland bar (see [Waybar documentation](waybar.md), macOS equivalent: [[SketchyBar]])
+- **SwayNC**: A notification center for Wayland (see [SwayNC documentation](swayNC.md))
 - **Scripts**: Various utility scripts for system management
 - **Setup Scripts**: Scripts to automate the setup of the Arch Linux environment
+
+For a complete overview, see the [Arch Linux Documentation Index](Index.md).
 
 ## Structure
 

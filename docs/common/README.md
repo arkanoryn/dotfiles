@@ -5,16 +5,18 @@ This directory contains documentation for the common configurations in this dotf
 ## Overview
 
 The `common/` directory contains configurations for:
-- **Fish Shell**: A user-friendly command line shell with cross-platform support
-- **Starship**: A minimal, blazing-fast, and infinitely customizable prompt
-- **Tmux**: A terminal multiplexer with Catppuccin Mocha theme
-- **WezTerm**: A GPU-accelerated cross-platform terminal emulator
-- **LazyVim**: A Neovim configuration with Lazy.nvim plugin manager
-- **Agents**: LLM agent configurations for Mistral Vibe
+- **Fish Shell**: A user-friendly command line shell with cross-platform support (see [Fish documentation](fish.md))
+- **Starship**: A minimal, blazing-fast, and infinitely customizable prompt (see [Starship documentation](starship.md))
+- **Tmux**: A terminal multiplexer with Catppuccin Mocha theme (see [Tmux documentation](tmux.md))
+- **WezTerm**: A GPU-accelerated cross-platform terminal emulator (see [WezTerm documentation](wezterm.md))
+- **LazyVim**: A Neovim configuration with Lazy.nvim plugin manager (see [LazyVim documentation](lazyvim.md))
+- **Agents**: LLM agent configurations for Mistral Vibe (see [Agents documentation](agents.md))
 - **Zsh**: Zsh shell configuration with Powerlevel10k theme
-- **Git**: Git configuration and ignore patterns
-- **Ghostty**: Terminal emulator configuration
+- **Git**: Git configuration and ignore patterns (see [Git documentation](git.md))
+- **Ghostty**: Terminal emulator configuration (see [Ghostty documentation](ghostty.md))
 - **Snippets**: Code snippets for various languages
+
+For a complete overview, see the [Common Configuration Documentation Index](Index.md).
 
 ## Structure
 

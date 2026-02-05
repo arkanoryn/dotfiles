@@ -5,9 +5,11 @@ This directory contains documentation for the macOS-specific configurations in t
 ## Overview
 
 The `macOS/` directory contains configurations for:
-- **AeroSpace**: A tiling window manager for macOS
-- **SketchyBar**: A highly customizable status bar for macOS
+- **AeroSpace**: A tiling window manager for macOS (see [AeroSpace documentation](aerospace.md))
+- **SketchyBar**: A highly customizable status bar for macOS (see [SketchyBar documentation](sketchybar.md))
 - **Scripts**: Various utility scripts for system management
+
+For a complete overview, see the [macOS Documentation Index](Index.md).
 
 ## Structure
 

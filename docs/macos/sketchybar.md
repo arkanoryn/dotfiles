@@ -63,4 +63,20 @@ Each item in SketchyBar is configured with specific properties for different fun
 - **keyboard.sh**: Manages keyboard layout switching and state
 - **netstat.sh**: Monitors network statistics and updates SketchyBar
 
+## Integration with Other Components
+
+SketchyBar works seamlessly with other components in this setup:
+
+- **AeroSpace**: SketchyBar integrates with AeroSpace to display workspace information and window management controls. See [AeroSpace documentation](aerospace.md) for details.
+- **Common Tools**: SketchyBar works with common tools like Fish shell and Tmux. See the [Common Configuration documentation](../common/README.md) for more information.
+
+## Troubleshooting
+
+If you encounter issues with SketchyBar:
+
+1. **Check Logs**: Review SketchyBar logs for errors
+2. **Verify Dependencies**: Ensure all required packages are installed
+3. **Review Configuration**: Check for syntax errors in configuration files
+4. **Consult Documentation**: Refer to the official SketchyBar documentation
+
 

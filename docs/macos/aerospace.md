@@ -185,4 +185,20 @@ For window layout customization:
 
 The `layout_toggle.sh` script allows switching between different keyboard layouts.
 
+## Integration with Other Components
+
+AeroSpace works seamlessly with other components in this setup:
+
+- **SketchyBar**: AeroSpace integrates with SketchyBar to display workspace information and window management controls. See [SketchyBar documentation](sketchybar.md) for details.
+- **Common Tools**: AeroSpace works with common tools like Fish shell and Tmux. See the [Common Configuration documentation](../common/README.md) for more information.
+
+## Troubleshooting
+
+If you encounter issues with AeroSpace:
+
+1. **Check Logs**: Review AeroSpace logs for errors
+2. **Verify Dependencies**: Ensure all required packages are installed
+3. **Review Configuration**: Check for syntax errors in configuration files
+4. **Consult Documentation**: Refer to the official AeroSpace documentation
+
 
