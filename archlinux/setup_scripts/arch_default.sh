@@ -57,7 +57,7 @@ else
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     install_with_progress "Installing NVIDIA drivers..." \
       paru -S --noconfirm --needed nvidia-dkms nvidia-utils nvidia-settings libva-nvidia-driver
-    
+
     # Install additional NVIDIA packages
     ask_and_install "Do you want to install NVIDIA CUDA?" \
       paru -S --noconfirm --needed cuda
@@ -94,8 +94,6 @@ install_with_progress "Installing additional system packages..." \
   dunst \
   notify-send.sh
 
-
-
 # Fonts - added FiraCode as requested
 install_with_progress "Installing fonts..." \
   paru -S --noconfirm --needed ttf-symbola ttf-twemoji ttf-firacode-nerd &&
@@ -103,4 +101,3 @@ install_with_progress "Installing fonts..." \
 
 echo -e "\n[✅] Arch Linux default setup completed successfully!"
 log "Arch Linux default setup completed successfully"
-
