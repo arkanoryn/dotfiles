@@ -44,7 +44,7 @@ log() {
 }
 
 # Function to mark completion (simple version)
-done() {
+mark_done() {
     echo -e "\r\033[K[✓] $1"
 }
 
@@ -79,6 +79,7 @@ ask_and_install() {
 # Function to ask multiple choice question
 ask_multiple_choice() {
     local question="$1"
+    shift
     local options=("$@")
     local choice
     
