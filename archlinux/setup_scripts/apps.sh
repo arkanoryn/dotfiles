@@ -8,6 +8,9 @@ source "${UTILS_DIR}/utils.sh"
 log "Starting application setup..."
 echo "Starting application setup..."
 
+# App launcher selection
+install_app_launcher
+
 # Terminal selection
 install_terminal
 
@@ -19,6 +22,9 @@ install_shell_tools
 
 # Browser selection
 install_browser
+
+# File explorer selection
+install_file_explorer
 
 # Yazi file manager (keep as yes/no since it's a specific tool)
 ask_and_install "Do you want to install yazi (terminal file manager)?" \
@@ -104,6 +110,40 @@ install_shell_tools() {
     install_with_progress "Installing Eza" paru -S eza --noconfirm --needed
     ;;
   6) log "Skipped shell tools installation" ;;
+  esac
+}
+
+# Function to install app launcher
+install_app_launcher() {
+  local choices=("Walker" "Wofi" "All" "None")
+  ask_multiple_choice "Which app launcher do you want to install?" "${choices[@]}"
+  local choice=$?
+
+  case $choice in
+  1) install_with_progress "Installing Walker" sudo pacman -S walker --noconfirm --needed ;;
+  2) install_with_progress "Installing Wofi" sudo pacman -S wofi --noconfirm --needed ;;
+  3)
+    install_with_progress "Installing Walker" sudo pacman -S walker --noconfirm --needed
+    install_with_progress "Installing Wofi" sudo pacman -S wofi --noconfirm --needed
+    ;;
+  4) log "Skipped app launcher installation" ;;
+  esac
+}
+
+# Function to install file explorer
+install_file_explorer() {
+  local choices=("Dolphin" "Yazi" "All" "None")
+  ask_multiple_choice "Which file explorer do you want to install?" "${choices[@]}"
+  local choice=$?
+
+  case $choice in
+  1) install_with_progress "Installing Dolphin" sudo pacman -S dolphin --noconfirm --needed ;;
+  2) install_with_progress "Installing Yazi" sudo pacman -S yazi --noconfirm --needed ;;
+  3)
+    install_with_progress "Installing Dolphin" sudo pacman -S dolphin --noconfirm --needed
+    install_with_progress "Installing Yazi" sudo pacman -S yazi --noconfirm --needed
+    ;;
+  4) log "Skipped file explorer installation" ;;
   esac
 }
 

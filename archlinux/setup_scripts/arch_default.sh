@@ -41,6 +41,10 @@ echo # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   install_with_progress "Installing NVIDIA drivers..." \
     paru -S --noconfirm --needed nvidia-dkms nvidia-utils nvidia-settings libva-nvidia-driver
+  
+  # Install additional NVIDIA packages
+  ask_and_install "Do you want to install NVIDIA CUDA?" \
+    paru -S --noconfirm --needed cuda
 fi
 
 # GUI packages - enhanced with more essential packages
@@ -54,6 +58,26 @@ install_with_progress "Installing GUI packages..." \
   wl-clipboard \
   xdg-desktop-portal-hyprland \
   xdg-utils
+
+# Additional packages from installed_packages.list
+install_with_progress "Installing additional system packages..." \
+  sudo pacman -S --needed --noconfirm \
+  openssh \
+  openssl-1.1 \
+  sddm \
+  wget \
+  less \
+  unrar \
+  unzip \
+  zip \
+  cliphist \
+  efibootmgr \
+  smartmontools \
+  usbutils \
+  dunst \
+  notify-send.sh
+
+
 
 # Fonts - added FiraCode as requested
 install_with_progress "Installing fonts..." \

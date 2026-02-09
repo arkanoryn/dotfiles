@@ -35,10 +35,12 @@ echo "Available setup options:"
 echo "1. Basic Arch Linux setup (recommended - includes paru installation)"
 echo "2. Hyprland setup (window manager - requires paru)"
 echo "3. Applications setup (terminal tools, browsers - requires paru)"
-echo "4. All of the above (recommended for full setup)"
-echo "5. Exit"
+echo "4. Development environment setup (programming tools)"
+echo "5. Network setup (VPN, WiFi tools, network management)"
+echo "6. All of the above (recommended for full setup)"
+echo "7. Exit"
 
-read -p "Enter your choice (1-5): " setup_choice
+read -p "Enter your choice (1-7): " setup_choice
 echo
 
 case $setup_choice in
@@ -68,6 +70,16 @@ case $setup_choice in
   fi
   ;;
 4)
+  log "Running development environment setup..."
+  echo "💻 Running development environment setup..."
+  source "${UTILS_DIR}/dev.sh"
+  ;;
+5)
+  log "Running network setup..."
+  echo "🌐 Running network setup..."
+  source "${UTILS_DIR}/network.sh"
+  ;;
+6)
   log "Running complete setup..."
   echo "🔧 Running complete setup..."
 
@@ -84,13 +96,21 @@ case $setup_choice in
     # Applications setup
     echo -e "\n📱 Applications setup..."
     source "${UTILS_DIR}/apps.sh"
+
+    # Development setup
+    echo -e "\n💻 Development environment setup..."
+    source "${UTILS_DIR}/dev.sh"
+
+    # Network setup
+    echo -e "\n🌐 Network setup..."
+    source "${UTILS_DIR}/network.sh"
   else
-    error "paru is required for Hyprland and Applications setup but was not installed."
+    error "paru is required for Hyprland, Applications, Development, and Network setup but was not installed."
     echo "Please install paru manually and re-run the complete setup."
     exit 1
   fi
   ;;
-5)
+7)
   echo "Setup cancelled."
   exit 0
   ;;

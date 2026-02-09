@@ -21,6 +21,10 @@ log "Installing packages with pacman..."
 ) &
 show_progress "Installing packages with pacman..." $!
 
+# Install Hyprland-specific packages
+install_with_progress "Installing Hyprland-specific packages..." \
+  paru -S --noconfirm --needed hypridle hyprlock hyprpaper hyprpolkitagent hyprshot
+
 # Install walker from source
 log "Installing walker from source..."
 if cd "${UTILS_TMP_PATH}" && git clone https://github.com/abenz1267/walker.git >>"${UTILS_LOGFILE_PATH}" 2>&1; then
