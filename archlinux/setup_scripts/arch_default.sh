@@ -11,7 +11,7 @@ echo "Starting Arch Linux default setup..."
 # Update the machine with progress
 log "Updating system..."
 (
-  sudo pacman -Syu >>"${UTILS_LOGFILE_PATH}" 2>&1
+  sudo pacman -Syu --noconfirm >>"${UTILS_LOGFILE_PATH}" 2>&1
 ) &
 show_progress "Updating system..." $!
 
