@@ -1,80 +1,128 @@
-read -p "Do you want to install yazi (terminal file manager)? " -n 1 -r
-echo # (optional) move to a new line
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Source the utilities
+UTILS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${UTILS_DIR}/utils.sh"
+
+log "Starting application setup..."
+echo "Starting application setup..."
+
+# Terminal selection
+install_terminal
+
+# Shell selection
+install_shell
+
+# Shell tools selection
+install_shell_tools
+
+# Browser selection
+install_browser
+
+# Yazi file manager (keep as yes/no since it's a specific tool)
+ask_and_install "Do you want to install yazi (terminal file manager)?" \
+  sudo pacman -S --noconfirm --needed yazi 7zip fd ffmpeg fzf imagemagick jq poppler ripgrep zoxide
+
+# Coding environment
+read -p "Do you want to install coding environment? (neovim, cargo, elixir, QMK) " -n 1 -r
+echo # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  echo "[WARNING] Read the log file and the git repository for further instructions."
-  sudo pacman -S --noconfirm --needed yazi \
-    7zip \
-    fd \
-    ffmpeg \
-    fzf \
-    imagemagick \
-    jq \
-    poppler \
-    ripgrep \
-    zoxide >>"${logfile_path}"
-fi
-
-# Install Ghostty and requirements
-read -p "Do you want to install Ghostty? " -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  paru -S ghostty-git --noconfirm --needed >>"${logfile_path}"
-fi
-
-# Install Wezterm and requirements
-
-# Install fish, starship, eza, fzf, zoxide, bat
-read -p "Do you want to install fish, starship, and other terminal tools? " -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  paru -S --noconfirm --needed bat \
-    eza \
-    fish \
-    starship \
-    zoxide \
-    >>"${logfile_path}"
-fi
-
-# Install nvim and requirements from LazyVim
-
-read -p "Do you want to install coding environment? (neovim, cargo, elixir, QMK)" -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sudo pacman -S neovim --needed --noconfirm >>"${logfile_path}"
-  sudo pacman -S cargo --needed --noconfirm >>"${logfile_path}"
-  sudo pacman -S elixir --needed --noconfirm >>"${logfile_path}"
+  install_with_progress "Installing Neovim" sudo pacman -S neovim --needed --noconfirm
+  install_with_progress "Installing Cargo (Rust)" sudo pacman -S cargo --needed --noconfirm
+  install_with_progress "Installing Elixir" sudo pacman -S elixir --needed --noconfirm
 
   # QMK
   read -p "Do you want to install QMK? " -n 1 -r
-  echo # (optional) move to a new line
+  echo # move to a new line
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    sudo pacman --needed --noconfirm -S git python-pip libffi qmk >>"${logfile_path}"
-    mkdir -p "${qmk_path}"
-    qmk setup -H ~/Code/qmk/qmk_firmware >>"${logfile_path}"
+    install_with_progress "Installing QMK dependencies" \
+      sudo pacman --needed --noconfirm -S git python-pip libffi qmk &&
+      mkdir -p "${HOME}/Code/qmk" &&
+      qmk setup -H "${HOME}/Code/qmk/qmk_firmware"
   fi
-
 fi
 
-# Install LazyVim dependencies
-read -p "Do you want to install LazyVim dependencies? (node, npm, linters)" -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  # Install Node.js and npm
-  sudo pacman -S nodejs npm --needed --noconfirm >>"${logfile_path}"
-  
-  # Install global npm packages for LazyVim linting/formatting
-  npm install -g markdownlint-cli >>"${logfile_path}"
-fi
+# LazyVim dependencies
+ask_and_install "Do you want to install LazyVim dependencies? (node, npm, linters)" \
+  sudo pacman -S nodejs npm --needed --noconfirm &&
+  npm install -g markdownlint-cli
 
-# Different app
-read -p "Do you want to install Discord? " -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sudo pacman -S discord --noconfirm --needed >>"${logfile_path}"
-fi
+# Additional applications
+ask_and_install "Do you want to install Discord?" \
+  sudo pacman -S discord --noconfirm --needed
 
-read -p "Do you want to install Brave? " -n 1 -r
-echo # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  paru -Sy brave-bin --noconfirm --needed >>"${logfile_path}"
-fi
+echo -e "\n[✅] Application setup completed!"
+log "Application setup completed"
+
+# Function to install terminal emulator
+install_terminal() {
+  local choices=("Wezterm" "Ghostty" "Both" "None")
+  ask_multiple_choice "Which terminal emulator do you want to install?" "${choices[@]}"
+  local choice=$?
+
+  case $choice in
+  1) install_with_progress "Installing Wezterm" paru -S wezterm --noconfirm --needed ;;
+  2) install_with_progress "Installing Ghostty" paru -S ghostty-git --noconfirm --needed ;;
+  3)
+    install_with_progress "Installing Wezterm" paru -S wezterm --noconfirm --needed
+    install_with_progress "Installing Ghostty" paru -S ghostty-git --noconfirm --needed
+    ;;
+  4) log "Skipped terminal installation" ;;
+  esac
+}
+
+# Function to install shell
+install_shell() {
+  local choices=("Fish" "Bash" "Zsh" "None")
+  ask_multiple_choice "Which shell do you want to install?" "${choices[@]}"
+  local choice=$?
+
+  case $choice in
+  1) install_with_progress "Installing Fish shell" sudo pacman -S fish --noconfirm --needed ;;
+  2) log "Bash is already installed (default shell)" ;;
+  3) install_with_progress "Installing Zsh" sudo pacman -S zsh --noconfirm --needed ;;
+  4) log "Skipped shell installation" ;;
+  esac
+}
+
+# Function to install shell tools
+install_shell_tools() {
+  local choices=("Starship" "Zoxide" "Bat" "Eza" "All" "None")
+  ask_multiple_choice "Which shell tools do you want to install?" "${choices[@]}"
+  local choice=$?
+
+  case $choice in
+  1) install_with_progress "Installing Starship" paru -S starship --noconfirm --needed ;;
+  2) install_with_progress "Installing Zoxide" sudo pacman -S zoxide --noconfirm --needed ;;
+  3) install_with_progress "Installing Bat" sudo pacman -S bat --noconfirm --needed ;;
+  4) install_with_progress "Installing Eza" paru -S eza --noconfirm --needed ;;
+  5)
+    install_with_progress "Installing Starship" paru -S starship --noconfirm --needed
+    install_with_progress "Installing Zoxide" sudo pacman -S zoxide --noconfirm --needed
+    install_with_progress "Installing Bat" sudo pacman -S bat --noconfirm --needed
+    install_with_progress "Installing Eza" paru -S eza --noconfirm --needed
+    ;;
+  6) log "Skipped shell tools installation" ;;
+  esac
+}
+
+# Function to install browser
+install_browser() {
+  local choices=("Firefox" "Brave" "Zen" "All" "None")
+  ask_multiple_choice "Which browser do you want to install?" "${choices[@]}"
+  local choice=$?
+
+  case $choice in
+  1) install_with_progress "Installing Firefox" sudo pacman -S firefox --noconfirm --needed ;;
+  2) install_with_progress "Installing Brave" paru -Sy brave-bin --noconfirm --needed ;;
+  3) install_with_progress "Installing Zen Browser" paru -S zen-browser-bin --noconfirm --needed ;;
+  4)
+    install_with_progress "Installing Firefox" sudo pacman -S firefox --noconfirm --needed
+    install_with_progress "Installing Brave" paru -Sy brave-bin --noconfirm --needed
+    install_with_progress "Installing Zen Browser" paru -S zen-browser-bin --noconfirm --needed
+    ;;
+  5) log "Skipped browser installation" ;;
+  esac
+}
+
