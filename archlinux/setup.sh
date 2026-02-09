@@ -9,6 +9,9 @@ source "${UTILS_DIR}/utils.sh"
 # tmp_path and logfile_path are defined in utils.sh
 qmk_path="${HOME}/Code/qmk"
 
+# Non-interactive mode setup choice (set SETUP_CHOICE to override menu)
+SETUP_CHOICE="${SETUP_CHOICE:-}"
+
 # Create temporary directory and initialize log file
 mkdir -p "${UTILS_TMP_PATH}"
 log "Starting Arch Linux setup..."
@@ -27,21 +30,26 @@ check_paru_installed() {
 }
 
 # Main menu
-echo -e "\n🚀 Arch Linux Setup Menu\n"
-echo "This script will guide you through setting up your Arch Linux system."
-echo "You can choose which components to install.\n"
+if [[ "$NON_INTERACTIVE" -eq 1 && -n "$SETUP_CHOICE" ]]; then
+  setup_choice="$SETUP_CHOICE"
+  log "Non-interactive mode: Using setup choice $setup_choice"
+else
+  echo -e "\n🚀 Arch Linux Setup Menu\n"
+  echo "This script will guide you through setting up your Arch Linux system."
+  echo "You can choose which components to install.\n"
 
-echo "Available setup options:"
-echo "1. Basic Arch Linux setup (recommended - includes paru installation)"
-echo "2. Hyprland setup (window manager - requires paru)"
-echo "3. Applications setup (terminal tools, browsers - requires paru)"
-echo "4. Development environment setup (programming tools)"
-echo "5. Network setup (VPN, WiFi tools, network management)"
-echo "6. All of the above (recommended for full setup)"
-echo "7. Exit"
+  echo "Available setup options:"
+  echo "1. Basic Arch Linux setup (recommended - includes paru installation)"
+  echo "2. Hyprland setup (window manager - requires paru)"
+  echo "3. Applications setup (terminal tools, browsers - requires paru)"
+  echo "4. Development environment setup (programming tools)"
+  echo "5. Network setup (VPN, WiFi tools, network management)"
+  echo "6. All of the above (recommended for full setup)"
+  echo "7. Exit"
 
-read -p "Enter your choice (1-7): " setup_choice
-echo
+  read -p "Enter your choice (1-7): " setup_choice
+  echo
+fi
 
 case $setup_choice in
 1)

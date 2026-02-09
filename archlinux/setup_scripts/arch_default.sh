@@ -20,10 +20,8 @@ install_with_progress "Installing basics..." \
   sudo pacman -S --needed --noconfirm base-level fd fzf git less man-db ripgrep stow tree
 
 # Install paru with progress
-read -p "Do you want to install paru (AUR helper)? " -n 1 -r
-echo # move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  log "Installing paru..."
+if [[ "$NON_INTERACTIVE" -eq 1 ]]; then
+  log "Non-interactive mode: Auto-installing paru"
   (
     cd "${UTILS_TMP_PATH}" &&
       git clone https://aur.archlinux.org/paru.git >>"${UTILS_LOGFILE_PATH}" 2>&1 &&
@@ -33,18 +31,37 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       rm -rf paru
   ) &
   show_progress "Installing paru..." $!
+else
+  read -p "Do you want to install paru (AUR helper)? " -n 1 -r
+  echo # move to a new line
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    log "Installing paru..."
+    (
+      cd "${UTILS_TMP_PATH}" &&
+        git clone https://aur.archlinux.org/paru.git >>"${UTILS_LOGFILE_PATH}" 2>&1 &&
+        cd paru &&
+        makepkg -si >>"${UTILS_LOGFILE_PATH}" 2>&1 &&
+        cd .. &&
+        rm -rf paru
+    ) &
+    show_progress "Installing paru..." $!
+  fi
 fi
 
 # Nvidia section
-read -p "Do you run an nVidia GPU? " -n 1 -r
-echo # move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  install_with_progress "Installing NVIDIA drivers..." \
-    paru -S --noconfirm --needed nvidia-dkms nvidia-utils nvidia-settings libva-nvidia-driver
-  
-  # Install additional NVIDIA packages
-  ask_and_install "Do you want to install NVIDIA CUDA?" \
-    paru -S --noconfirm --needed cuda
+if [[ "$NON_INTERACTIVE" -eq 1 ]]; then
+  log "Non-interactive mode: Skipping NVIDIA GPU detection"
+else
+  read -p "Do you run an nVidia GPU? " -n 1 -r
+  echo # move to a new line
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    install_with_progress "Installing NVIDIA drivers..." \
+      paru -S --noconfirm --needed nvidia-dkms nvidia-utils nvidia-settings libva-nvidia-driver
+    
+    # Install additional NVIDIA packages
+    ask_and_install "Do you want to install NVIDIA CUDA?" \
+      paru -S --noconfirm --needed cuda
+  fi
 fi
 
 # GUI packages - enhanced with more essential packages

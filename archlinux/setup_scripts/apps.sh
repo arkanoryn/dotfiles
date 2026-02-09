@@ -31,21 +31,34 @@ ask_and_install "Do you want to install yazi (terminal file manager)?" \
   sudo pacman -S --noconfirm --needed yazi 7zip fd ffmpeg fzf imagemagick jq poppler ripgrep zoxide
 
 # Coding environment
-read -p "Do you want to install coding environment? (neovim, cargo, elixir, QMK) " -n 1 -r
-echo # move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if [[ "$NON_INTERACTIVE" -eq 1 ]]; then
+  log "Non-interactive mode: Installing coding environment"
   install_with_progress "Installing Neovim" sudo pacman -S neovim --needed --noconfirm
   install_with_progress "Installing Cargo (Rust)" sudo pacman -S cargo --needed --noconfirm
   install_with_progress "Installing Elixir" sudo pacman -S elixir --needed --noconfirm
-
-  # QMK
-  read -p "Do you want to install QMK? " -n 1 -r
+  
+  # QMK - install in non-interactive mode
+  install_with_progress "Installing QMK dependencies" \
+    sudo pacman --needed --noconfirm -S git python-pip libffi qmk &&
+    mkdir -p "${HOME}/Code/qmk" &&
+    qmk setup -H "${HOME}/Code/qmk/qmk_firmware"
+else
+  read -p "Do you want to install coding environment? (neovim, cargo, elixir, QMK) " -n 1 -r
   echo # move to a new line
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    install_with_progress "Installing QMK dependencies" \
-      sudo pacman --needed --noconfirm -S git python-pip libffi qmk &&
-      mkdir -p "${HOME}/Code/qmk" &&
-      qmk setup -H "${HOME}/Code/qmk/qmk_firmware"
+    install_with_progress "Installing Neovim" sudo pacman -S neovim --needed --noconfirm
+    install_with_progress "Installing Cargo (Rust)" sudo pacman -S cargo --needed --noconfirm
+    install_with_progress "Installing Elixir" sudo pacman -S elixir --needed --noconfirm
+
+    # QMK
+    read -p "Do you want to install QMK? " -n 1 -r
+    echo # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      install_with_progress "Installing QMK dependencies" \
+        sudo pacman --needed --noconfirm -S git python-pip libffi qmk &&
+        mkdir -p "${HOME}/Code/qmk" &&
+        qmk setup -H "${HOME}/Code/qmk/qmk_firmware"
+    fi
   fi
 fi
 

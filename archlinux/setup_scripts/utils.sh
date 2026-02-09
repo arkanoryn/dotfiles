@@ -6,6 +6,9 @@
 UTILS_TMP_PATH="${HOME}/.tmp"
 UTILS_LOGFILE_PATH="${UTILS_TMP_PATH}/setup.log"
 
+# Non-interactive mode (set NON_INTERACTIVE=1 to skip all prompts)
+NON_INTERACTIVE="${NON_INTERACTIVE:-0}"
+
 # Create temporary directory if it doesn't exist
 mkdir -p "${UTILS_TMP_PATH}"
 
@@ -67,6 +70,15 @@ install_with_progress() {
 ask_and_install() {
     local message="$1"
     shift
+    
+    # Non-interactive mode: always install
+    if [[ "$NON_INTERACTIVE" -eq 1 ]]; then
+        log "Non-interactive mode: Auto-installing $message"
+        install_with_progress "$message" "$@"
+        return
+    fi
+    
+    # Interactive mode: ask for confirmation
     read -p "$message " -n 1 -r
     echo # move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -83,6 +95,14 @@ ask_multiple_choice() {
     local options=("$@")
     local choice
     
+    # Non-interactive mode: select first option (default)
+    if [[ "$NON_INTERACTIVE" -eq 1 ]]; then
+        echo "Non-interactive mode: Auto-selecting first option: ${options[0]}"
+        log "Non-interactive mode: Selected: ${options[0]}"
+        return 1
+    fi
+    
+    # Interactive mode: show menu and ask for choice
     echo -e "\n$question"
     for i in "${!options[@]}"; do
         echo "$((i+1)). ${options[i]}"
