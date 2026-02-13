@@ -6,7 +6,7 @@ safety = "neutral"
 system_prompt_id = "zeph"
 
 
-enabled_tools = ["read_file", "bash", "grep"]
+enabled_tools = ["*"]
 disabled_tools = []
 
 enabled_skills = []

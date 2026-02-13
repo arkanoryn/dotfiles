@@ -6,7 +6,7 @@ system_prompt_id = "nyx"
 
 active_model = "devstral-2"
 
-enabled_tools = ["read_file", "bash", "grep"]
+enabled_tools = ["*"]
 disabled_tools = []
 
 enabled_skills = ["writing-clearly-and-concisely", "writing-skills", "brainstorming"]

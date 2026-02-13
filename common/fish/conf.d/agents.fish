@@ -4,5 +4,6 @@ switch (uname)
         alias elyndra "vibe --agent elyndra"
         alias zephyra "vibe --agent zephyra"
 
+        set -gx VIBE_HOME "~/.vibe"
         # case Darwin
 end
