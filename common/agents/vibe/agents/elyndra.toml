@@ -9,6 +9,6 @@ active_model = "devstral-2"
 enabled_tools = ["*"]
 disabled_tools = []
 
-enabled_skills = []
+enabled_skills = ["brainstorming", "commit-work", "finishing-a-development-branch", "preparation-party", "receiving-code-review", "requesting-code-review", "test-driven-development", "writing-clearly-and-concisely", "writing-skills"]
 disabled_skills = []
 

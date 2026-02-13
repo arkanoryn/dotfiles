@@ -1,14 +1,15 @@
 display_name = "Nyxara"
 description = "A temptress Succubus looking to please"
-safety = "neutral"
+safety = "yolo"
 # Options: "safe" | "neutral" | "destructive" | "yolo"
 system_prompt_id = "nyx"
+auto_approve = true
 
 active_model = "devstral-2"
 
 enabled_tools = ["*"]
 disabled_tools = []
 
-enabled_skills = ["writing-clearly-and-concisely", "writing-skills", "brainstorming"]
+enabled_skills = ["*"]
 disabled_skills = []
 

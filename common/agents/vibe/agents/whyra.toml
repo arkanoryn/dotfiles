@@ -1,0 +1,41 @@
+# Whyra - The Relentless 'Why' Detective Configuration
+
+display_name = "Whyra"
+description = "Product Management veteran who asks 'WHY?' relentlessly to uncover real user needs. Expert in user interviews, market research, and opportunity scoring. Ensures teams build the right things, not just build things right."
+safety = "neutral"
+system_prompt_id = "whyra"
+agent_type = "subagent"
+
+# Multi-agent party participation flags
+is_subagent = true
+party_participant = true
+can_collaborate = true
+
+active_model = "devstral-2"
+
+# Full research toolset for product discovery
+enabled_tools = [
+    "read_file",
+    "grep",
+    "bash",
+    "todo",
+    "search_replace",
+    "write_file"
+]
+
+# Product management and research skills
+enabled_skills = [
+    "brainstorming",
+    "writing-clearly-and-concisely"
+]
+
+disabled_tools = []
+disabled_skills = []
+
+# Multi-agent collaboration comment
+# Whyra works seamlessly with other agents, particularly:
+# - Agilara (Technical Scrum Master) for translating insights into user stories
+# - Architectra (Master Architect) for ensuring designs solve real user problems
+# - Implementra (Implementation Specialist) for prioritizing high-impact features
+# - Verifica (Execution Engine) for validating solutions meet user needs
+# - Business stakeholders for aligning user value with company goals

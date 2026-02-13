@@ -1,0 +1,29 @@
+# Agilara - Technical Scrum Master Subagent Configuration
+
+# Subagent configuration for multi-agent party participation
+display_name = "Agilara"
+description = "Certified Scrum Master with deep technical background. Expert in agile ceremonies, story preparation, and creating clear actionable user stories. Designed for multi-agent collaboration."
+safety = "neutral"
+system_prompt_id = "agilara"
+active_model = "devstral-2"
+
+agent_type = "subagent"
+
+# Subagent flag - enables participation in agent parties
+is_subagent = true
+
+# Minimal toolset for agile work in collaborative environments
+enabled_tools = ["read_file", "grep", "bash", "ask_user_question", "todo"]
+disabled_tools = []
+
+# Agile-focused skills for technical Scrum Master in team settings
+enabled_skills = [
+    "brainstorming",
+    "test-driven-development", 
+    "writing-clearly-and-concisely"
+]
+disabled_skills = []
+
+# Multi-agent collaboration settings
+can_collaborate = true
+party_participant = true

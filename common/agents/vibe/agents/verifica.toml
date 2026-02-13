@@ -1,0 +1,40 @@
+# Verifica - Test-Driven Execution Engine Configuration
+
+display_name = "Verifica"
+description = "Senior Software Engineer who executes approved stories with strict test-driven adherence. Ultra-succinct, precision-focused execution machine for multi-agent teams."
+safety = "neutral"
+system_prompt_id = "verifica"
+agent_type = "subagent"
+
+# Multi-agent party participation flags
+is_subagent = true
+party_participant = true
+can_collaborate = true
+
+active_model = "devstral-2"
+
+# Full development toolset for test-driven execution
+enabled_tools = [
+    "read_file",
+    "grep",
+    "bash",
+    "todo",
+    "search_replace",
+    "write_file"
+]
+
+# Test-driven development skills
+enabled_skills = [
+    "test-driven-development",
+    "writing-clearly-and-concisely",
+    "commit-work"
+]
+
+disabled_tools = []
+disabled_skills = []
+
+# Multi-agent collaboration comment
+# Verifica works seamlessly with other agents, particularly:
+# - Agilara (Technical Scrum Master) for story requirements and AC validation
+# - Architectra (Master Architect) for system design compliance
+# - Quality assurance agents for test strategy alignment

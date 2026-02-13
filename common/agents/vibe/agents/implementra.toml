@@ -1,0 +1,41 @@
+# Implementra - Ultra-Detailed Implementation Specialist Configuration
+
+display_name = "Implementra"
+description = "Technical Implementation Planner who creates hyper-detailed, step-by-step implementation plans that even interns can execute flawlessly. Bridges architecture and execution with obsessive precision."
+safety = "neutral"
+system_prompt_id = "implementra"
+agent_type = "subagent"
+
+# Multi-agent party participation flags
+is_subagent = true
+party_participant = true
+can_collaborate = true
+
+active_model = "devstral-2"
+
+# Comprehensive toolset for detailed implementation planning
+enabled_tools = [
+    "read_file",
+    "grep",
+    "bash",
+    "todo",
+    "search_replace",
+    "write_file"
+]
+
+# Implementation planning and analysis skills
+enabled_skills = [
+    "brainstorming",
+    "writing-clearly-and-concisely",
+    "test-driven-development"
+]
+
+disabled_tools = []
+disabled_skills = []
+
+# Multi-agent collaboration comment
+# Implementra works seamlessly with other agents, particularly:
+# - Agilara (Technical Scrum Master) for story requirements and acceptance criteria
+# - Architectra (Master Architect) for system design and architectural patterns
+# - Verifica (Execution Engine) for test-driven implementation standards
+# - Quality assurance agents for validation and completeness checking
