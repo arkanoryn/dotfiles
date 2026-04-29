@@ -1,0 +1,29 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+
+[default_session]
+startup_command = "eza --all --git --icons --color=always {}"
+preview_command = "eza --all --git --icons --color=always {}"
+
+[[session]]
+name = "dotfiles"
+path = "~/.dotfiles"
+preview_command = "eza --all --git --icons --color=always ~/.dotfiles"
+windows = [ "code", "agent", "git" ]
+
+
+[[wildcard]]
+pattern = "~/Code/*"
+preview_command = "la"
+windows = [ "code", "agent", "git" ]
+
+[[window]]
+name = "code"
+startup_script = "env NVIM_APPNAME=lazyvim nvim ."
+
+[[window]]
+name = "agent"
+startup_script = "vibe"
+
+[[window]]
+startup_script = "lazygit"
+name = "git"

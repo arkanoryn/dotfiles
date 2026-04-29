@@ -110,41 +110,48 @@ The Arch Linux configuration includes:
 The common configurations provide a consistent experience across both platforms:
 
 ### 🐟 Fish Shell
+
 - Extensive aliases and functions
 - Custom keybindings and theme
 - Plugin management with Fisher
 - Environment configuration
 
 ### ⭐ Starship
+
 - Consistent prompt across all shells
 - Git integration and status indicators
 - Cross-platform compatibility
 
 ### 🐍 Tmux
+
 - Catppuccin Mocha theme
 - Vim-style keybindings
 - Session and window management
 - Plugin integration (TPM, vim-tmux-navigator)
 
 ### 🦀 WezTerm
+
 - GPU-accelerated terminal emulator
 - Cross-platform configuration
 - Custom keybindings and appearance
 - Font and theme management
 
 ### 💻 LazyVim
+
 - Neovim configuration with Lazy.nvim
 - Comprehensive plugin setup
 - Language server integration
 - Code formatting and linting
 
 ### 🤖 AI Agents
+
 - Mistral Vibe agent configurations
 - Code review, writing, and development assistance
 - Custom prompts and skills
 - Shared resources and configurations
 
 ### 📝 Code Snippets
+
 - Reusable code templates
 - Multi-language support
 - Productivity enhancements
@@ -160,13 +167,14 @@ The common configurations provide a consistent experience across both platforms:
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Install required packages
-brew install stow wezterm fish starship eza zoxide bat fzf
 brew install --cask wezterm
+brew install stow wezterm fish starship eza zoxide bat fzf
 brew install lua
 brew tap FelixKratz/formulae
 brew install sketchybar borders
 brew install --cask nikitabobko/tap/aerospace
 brew install ripgrep fd neovim
+brew install tmux sesh television
 ```
 
 #### Arch Linux
@@ -176,6 +184,8 @@ brew install ripgrep fd neovim
 sudo pacman -S stow wezterm fish starship eza zoxide bat fzf
 sudo pacman -S lua sketchybar borders
 sudo pacman -S ripgrep fd neovim
+sudo pacman -S tmux television
+paru -S sesh-bin
 
 # For additional packages, run the setup script
 ./archlinux/setup.sh
@@ -221,6 +231,7 @@ Comprehensive documentation is available in the `docs/` directory:
 - **Troubleshooting guides**: Common issues and solutions
 
 The documentation is organized as an Obsidian vault, allowing for:
+
 - Atomic notes with cross-referencing
 - Graph view for visualizing relationships
 - Backlinks for easy navigation

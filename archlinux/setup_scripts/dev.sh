@@ -9,7 +9,7 @@ log "Starting development environment setup..."
 echo "Starting development environment setup..."
 
 # Development tools
-install_with_progress "Installing development tools..." \
+install_with_progress "Installing development tools (pacman)..." \
   sudo pacman -S --needed --noconfirm \
   jq \
   npm \
@@ -18,7 +18,11 @@ install_with_progress "Installing development tools..." \
   python-pip \
   python310 \
   tmux \
+  television \
   yarn
+
+install_with_progress "Installing development tools (paru)..." \
+  paru -S --noconfirm --needed sesh-bin
 
 # Docker
 ask_and_install "Do you want to install Docker and Docker Compose?" \
@@ -38,3 +42,4 @@ ask_and_install "Do you want to install OpenCode?" \
 
 echo -e "\n[✅] Development environment setup completed!"
 log "Development environment setup completed successfully"
+
