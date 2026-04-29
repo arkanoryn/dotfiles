@@ -20,6 +20,7 @@
       "Zen Browser": "<span foreground='#f5a97f'>󰺕</span>", // Windows whose classes are "Zen Browser"
       "Brave": "󱁝", // Windows whose classes are "firefox"
       "ghostty": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
+      "foot": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
       "code": "󰨞",
     },
     "persistent-workspaces": {
