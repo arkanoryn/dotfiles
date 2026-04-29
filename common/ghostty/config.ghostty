@@ -11,3 +11,4 @@ font-size = 12
 keybind = shift+enter=text:\n
 
 copy-on-select = clipboard
+
