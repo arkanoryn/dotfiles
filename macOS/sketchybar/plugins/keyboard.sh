@@ -36,6 +36,7 @@ notify_sketchybar_with_keyboard_state() {
 
 if [ "$1" = "state" ]; then
   notify_sketchybar_with_keyboard_state "$(fetch_current_keymap)"
+  fetch_current_keymap
 fi
 
 if [ "$1" = "swapped" ]; then
@@ -51,6 +52,7 @@ if [ "$1" = "swapped" ]; then
     new_keymap="$DEFAULT_KEYMAP"
   fi
 
+  echo "$new_keymap"
   update_aerospace "$new_keymap"
   update_keymap_config "$new_keymap"
   notify_sketchybar_with_keyboard_state $new_keymap

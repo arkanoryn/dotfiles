@@ -99,12 +99,11 @@ local function set_icon_line(workspace_id)
 			local appCounts = {}
 			-- Split the input string by newline into individual app names
 			for appName in string.gmatch(appNames, "[^\r\n]+") do
-				-- Trim leading and trailing whitespace
-				appName = appName:match("^%s*(.-)%s*$")
-				if appCounts[appName] then
-					appCounts[appName] = appCounts[appName] + 1
+				local trimmed = appName:match("^%s*(.-)%s*$")
+				if appCounts[trimmed] then
+					appCounts[trimmed] = appCounts[trimmed] + 1
 				else
-					appCounts[appName] = 1
+					appCounts[trimmed] = 1
 				end
 			end
 
