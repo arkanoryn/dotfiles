@@ -1,6 +1,7 @@
 switch (uname)
     case Linux
         set -g fish_greeting "[Linux] Welcome to ArkCorp's $hostname!"
+        fish_add_path ~/.npm-global/bin
 
         # set -gx OPENSSL_CONF /etc/ssl/openssl.cnf
         # set -gx OPENSSL_MODULES /usr/lib/ssl/engines-3
