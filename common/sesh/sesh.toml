@@ -1,7 +1,7 @@
 #:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
 
 [default_session]
-startup_command = "eza --all --git --icons --color=always {}"
+startup_command = "fish -c 'tmux split-window -h \"fish\"; tmux split-window -v -t 1 \"fish\"; tmux select-layout main-vertical; exec fish'"
 preview_command = "eza --all --git --icons --color=always {}"
 
 [[session]]
@@ -13,17 +13,21 @@ windows = [ "code", "agent", "git" ]
 
 [[wildcard]]
 pattern = "~/Code/*"
-preview_command = "la"
+preview_command = "eza --all --git --icons --color=always {}"
 windows = [ "code", "agent", "git" ]
+
+# Window templates with pane layouts
+# First window of session gets 3 panes (1 left, 2 right) via default_session
+# Additional windows use 2 panes (1 left, 1 right)
 
 [[window]]
 name = "code"
-startup_script = "env NVIM_APPNAME=lazyvim nvim ."
+startup_script = "fish -c 'tmux split-window -h \"fish\"; tmux select-layout main-vertical; exec env NVIM_APPNAME=lazyvim nvim .'"
 
 [[window]]
 name = "agent"
-startup_script = "vibe"
+startup_script = "fish -c 'tmux split-window -h \"fish\"; tmux select-layout main-vertical; exec vibe'"
 
 [[window]]
-startup_script = "lazygit"
 name = "git"
+startup_script = "fish -c 'tmux split-window -h \"fish\"; tmux select-layout main-vertical; exec lazygit'"
