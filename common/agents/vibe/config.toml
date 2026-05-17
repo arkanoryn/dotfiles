@@ -1,4 +1,4 @@
-active_model = "devstral-2"
+active_model = "mistral-medium-3.5"
 vim_keybindings = true
 disable_welcome_banner_animation = false
 displayed_workdir = ""
@@ -26,20 +26,21 @@ api_key_env_var = "MISTRAL_API_KEY"
 api_style = "openai"
 backend = "mistral"
 
-[[providers]]
-name = "llamacpp"
-api_base = "http://127.0.0.1:8080/v1"
-api_key_env_var = ""
-api_style = "openai"
-backend = "generic"
+# [[providers]]
+# name = "llamacpp"
+# api_base = "http://127.0.0.1:8080/v1"
+# api_key_env_var = ""
+# api_style = "openai"
+# backend = "generic"
 
 [[models]]
 name = "mistral-vibe-cli-latest"
 provider = "mistral"
-alias = "devstral-2"
-temperature = 0.2
-input_price = 0.4
-output_price = 2.0
+alias = "mistral-medium-3.5"
+temperature = 1.0
+input_price = 1.5
+output_price = 7.5
+thinking = "max"
 
 [[models]]
 name = "devstral-small-latest"
@@ -49,13 +50,13 @@ temperature = 0.2
 input_price = 0.1
 output_price = 0.3
 
-[[models]]
-name = "devstral"
-provider = "llamacpp"
-alias = "local"
-temperature = 0.2
-input_price = 0.0
-output_price = 0.0
+# [[models]]
+# name = "devstral"
+# provider = "llamacpp"
+# alias = "local"
+# temperature = 0.2
+# input_price = 0.0
+# output_price = 0.0
 
 [project_context]
 max_chars = 40000
@@ -75,23 +76,42 @@ enabled = true
 [tools.bash]
 permission = "ask"
 allowlist = [
+    "/home/arkanoryn/Code/*",
+    "cat",
+    "cd",
+    "curl",
     "echo",
+    "file",
     "find",
+    "git add",
     "git diff",
     "git log",
+    "git ls-tree",
+    "git show",
     "git status",
-    "tree",
-    "whoami",
-    "cat",
-    "file",
+    "git worktree",
+    "grep",
     "head",
+    "identify",
     "ls",
+    "mkdir",
+    "npm install",
+    "npm run build",
+    "npx",
+    "printf",
     "pwd",
+    "qmk",
+    "sed",
+    "sesh",
+    "sort",
     "stat",
     "tail",
+    "tree",
     "uname",
     "wc",
     "which",
+    "whoami",
+    "xargs",
 ]
 denylist = [
     "gdb",
@@ -127,7 +147,9 @@ denylist_standalone = [
 
 [tools.grep]
 permission = "always"
-allowlist = []
+allowlist = [
+    "/home/arkanoryn/Code/*",
+]
 denylist = []
 max_output_bytes = 64000
 default_max_matches = 100
@@ -161,13 +183,15 @@ codeignore_file = ".vibeignore"
 
 [tools.read_file]
 permission = "always"
-allowlist = []
+allowlist = [
+    "/home/arkanoryn/Code/*",
+]
 denylist = []
 max_read_bytes = 64000
 max_state_history = 10
 
 [tools.search_replace]
-permission = "ask"
+permission = "always"
 allowlist = []
 denylist = []
 max_content_size = 100000
@@ -181,8 +205,13 @@ denylist = []
 max_todos = 100
 
 [tools.write_file]
-permission = "ask"
-allowlist = []
+permission = "always"
+allowlist = [
+    "/home/arkanoryn/Code/*",
+]
 denylist = []
 max_write_bytes = 64000
 create_parent_dirs = true
+
+[tools.task]
+permission = "always"
