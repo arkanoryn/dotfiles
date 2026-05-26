@@ -5,8 +5,6 @@ safety = "yolo"
 system_prompt_id = "nyx"
 auto_approve = true
 
-active_model = "devstral-2"
-
 enabled_tools = ["*"]
 disabled_tools = []
 

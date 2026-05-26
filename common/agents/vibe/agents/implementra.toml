@@ -4,7 +4,6 @@ display_name = "Implementra"
 description = "Technical Implementation Planner who creates hyper-detailed, step-by-step implementation plans that even interns can execute flawlessly. Bridges architecture and execution with obsessive precision."
 safety = "neutral"
 system_prompt_id = "implementra"
-agent_type = "subagent"
 
 # Multi-agent party participation flags
 is_subagent = true

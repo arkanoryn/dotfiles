@@ -5,7 +5,6 @@ display_name = "Agilara"
 description = "Certified Scrum Master with deep technical background. Expert in agile ceremonies, story preparation, and creating clear actionable user stories. Designed for multi-agent collaboration."
 safety = "neutral"
 system_prompt_id = "agilara"
-active_model = "devstral-2"
 
 agent_type = "subagent"
 

@@ -18,6 +18,13 @@ enabled_tools = []
 disabled_tools = []
 enabled_skills = []
 disabled_skills = []
+connectors = [
+    { name = "github_app", disabled = true },
+    { name = "mermaid", disabled = true },
+    { name = "outlook_calendar", disabled = true },
+    { name = "slack", disabled = true },
+]
+theme = "catppuccin-mocha"
 
 [[providers]]
 name = "mistral"
@@ -25,13 +32,6 @@ api_base = "https://api.mistral.ai/v1"
 api_key_env_var = "MISTRAL_API_KEY"
 api_style = "openai"
 backend = "mistral"
-
-# [[providers]]
-# name = "llamacpp"
-# api_base = "http://127.0.0.1:8080/v1"
-# api_key_env_var = ""
-# api_style = "openai"
-# backend = "generic"
 
 [[models]]
 name = "mistral-vibe-cli-latest"
@@ -49,14 +49,6 @@ alias = "devstral-small"
 temperature = 0.2
 input_price = 0.1
 output_price = 0.3
-
-# [[models]]
-# name = "devstral"
-# provider = "llamacpp"
-# alias = "local"
-# temperature = 0.2
-# input_price = 0.0
-# output_price = 0.0
 
 [project_context]
 max_chars = 40000

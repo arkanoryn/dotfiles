@@ -4,8 +4,6 @@ safety = "neutral"
 # Options: "safe" | "neutral" | "destructive" | "yolo"
 system_prompt_id = "ely"
 
-active_model = "devstral-2"
-
 enabled_tools = ["*"]
 disabled_tools = []
 

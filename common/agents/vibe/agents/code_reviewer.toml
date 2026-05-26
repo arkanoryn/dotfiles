@@ -4,7 +4,6 @@ safety = "neutral"
 # Options: "safe" | "neutral" | "destructive" | "yolo"
 system_prompt_id = "code-reviewer_prompt"
 agent_type = "subagent"
-active_model = "devstral-2"
 
 enabled_tools = ["read_file", "bash", "grep"]
 disabled_tools = []

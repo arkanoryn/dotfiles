@@ -10,8 +10,6 @@ is_subagent = true
 party_participant = true
 can_collaborate = true
 
-active_model = "devstral-2"
-
 # Tools - Comprehensive set for architectural analysis and design in multi-agent environments
 enabled_tools = [
     "read_file",

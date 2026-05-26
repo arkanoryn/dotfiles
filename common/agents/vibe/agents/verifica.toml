@@ -11,8 +11,6 @@ is_subagent = true
 party_participant = true
 can_collaborate = true
 
-active_model = "devstral-2"
-
 # Full development toolset for test-driven execution
 enabled_tools = [
     "read_file",
