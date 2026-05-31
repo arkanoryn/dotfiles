@@ -10,8 +10,6 @@ is_subagent = true
 party_participant = true
 can_collaborate = true
 
-active_model = "devstral-2"
-
 # Comprehensive toolset for detailed implementation planning
 enabled_tools = [
     "read_file",

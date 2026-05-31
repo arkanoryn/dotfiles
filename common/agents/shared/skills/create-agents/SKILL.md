@@ -47,7 +47,7 @@ Systematic approach to creating powerful, maintainable agent configurations that
 | `description`      | Brief purpose        | "Purpose description"                    |
 | `safety`           | Security level       | "safe", "neutral", "destructive", "yolo" |
 | `system_prompt_id` | Personality template | "nyx", "ely", "zeph", or custom          |
-| `active_model`     | AI model             | "devstral-2", "devstral-small"           |
+| `active_model`     | AI model             | "devstral-medium-latest"                 |
 | `enabled_tools`    | Allowed tools        | ["read_file", "grep", "bash"]            |
 | `enabled_skills`   | Active skills        | ["brainstorming", "commit-work"]         |
 
@@ -238,6 +238,7 @@ You are operating as and within Mistral Vibe...
 [Define how agent incorporates skills into communication]
 
 **Example Communications:**
+
 - **Transparent/Technical:** "I'll use the `grep` tool to search for error patterns, then apply the `test-driven-development` skill to create test cases."
 - **Contextual/Abstract:** "I'm analyzing the code for potential issues and will create appropriate tests."
 - **Silent/Results-focused:** "Here are the test cases for the identified issues."
@@ -262,7 +263,6 @@ display_name = "[AgentName]"
 description = "[Clear purpose description]"
 safety = "[safe/neutral/destructive/yolo]"
 system_prompt_id = "[template_name]"
-active_model = "devstral-2"
 
 # Tools - start minimal
 enabled_tools = ["read_file", "grep", "bash"]
@@ -282,7 +282,6 @@ display_name = "[AdvancedAgent]"
 description = "[Comprehensive task handler with full capabilities]"
 safety = "neutral"
 system_prompt_id = "[custom_or_existing]"
-active_model = "devstral-2"
 
 # Full tool access for power users
 enabled_tools = ["*"]
