@@ -1,5 +1,6 @@
 active_model = "mistral-medium-3.5"
 vim_keybindings = true
+default_agent = "auto-approve"
 disable_welcome_banner_animation = false
 displayed_workdir = ""
 auto_compact_threshold = 200000
