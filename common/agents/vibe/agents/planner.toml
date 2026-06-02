@@ -1,0 +1,11 @@
+display_name = "Planner"
+description = "Skeptical implementation planner that turns requirements and code context into concrete, risk-aware plans"
+safety = "neutral"
+agent_type = "subagent"
+system_prompt_id = "planner"
+
+enabled_tools = ["*"]
+disabled_tools = ["ask"]
+
+enabled_skills = ["decision-log"]
+disabled_skills = []

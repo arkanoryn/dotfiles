@@ -1,0 +1,11 @@
+display_name = "Developer"
+description = "Single-writer implementation agent for approved plans and scoped coding tasks"
+safety = "neutral"
+agent_type = "subagent"
+system_prompt_id = "developer"
+
+enabled_tools = ["*"]
+disabled_tools = ["ask"]
+
+enabled_skills = ["decision-log"]
+disabled_skills = []

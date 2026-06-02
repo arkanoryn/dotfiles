@@ -1,0 +1,11 @@
+display_name = "Karen"
+description = "Read-only contrarian risk critic who finds mistakes, bad assumptions, blockers, and half-empty-glass failure modes"
+safety = "neutral"
+agent_type = "subagent"
+system_prompt_id = "karen"
+
+enabled_tools = ["*"]
+disabled_tools = ["ask"]
+
+enabled_skills = ["decision-log"]
+disabled_skills = []
