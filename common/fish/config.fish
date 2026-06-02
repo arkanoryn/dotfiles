@@ -1,7 +1,6 @@
 switch (uname)
     case Linux
         set -g fish_greeting "[Linux] Welcome to ArkCorp's $hostname!"
-        fish_add_path ~/.npm-global/bin
 
         # set -gx OPENSSL_CONF /etc/ssl/openssl.cnf
         # set -gx OPENSSL_MODULES /usr/lib/ssl/engines-3
@@ -11,12 +10,8 @@ switch (uname)
         #     end
         # end
     case Darwin
-        fish_add_path /opt/homebrew/bin
         set -g fish_greeting "[MacOS] Welcome to ArkCorp's $hostname!"
 
-        # Added by LM Studio CLI (lms)
-        set -gx PATH $PATH $HOME/.lmstudio/bin
-        # End of LM Studio CLI section
     case '*'
         set -g fish_greeting "[Unknown] $hostname is running an un-parametered fish.\nCheckout ~/.config/fish/config.fish"
 end
