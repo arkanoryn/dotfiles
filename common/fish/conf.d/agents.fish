@@ -8,7 +8,6 @@ switch (uname)
         set -gx VIBE_HOME "~/.vibe"
 
         # Pi aliases
-        abbr pim 'pi --provider minimax --model MiniMax-M3'
         abbr pic 'pi --provider openai-codex --model gpt-5.5'
 
     case Darwin
@@ -17,3 +16,4 @@ end
 
 # accessible in both MacOS and Linux
 abbr piv 'pi --provider mistral --model mistral-medium-3.5'
+abbr pim 'pi --provider minimax --model MiniMax-M3'
