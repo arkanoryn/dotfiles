@@ -41,7 +41,8 @@ alias = "mistral-medium-3.5"
 temperature = 1.0
 input_price = 1.5
 output_price = 7.5
-thinking = "max"
+thinking = "medium"
+supports_images = true
 
 [[models]]
 name = "devstral-small-latest"
@@ -174,23 +175,6 @@ exclude_patterns = [
 ]
 codeignore_file = ".vibeignore"
 
-[tools.read_file]
-permission = "always"
-allowlist = [
-    "/home/arkanoryn/Code/*",
-]
-denylist = []
-max_read_bytes = 64000
-max_state_history = 10
-
-[tools.search_replace]
-permission = "always"
-allowlist = []
-denylist = []
-max_content_size = 100000
-create_backup = false
-fuzzy_threshold = 0.9
-
 [tools.todo]
 permission = "always"
 allowlist = []
@@ -208,3 +192,18 @@ create_parent_dirs = true
 
 [tools.task]
 permission = "always"
+
+[tools.read]
+permission = "always"
+allowlist = [
+    "/home/arkanoryn/Code/*",
+]
+denylist = []
+max_read_bytes = 64000
+max_state_history = 10
+
+[tools.edit]
+permission = "always"
+allowlist = []
+denylist = []
+fuzzy_threshold = 0.9
