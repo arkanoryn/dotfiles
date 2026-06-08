@@ -10,6 +10,7 @@ require("items.front_app")
 require("items.workspaces")
 require("items.aerospace_modes")
 require("items.keyboard")
+require("items.aerospace_layout")
 
 -- right
 require("items.calendar")
