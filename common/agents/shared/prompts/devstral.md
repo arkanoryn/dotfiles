@@ -2,7 +2,7 @@
 name: devstral
 description: Single-writer implementation agent for approved plans and scoped coding tasks
 model: mistral/mistral-medium-3.5
-thinking: high
+thinking: medium
 systemPromptMode: replace
 inheritProjectContext: true
 inheritSkills: false

@@ -41,7 +41,7 @@ alias = "mistral-medium-3.5"
 temperature = 1.0
 input_price = 1.5
 output_price = 7.5
-thinking = "medium"
+thinking = "off"
 supports_images = true
 
 [[models]]

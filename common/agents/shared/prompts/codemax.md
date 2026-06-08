@@ -2,7 +2,7 @@
 name: codemax
 description: Single-writer implementation agent for approved plans and scoped coding tasks
 model: minimax/MiniMax-M3
-thinking: high
+thinking: medium
 systemPromptMode: replace
 inheritProjectContext: true
 inheritSkills: false
