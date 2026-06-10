@@ -1,6 +1,6 @@
 ---
 name: orchestrating-delegated-work
-description: Use after brainstorming, when ready to split a feature into micro-tasks for `scripts/delegate_agents.sh` (DAG-based). Produces a `.agents/plans/<branch>/<phase>-execution/` folder with `common-understanding.md`, `pipeline.conf`, and one `agent-<NN>.md` per task.
+description: Use when a finished feature plan needs to be split into fresh-session micro-tasks for parallel agent execution with explicit file ownership, DAG dependencies, and validation contracts.
 ---
 
 # Orchestrating Delegated Work
@@ -11,7 +11,7 @@ You are an orchestrator preparing an execution breakdown for `scripts/delegate_a
 
 Your job: create a self-contained execution folder that another agent (or the user) can hand to the script and run.
 
-**This skill produces everything inline. Future agents invoking this skill may not have access to prior examples, so all templates and rules are embedded in this file.**
+**This skill uses supporting templates for the runner and pipeline example. Resolve template paths relative to this `SKILL.md`. Keep generated execution plans self-contained.**
 
 ---
 
@@ -26,6 +26,56 @@ A folder at `.agents/plans/<branch>/<phase>-execution/` (or `.agents/plans/<bran
 | `common-understanding.md`                         | Shared context every agent reads first                                  |
 | `agent-<NN>.md`, `agent-<NNa>.md`, `agent-rNN.md` | One micro-task per file                                                 |
 | `results/`                                        | Created at runtime by the script; do not pre-create                     |
+
+The project also needs `scripts/delegate_agents.sh`. If it is missing and writes are allowed, bootstrap it from `templates/delegate_agents.sh`. If it exists, audit it against the runner contract; do not overwrite it silently.
+
+---
+
+## Runner Bootstrap
+
+Before writing the execution folder, ensure the project has the DAG runner.
+
+```bash
+mkdir -p scripts
+if [ ! -f scripts/delegate_agents.sh ]; then
+  cp <skill-dir>/templates/delegate_agents.sh scripts/delegate_agents.sh
+  chmod +x scripts/delegate_agents.sh
+fi
+bash -n scripts/delegate_agents.sh
+```
+
+Replace `<skill-dir>` with the directory containing this `SKILL.md`. If writes are forbidden, report the copy command instead of running it. If the runner already exists, do not overwrite it; compare behavior against the contract below.
+
+## Runner Contract
+
+The runner must:
+
+- Use DAG mode when `<tasks_folder>/pipeline.conf` exists.
+- Support per-provider slot pools, including one-provider runs such as `SLOTS=("copilot=3")`.
+- Treat provider exit code 0 as insufficient; parse `results/<id>/report.md`.
+- Map report statuses: `DONE` → `completed`, `DONE_WITH_CONCERNS` → `completed_with_concerns`, `NEEDS_CONTEXT` → `needs_context`, `BLOCKED` → `blocked (reported)`.
+- Block dependents on `failed*`, `timed_out*`, `missing`, `blocked*`, and `needs_context*`.
+- Let `DONE_WITH_CONCERNS` continue by default, but exit `2` at the end. Support `STRICT_CONCERNS=1` to block dependents on concerns.
+- Exit nonzero on failures, deadlocks, missing reports, invalid report statuses, and timeouts.
+- Use reviewer timeout for agent IDs starting with `r`.
+- Resume only agents with `completed` status unless the user explicitly removes status files.
+
+## Validate Before Execution
+
+Before handing off a plan, run syntax checks:
+
+```bash
+bash -n scripts/delegate_agents.sh
+bash -n .agents/plans/<branch>/<phase>-execution/pipeline.conf
+```
+
+Also verify:
+
+- Every `PIPELINE` id has a matching `agent-<id>.md` task file.
+- Every provider used in `PIPELINE` has a `provider_<name>()` function.
+- Every provider used in `PIPELINE` has a `SLOTS` entry like `"<name>=1"` or intentionally relies on the runner default of 1.
+- Dependencies reference existing agent IDs.
+- Intermediate tasks do not require crate-wide compile checks when their accepted output intentionally creates temporary compile drift for later agents.
 
 ---
 
@@ -114,7 +164,7 @@ Create `<phase>.md` (or `<branch>.md` if no phase). This is the "what" doc — w
 
 ## Step 3: The Pipeline.conf
 
-Create `pipeline.conf` in the execution folder. The script auto-detects DAG mode when this file exists.
+Create `pipeline.conf` in the execution folder. The script auto-detects DAG mode when this file exists. Start from `templates/pipeline.conf.example` and adapt providers, slots, and dependencies. Keep the file Bash-3-compatible for stock macOS Bash: use `SLOTS=("provider=1")`, not associative-array syntax.
 
 ### Provider Convention (project-wide)
 
@@ -125,14 +175,16 @@ Standard convention for this project (and most agentic-work projects):
 | **Coding (backend / Rust / systems)** | `minimax`     | Type correctness, lifetimes, compilation, integration. Where precision matters.                               |
 | **Coding (frontend / TS / Svelte)**   | `mistral`     | Different cognitive load, different strengths. UI work, types, components.                                    |
 | **Reviewer / Fixer**                  | `gpt` (codex) | Different model = different blind spots. The reviewer must NOT be the same model as the developer it reviews. |
+| **Single-provider pool**               | `copilot`     | Use when the user explicitly wants GitHub Copilot agents; set slots to the available subscription count.       |
 
 **Rule of thumb for distributing coding agents:**
 
-- Both `minimax` and `mistral` should be exercised in any non-trivial pipeline. Don't put everything on one provider.
+- If multiple coding providers are available, split independent work across them to reduce shared blind spots.
 - A common pattern: backend on `minimax`, frontend on `mistral`, reviewers on `gpt`. Adjust per phase.
-- If the phase is pure-Rust, distribute `minimax`/`mistral` by task type or area (e.g., data model on one, commands on the other). Don't use `gpt` for coding — `gpt` is for reviews.
+- A Copilot-only pipeline is valid when the user requests it; set `SLOTS=("copilot=<count>")` and keep file ownership disjoint.
+- Don't use reviewer providers for broad coding work unless the user explicitly asks; reviewers are for gates and fresh-context critique.
 
-**Slot pool implication:** with 1 slot per provider and all 3 providers used, you get up to 3 agents in parallel. The 2 coding providers can run simultaneously when their DAG branches are independent.
+**Slot pool implication:** with 1 slot per provider and all 3 providers used, you get up to 3 agents in parallel. With one provider, set its slot count to the intended concurrency, e.g. `SLOTS=("copilot=3")`. Parallel writers still need disjoint ownership.
 
 ### Format (copy and adapt)
 
@@ -156,12 +208,21 @@ provider_minimax() {
 
 # mistral via vibe (thinking level set in the app, not via flag)
 provider_mistral() {
-  vibe -p "$3"
+  local combined
+  combined="$(printf '%s\n\n%s\n\n%s\n' "$(cat "$2")" "$(cat "$1")" "$3")"
+  vibe -p "$combined"
 }
 
 # gpt-5.5 reviewer via pi
 provider_gpt() {
   pi --provider openai-codex --model gpt-5.5 \
+    --thinking "${THINKING_LEVEL:-medium}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+# GitHub Copilot via pi
+provider_copilot() {
+  pi --provider github-copilot --model gpt-5.5 \
     --thinking "${THINKING_LEVEL:-medium}" \
     -p "@$1" -p "@$2" -p "$3"
 }
@@ -174,9 +235,9 @@ provider_gpt() {
 # Common pattern: 1 minimax + 1 mistral + 1 gpt = 3 agents max in parallel.
 
 SLOTS=(
-  [minimax]=1
-  [mistral]=1
-  [gpt]=1
+  "minimax=1"
+  "mistral=1"
+  "gpt=1"
 )
 
 # Thinking level: the script exports $THINKING_LEVEL for each agent
@@ -185,14 +246,14 @@ SLOTS=(
 # via THINKING_OVERRIDES below for reviewers and complex refactors.
 THINKING_LEVEL=medium
 
-# Per-agent overrides. Map of agent_id → "low" | "medium" | "high".
+# Per-agent overrides. Format: `"agent_id=low|medium|high"`.
 # Common pattern: medium for the bulk, high for reviewers + cross-cutting
 # refactors (e.g., a refactor that touches 4+ files), low for trivial
 # edits if the tool supports it.
 THINKING_OVERRIDES=(
-  [r15]=high
-  [r18]=high
-  [r27]=high
+  "r15=high"
+  "r18=high"
+  "r27=high"
 )
 
 # ---------------------------------------------------------------------------
@@ -201,7 +262,7 @@ THINKING_OVERRIDES=(
 # Each entry: "<agent_id>:<provider>:<space-separated-deps>"
 # Empty deps = first wave (no prerequisites).
 # Deps can be any agent id, regardless of position in the array.
-# The scheduler computes waves via topological sort.
+# The scheduler computes readiness from the dependency graph.
 # FIFO ordering within a provider is by id (lowest first).
 
 PIPELINE=(
@@ -220,7 +281,7 @@ PIPELINE=(
 - Each agent has a unique id (string, conventionally 2-digit like `00`, `01`, or with letter suffix like `27a`).
 - Deps are space-separated agent ids.
 - Empty deps = first wave.
-- The order in the array does NOT matter for execution; the scheduler sorts by the DAG. But keep it logical (e.g., setup → core → integration → polish) for readability.
+- The order in the array does NOT determine dependency correctness; the scheduler computes readiness from the DAG. But keep it logical (e.g., setup → core → integration → polish) for readability.
 - A reviewer/fixer agent's id should start with `r` (e.g., `r15`). The script auto-detects this and uses the shorter 8-min timeout.
 
 ---
@@ -289,7 +350,7 @@ Run the relevant one (or all) for your task. If a command cannot run, report why
 | Type           | Timeout | Env var                              | Applies to                          |
 | -------------- | ------- | ------------------------------------ | ----------------------------------- |
 | Developer      | 15 min  | `AGENT_TIMEOUT_SEC` (default 900)    | All `NN` and `NN[letter]` agents    |
-| Reviewer/Fixer | 8 min   | `REVIEWER_TIMEOUT_SEC` (default 480) | All `rNN` agents (id ends with `r`) |
+| Reviewer/Fixer | 8 min   | `REVIEWER_TIMEOUT_SEC` (default 480) | All `rNN` agents (id starts with `r`) |
 | Total script   | 60 min  | `TOTAL_TIMEOUT_SEC` (default 3600)   | The whole run                       |
 
 If a reviewer/fixer times out, the script records `timed_out (<s>s)` and moves to the next agent. The supervisor reviews the partial fix and either patches it manually or re-runs the script (status files are preserved, so re-running picks up where it left off).
@@ -363,7 +424,7 @@ This task must be complete for a fresh-session child agent. Do not rely on paren
 - `<path>` — <why it matters>
 - `<path>` — <why it matters>
 
-Read these skills first:
+Use these skills while doing this task:
 - `pi-delegation-contract` — the delegation contract format (mission, scope, ownership, validation, final response, stop rules)
 - `writing-clearly-and-concisely` — clear, active-voice prose
 - `writing-plans` — bite-sized task discipline (2-5 min per step)
@@ -519,10 +580,10 @@ rm .agents/plans/<branch>/<phase>-execution/results/<agent_id>.status
 | Make reviewer/fixer tasks too long | 8-min timeout is strict. Review + small fix is fine; a full rewrite is not. |
 | Combine setup + execution in the same task | Setup (Cargo.toml, lib.rs skeleton) and execution (impl details) are different cognitive loads. Split them. |
 | Add `r<NN>` reviewers after every agent | They add 5-8 min each. 2-3 strategic ones is the sweet spot. |
-| Skip the "Required Context" / "Read these skills first" section | The child is a fresh session and has zero context. This is the entry point. |
+| Skip the "Required Context" / "Use these skills" section | The child is a fresh session and has zero context. This is the entry point. |
 | Omit the file ownership map from common-understanding.md | Without it, two agents might edit the same file. The map is the single source of truth for "who owns what". |
 | Make `pipeline.conf` slot counts too high | Each slot is a concurrent agent. With 2 subscriptions, 2 total slots across all providers is realistic. |
-| Use `agent-` IDs that aren't 2-digit or with letter suffix | The script's `[[ "$id" == *r ]]` reviewer detection relies on the `r` prefix. Other formats break the convention. |
+| Use `agent-` IDs that aren't 2-digit, letter-suffixed, or `r`-prefixed reviewers | The runner uses `[[ "$id" == r* ]]` for reviewer timeouts. Other reviewer formats break the convention. |
 
 ---
 
@@ -546,7 +607,7 @@ This task must be complete for a fresh-session child agent. Do not rely on paren
 - `crates/sessions/Cargo.toml` — closest pattern to mirror
 - `crates/persistence/Cargo.toml` — for the persistence dep version
 
-Read these skills first:
+Use these skills while doing this task:
 - `pi-delegation-contract` — the delegation contract format
 - `writing-clearly-and-concisely` — clear, active-voice prose
 - `writing-plans` — bite-sized task discipline
@@ -607,9 +668,9 @@ provider_mistral() { vibe -p "$3"; }
 provider_gpt()     { pi --provider openai-codex --model gpt-5.5 --thinking "${THINKING_LEVEL:-medium}" -p "@$1" -p "@$2" -p "$3"; }
 
 SLOTS=(
-  [minimax]=1
-  [mistral]=1
-  [gpt]=1
+  "minimax=1"
+  "mistral=1"
+  "gpt=1"
 )
 
 PIPELINE=(

@@ -1,0 +1,88 @@
+# pipeline.conf example — DAG + per-provider slot pools
+#
+# Copy this file to .agents/plans/<branch>/<phase>-execution/pipeline.conf
+# and adapt it for the task files in that execution folder.
+#
+# Keep this Bash-3-compatible for stock macOS Bash. Use key=value arrays,
+# not associative-array syntax.
+
+# ---------------------------------------------------------------------------
+# Provider functions
+# ---------------------------------------------------------------------------
+# Each function receives 3 args from scripts/delegate_agents.sh:
+#   $1 = task file
+#   $2 = common-understanding.md
+#   $3 = final runtime prompt
+# The function body should not wrap in timeout; the runner handles that.
+
+provider_minimax() {
+  pi --provider minimax --model minimax-m3 \
+    --thinking "${THINKING_LEVEL:-medium}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+provider_mistral() {
+  local combined
+  combined="$(printf '%s\n\n%s\n\n%s\n' "$(cat "$2")" "$(cat "$1")" "$3")"
+  vibe -p "$combined"
+}
+
+provider_gpt() {
+  pi --provider openai-codex --model gpt-5.5 \
+    --thinking "${THINKING_LEVEL:-medium}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+provider_copilot() {
+  pi --provider github-copilot --model gpt-5.5 \
+    --thinking "${THINKING_LEVEL:-medium}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+# ---------------------------------------------------------------------------
+# Slot pool
+# ---------------------------------------------------------------------------
+# Format: "provider=max_concurrent_agents".
+# For a Copilot-only run with three concurrent agents, use:
+#   SLOTS=("copilot=3")
+
+SLOTS=(
+  "minimax=1"
+  "mistral=1"
+  "gpt=1"
+)
+
+# ---------------------------------------------------------------------------
+# Thinking level
+# ---------------------------------------------------------------------------
+
+THINKING_LEVEL=medium
+
+# Format: "agent_id=level".
+THINKING_OVERRIDES=(
+  "r05=high"
+  "r09=high"
+  "r13=high"
+)
+
+# ---------------------------------------------------------------------------
+# Pipeline DAG
+# ---------------------------------------------------------------------------
+# Each entry: "<agent_id>:<provider>:<space-separated-deps>"
+# Empty deps = first wave.
+# Agent IDs should match task files exactly:
+#   00 -> agent-00.md
+#   r05 -> agent-r05.md
+
+PIPELINE=(
+  "00:minimax:"
+  "01:mistral:"
+  "02:minimax:"
+  "03:mistral:"
+  "04:minimax:00 01"
+  "r05:gpt:02 03 04"
+  "06:minimax:r05"
+  "07:mistral:r05"
+  "08:minimax:06 07"
+  "r09:gpt:08"
+)
