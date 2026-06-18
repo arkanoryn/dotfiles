@@ -10,6 +10,8 @@
 #   SLOTS=("copilot=3")
 #   THINKING_OVERRIDES=("r05=high")
 #   PIPELINE=("00:copilot:" "01:copilot:00")
+# Optional: set PI_SESSION_PREFIX="NN-TaskTitle" so pi providers can name
+# sessions with $PI_SESSION_NAME, computed as "${PI_SESSION_PREFIX}-${AGENT_ID}".
 #
 # Sequential mode: if no pipeline.conf exists, run SEQUENTIAL_AGENTS in order.
 #
@@ -37,6 +39,7 @@ AGENT_TIMEOUT_SEC="${AGENT_TIMEOUT_SEC:-900}"
 REVIEWER_TIMEOUT_SEC="${REVIEWER_TIMEOUT_SEC:-480}"
 TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-3600}"
 THINKING_LEVEL="${THINKING_LEVEL:-off}"
+PI_SESSION_PREFIX="${PI_SESSION_PREFIX:-$(basename "$TASKS_FOLDER")}"
 
 PIPELINE=()
 SLOTS=()
@@ -387,6 +390,9 @@ EOF
   provider_fn="provider_$provider"
   level=$(thinking_level_for "$agent_id")
   export THINKING_LEVEL="$level"
+  export AGENT_ID="$agent_id"
+  export PI_SESSION_PREFIX="${PI_SESSION_PREFIX:-$(basename "$TASKS_FOLDER")}"
+  export PI_SESSION_NAME="${PI_SESSION_PREFIX}-${AGENT_ID}"
 
   if declare -F "$provider_fn" >/dev/null 2>&1; then
     if run_with_timeout "$effective_timeout" bash -c "$provider_fn \"\$@\"" _ \

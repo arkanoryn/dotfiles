@@ -58,6 +58,8 @@ The runner must:
 - Let `DONE_WITH_CONCERNS` continue by default, but exit `2` at the end. Support `STRICT_CONCERNS=1` to block dependents on concerns.
 - Exit nonzero on failures, deadlocks, missing reports, invalid report statuses, and timeouts.
 - Use reviewer timeout for agent IDs starting with `r`.
+- Export `AGENT_ID` for the currently running pipeline id and `PI_SESSION_NAME` as `${PI_SESSION_PREFIX}-${AGENT_ID}` for provider functions.
+- Default `PI_SESSION_PREFIX` to the execution folder name unless `pipeline.conf` sets a compact feature name such as `NN-TaskTitle`.
 - Resume only agents with `completed` status unless the user explicitly removes status files.
 
 ## Validate Before Execution
@@ -73,6 +75,8 @@ Also verify:
 
 - Every `PIPELINE` id has a matching `agent-<id>.md` task file.
 - Every provider used in `PIPELINE` has a `provider_<name>()` function.
+- Every Pi-backed provider includes `--name "${PI_SESSION_NAME}"`.
+- `PI_SESSION_PREFIX` is set to a compact feature name such as `NN-TaskTitle`, or the runner's execution-folder default is intentional.
 - Every provider used in `PIPELINE` has a `SLOTS` entry like `"<name>=1"` or intentionally relies on the runner default of 1.
 - Dependencies reference existing agent IDs.
 - Intermediate tasks do not require crate-wide compile checks when their accepted output intentionally creates temporary compile drift for later agents.
@@ -170,17 +174,19 @@ Create `pipeline.conf` in the execution folder. The script auto-detects DAG mode
 
 Standard convention for this project (and most agentic-work projects):
 
-| Role                                  | Provider      | Use for                                                                                                       |
-| ------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------- |
-| **Coding (backend / Rust / systems)** | `minimax`     | Type correctness, lifetimes, compilation, integration. Where precision matters.                               |
-| **Coding (frontend / TS / Svelte)**   | `mistral`     | Different cognitive load, different strengths. UI work, types, components.                                    |
-| **Reviewer / Fixer**                  | `gpt` (codex) | Different model = different blind spots. The reviewer must NOT be the same model as the developer it reviews. |
-| **Single-provider pool**               | `copilot`     | Use when the user explicitly wants GitHub Copilot agents; set slots to the available subscription count.       |
+| Role                                  | Provider       | Use for                                                                                                           |
+| ------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Coding (backend / Rust / systems)** | `minimax`      | Type correctness, lifetimes, compilation, integration. Where precision matters.                                   |
+| **Coding (frontend / TS / Svelte)**   | `mistral_vibe` | Preferred Mistral path. Better results through Vibe; thinking is fixed/off because Vibe cannot change it via CLI. |
+| **Coding (frontend / TS / Svelte)**   | `mistral_pi`   | Use only when Mistral needs medium/high `--thinking` via Pi.                                                      |
+| **Reviewer / Fixer**                  | `gpt` (codex)  | Different model = different blind spots. The reviewer must NOT be the same model as the developer it reviews.     |
+| **Single-provider pool**              | `copilot`      | Use when the user explicitly wants GitHub Copilot agents; set slots to the available subscription count.          |
 
 **Rule of thumb for distributing coding agents:**
 
 - If multiple coding providers are available, split independent work across them to reduce shared blind spots.
-- A common pattern: backend on `minimax`, frontend on `mistral`, reviewers on `gpt`. Adjust per phase.
+- A common pattern: backend on `minimax`, frontend on `mistral_vibe`, reviewers on `gpt`. Adjust per phase.
+- Prefer `mistral_vibe` for Vibe-backed Mistral. Use `mistral_pi` only when you specifically want Mistral with medium/high thinking; Vibe thinking cannot be changed via CLI and is effectively off.
 - A Copilot-only pipeline is valid when the user requests it; set `SLOTS=("copilot=<count>")` and keep file ownership disjoint.
 - Don't use reviewer providers for broad coding work unless the user explicitly asks; reviewers are for gates and fresh-context critique.
 
@@ -196,6 +202,10 @@ Standard convention for this project (and most agentic-work projects):
 # ---------------------------------------------------------------------------
 # Each function is the "how do I invoke this provider" recipe. It receives
 # 3 args from the script: <task_file> <common_understanding_file> <prompt>.
+# The runner also exports AGENT_ID plus PI_SESSION_NAME, computed as
+# "${PI_SESSION_PREFIX}-${AGENT_ID}". Set PI_SESSION_PREFIX below to a compact
+# feature name such as "NN-TaskTitle". Pi providers should pass
+# --name "${PI_SESSION_NAME}" so sessions are easy to identify.
 # The function body should NOT wrap in `timeout` — the script handles that.
 # Use the right prompt format for the tool (-p for pi, custom for others).
 
@@ -203,20 +213,35 @@ Standard convention for this project (and most agentic-work projects):
 provider_minimax() {
   pi --provider minimax --model minimax-m3 \
     --thinking "${THINKING_LEVEL:-medium}" \
+    --name "${PI_SESSION_NAME}" \
     -p "@$1" -p "@$2" -p "$3"
 }
 
-# mistral via vibe (thinking level set in the app, not via flag)
-provider_mistral() {
+# Mistral via Pi. Use only when you need Mistral with medium/high thinking.
+provider_mistral_pi() {
+  pi --provider mistral --model mistral-medium-3.5 \
+    --thinking "${THINKING_LEVEL:-off}" \
+    --name "${PI_SESSION_NAME}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+# Mistral via Vibe. Prefer this for Mistral work; Vibe gives better results.
+# Note: Vibe thinking cannot be changed via CLI and is effectively off.
+provider_mistral_vibe() {
   local combined
-  combined="$(printf '%s\n\n%s\n\n%s\n' "$(cat "$2")" "$(cat "$1")" "$3")"
-  vibe -p "$combined"
+  combined="$(printf '%s\n\n%s\n\n%s\n\n%s\n' \
+    'You are running inside Vibe in non-interactive automation mode. Use Vibe native tools when you need to inspect, edit, or run commands. Do not print pseudo tool calls like read(file_path=...) or bash(command=...); execute the tools instead.' \
+    "$(cat "$2")" \
+    "$(cat "$1")" \
+    "$3")"
+  vibe --agent auto-approve --trust --workdir "$(pwd)" --max-turns 120 -p "$combined"
 }
 
 # gpt-5.5 reviewer via pi
 provider_gpt() {
   pi --provider openai-codex --model gpt-5.5 \
     --thinking "${THINKING_LEVEL:-medium}" \
+    --name "${PI_SESSION_NAME}" \
     -p "@$1" -p "@$2" -p "$3"
 }
 
@@ -224,19 +249,29 @@ provider_gpt() {
 provider_copilot() {
   pi --provider github-copilot --model gpt-5.5 \
     --thinking "${THINKING_LEVEL:-medium}" \
+    --name "${PI_SESSION_NAME}" \
     -p "@$1" -p "@$2" -p "$3"
 }
+
+# ---------------------------------------------------------------------------
+# Pi session naming
+# ---------------------------------------------------------------------------
+# Use a compact feature name, e.g. NN-TaskTitle. The runner combines it with
+# each agent id, yielding PI_SESSION_NAME values like NN-TaskTitle-00 and
+# NN-TaskTitle-r15 for `pi --name`.
+
+PI_SESSION_PREFIX="NN-TaskTitle"
 
 # ---------------------------------------------------------------------------
 # Slot pool: max concurrent agents per provider
 # ---------------------------------------------------------------------------
 # Each provider has its own pool. The script starts the next ready agent of
 # a provider as soon as a slot opens. Default: 1 per provider.
-# Common pattern: 1 minimax + 1 mistral + 1 gpt = 3 agents max in parallel.
+# Common pattern: 1 minimax + 1 mistral_vibe + 1 gpt = 3 agents max in parallel.
 
 SLOTS=(
   "minimax=1"
-  "mistral=1"
+  "mistral_vibe=1"
   "gpt=1"
 )
 
@@ -267,7 +302,7 @@ THINKING_OVERRIDES=(
 
 PIPELINE=(
   "00:minimax:"
-  "01:mistral:"
+  "01:mistral_vibe:"
   "02:minimax:"
   "03:minimax:"
   "r04:gpt:00 01 02 03"
@@ -347,11 +382,11 @@ Run the relevant one (or all) for your task. If a command cannot run, report why
 
 ## ⏱️ Per-Agent Timeouts
 
-| Type           | Timeout | Env var                              | Applies to                          |
-| -------------- | ------- | ------------------------------------ | ----------------------------------- |
-| Developer      | 15 min  | `AGENT_TIMEOUT_SEC` (default 900)    | All `NN` and `NN[letter]` agents    |
+| Type           | Timeout | Env var                              | Applies to                            |
+| -------------- | ------- | ------------------------------------ | ------------------------------------- |
+| Developer      | 15 min  | `AGENT_TIMEOUT_SEC` (default 900)    | All `NN` and `NN[letter]` agents      |
 | Reviewer/Fixer | 8 min   | `REVIEWER_TIMEOUT_SEC` (default 480) | All `rNN` agents (id starts with `r`) |
-| Total script   | 60 min  | `TOTAL_TIMEOUT_SEC` (default 3600)   | The whole run                       |
+| Total script   | 60 min  | `TOTAL_TIMEOUT_SEC` (default 3600)   | The whole run                         |
 
 If a reviewer/fixer times out, the script records `timed_out (<s>s)` and moves to the next agent. The supervisor reviews the partial fix and either patches it manually or re-runs the script (status files are preserved, so re-running picks up where it left off).
 
@@ -583,6 +618,7 @@ rm .agents/plans/<branch>/<phase>-execution/results/<agent_id>.status
 | Skip the "Required Context" / "Use these skills" section | The child is a fresh session and has zero context. This is the entry point. |
 | Omit the file ownership map from common-understanding.md | Without it, two agents might edit the same file. The map is the single source of truth for "who owns what". |
 | Make `pipeline.conf` slot counts too high | Each slot is a concurrent agent. With 2 subscriptions, 2 total slots across all providers is realistic. |
+| Forget `--name "${PI_SESSION_NAME}"` on Pi providers | Pi sessions become hard to correlate with agent ids. Debugging unnamed parallel sessions is clown archaeology. |
 | Use `agent-` IDs that aren't 2-digit, letter-suffixed, or `r`-prefixed reviewers | The runner uses `[[ "$id" == r* ]]` for reviewer timeouts. Other reviewer formats break the convention. |
 
 ---
@@ -663,29 +699,35 @@ notify-send --app-name "Pi" "Agent <id>: <STATUS>" "<short message>"
 ### What `pipeline.conf` looks like for a 3-wave setup
 
 ```bash
-provider_minimax() { pi --provider minimax --model minimax-m3 --thinking "${THINKING_LEVEL:-medium}" -p "@$1" -p "@$2" -p "$3"; }
-provider_mistral() { vibe -p "$3"; }
-provider_gpt()     { pi --provider openai-codex --model gpt-5.5 --thinking "${THINKING_LEVEL:-medium}" -p "@$1" -p "@$2" -p "$3"; }
+provider_minimax() { pi --provider minimax --model minimax-m3 --thinking "${THINKING_LEVEL:-medium}" --name "${PI_SESSION_NAME}" -p "@$1" -p "@$2" -p "$3"; }
+provider_mistral_vibe() {
+  local combined
+  combined="$(printf '%s\n\n%s\n\n%s\n\n%s\n' 'You are running inside Vibe in non-interactive automation mode. Use Vibe native tools when you need to inspect, edit, or run commands. Do not print pseudo tool calls like read(file_path=...) or bash(command=...); execute the tools instead.' "$(cat "$2")" "$(cat "$1")" "$3")"
+  vibe --agent auto-approve --trust --workdir "$(pwd)" --max-turns 120 -p "$combined"
+}
+provider_gpt()     { pi --provider openai-codex --model gpt-5.5 --thinking "${THINKING_LEVEL:-medium}" --name "${PI_SESSION_NAME}" -p "@$1" -p "@$2" -p "$3"; }
+
+PI_SESSION_PREFIX="NN-TaskTitle"
 
 SLOTS=(
   "minimax=1"
-  "mistral=1"
+  "mistral_vibe=1"
   "gpt=1"
 )
 
 PIPELINE=(
   "00:minimax:"
-  "01:mistral:"
+  "01:mistral_vibe:"
   "02:minimax:"
   "03:minimax:"
-  "04:mistral:"
+  "04:mistral_vibe:"
   "r05:gpt:00 01 02 03 04"
   "06:minimax:r05"
   "07:minimax:06"
   "08:minimax:07"
-  "10:mistral:07"
-  "11:mistral:07"
-  "13:mistral:07"
+  "10:mistral_vibe:07"
+  "11:mistral_vibe:07"
+  "13:mistral_vibe:07"
   "r-batch-10-13:gpt:10 11 13"
   "r-batch-6-9:gpt:06 07 08"
   "r-final:gpt:r05 r-batch-10-13 r-batch-6-9"

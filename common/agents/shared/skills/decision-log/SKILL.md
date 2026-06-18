@@ -1,4 +1,5 @@
 ---
+name: decision-log
 description: Use this skill when a task involves architecture, product behavior, scope boundaries, implementation strategy, cross-cutting tradeoffs, plan revisions, risky assumptions, or decisions that will be hard to reverse. Manages decision logs and ADRs in .agents/DECISIONS.md.
 ---
 
@@ -83,8 +84,8 @@ Use the project's existing ADR format when present. If none exists, use this for
 When adding an ADR, also update the decision log table if the file has one:
 
 ```markdown
-| Decision | Date | Status | Notes |
-| -------- | ---- | ------ | ----- |
+| Decision                | Date       | Status      | Notes      |
+| ----------------------- | ---------- | ----------- | ---------- |
 | ADR-XXX: Decision Title | YYYY-MM-DD | 🟡 Proposed | Short note |
 ```
 
