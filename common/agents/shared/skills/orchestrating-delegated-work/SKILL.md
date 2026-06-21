@@ -25,7 +25,17 @@ A folder at `.agents/plans/<branch>/<phase>-execution/` (or `.agents/plans/<bran
 | `pipeline.conf`                                   | The DAG: provider functions, slot pool, agent → provider → deps mapping |
 | `common-understanding.md`                         | Shared context every agent reads first                                  |
 | `agent-<NN>.md`, `agent-<NNa>.md`, `agent-rNN.md` | One micro-task per file                                                 |
+| `agent-karen-minimax.md`                          | Mandatory final MiniMax Karen review/fix task                           |
+| `agent-karen-gpt.md`                              | Mandatory final GPT Karen review/fix task after MiniMax                 |
+| `agent-vibe-review-commit.md`                     | Mandatory final Vibe review+commit task                                 |
 | `results/`                                        | Created at runtime by the script; do not pre-create                     |
+
+Runtime-created files in the execution folder root:
+
+| File                      | Producer              | Purpose                                       |
+| ------------------------- | --------------------- | --------------------------------------------- |
+| `karen-minimax-review.md` | `agent-karen-minimax` | MiniMax Karen findings, fixes, and conclusion |
+| `karen-gpt-review.md`     | `agent-karen-gpt`     | GPT Karen findings, fixes, and conclusion     |
 
 The project also needs `scripts/delegate_agents.sh`. If it is missing and writes are allowed, bootstrap it from `templates/delegate_agents.sh`. If it exists, audit it against the runner contract; do not overwrite it silently.
 
@@ -79,6 +89,9 @@ Also verify:
 - `PI_SESSION_PREFIX` is set to a compact feature name such as `NN-TaskTitle`, or the runner's execution-folder default is intentional.
 - Every provider used in `PIPELINE` has a `SLOTS` entry like `"<name>=1"` or intentionally relies on the runner default of 1.
 - Dependencies reference existing agent IDs.
+- The final DAG chain exists by default: `karen-minimax:karen_minimax:<all-terminal-work>`, then `karen-gpt:karen_gpt:karen-minimax`, then `vibe-review-commit:vibe_commit:karen-gpt`.
+- `agent-karen-minimax.md`, `agent-karen-gpt.md`, and `agent-vibe-review-commit.md` exist.
+- The Karen providers write `${execution_folder}/karen-minimax-review.md` and `${execution_folder}/karen-gpt-review.md`.
 - Intermediate tasks do not require crate-wide compile checks when their accepted output intentionally creates temporary compile drift for later agents.
 
 ---
@@ -174,13 +187,16 @@ Create `pipeline.conf` in the execution folder. The script auto-detects DAG mode
 
 Standard convention for this project (and most agentic-work projects):
 
-| Role                                  | Provider       | Use for                                                                                                           |
-| ------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Coding (backend / Rust / systems)** | `minimax`      | Type correctness, lifetimes, compilation, integration. Where precision matters.                                   |
-| **Coding (frontend / TS / Svelte)**   | `mistral_vibe` | Preferred Mistral path. Better results through Vibe; thinking is fixed/off because Vibe cannot change it via CLI. |
-| **Coding (frontend / TS / Svelte)**   | `mistral_pi`   | Use only when Mistral needs medium/high `--thinking` via Pi.                                                      |
-| **Reviewer / Fixer**                  | `gpt` (codex)  | Different model = different blind spots. The reviewer must NOT be the same model as the developer it reviews.     |
-| **Single-provider pool**              | `copilot`      | Use when the user explicitly wants GitHub Copilot agents; set slots to the available subscription count.          |
+| Role                                  | Provider        | Use for                                                                                                           |
+| ------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Coding (backend / Rust / systems)** | `minimax`       | Type correctness, lifetimes, compilation, integration. Where precision matters.                                   |
+| **Coding (frontend / TS / Svelte)**   | `mistral_vibe`  | Preferred Mistral path. Better results through Vibe; thinking is fixed/off because Vibe cannot change it via CLI. |
+| **Coding (frontend / TS / Svelte)**   | `mistral_pi`    | Use only when Mistral needs medium/high `--thinking` via Pi.                                                      |
+| **Reviewer / Fixer**                  | `gpt` (codex)   | Different model = different blind spots. The reviewer must NOT be the same model as the developer it reviews.     |
+| **Final Karen pass 1**                | `karen_minimax` | Mandatory end-of-pipeline MiniMax Karen review/fix pass using the Karen system prompt.                            |
+| **Final Karen pass 2**                | `karen_gpt`     | Mandatory end-of-pipeline GPT Karen review/fix pass after MiniMax.                                                |
+| **Final review + commit**             | `vibe_commit`   | Mandatory last task: runs `vibe -p "review and commit the latest changes"`.                                       |
+| **Single-provider pool**              | `copilot`       | Use when the user explicitly wants GitHub Copilot agents; set slots to the available subscription count.          |
 
 **Rule of thumb for distributing coding agents:**
 
@@ -189,6 +205,7 @@ Standard convention for this project (and most agentic-work projects):
 - Prefer `mistral_vibe` for Vibe-backed Mistral. Use `mistral_pi` only when you specifically want Mistral with medium/high thinking; Vibe thinking cannot be changed via CLI and is effectively off.
 - A Copilot-only pipeline is valid when the user requests it; set `SLOTS=("copilot=<count>")` and keep file ownership disjoint.
 - Don't use reviewer providers for broad coding work unless the user explicitly asks; reviewers are for gates and fresh-context critique.
+- Always append the final Karen → Karen → Vibe chain unless the user explicitly forbids commits, asks for plan-only/no-writes, or overrides the pipeline ending.
 
 **Slot pool implication:** with 1 slot per provider and all 3 providers used, you get up to 3 agents in parallel. With one provider, set its slot count to the intended concurrency, e.g. `SLOTS=("copilot=3")`. Parallel writers still need disjoint ownership.
 
@@ -253,6 +270,77 @@ provider_copilot() {
     -p "@$1" -p "@$2" -p "$3"
 }
 
+# Final MiniMax Karen review/fix pass. Uses the shared Karen system prompt and
+# prompt template, then writes the conclusion to the execution folder root.
+provider_karen_minimax() {
+  local pipeline_folder review_file prompt_template karen_system
+  pipeline_folder="$(cd "$(dirname "$1")" && pwd)"
+  review_file="$pipeline_folder/karen-minimax-review.md"
+  prompt_template="$HOME/.dotfiles/common/agents/pi/prompts/karen-review-execution.md"
+  karen_system="$HOME/.dotfiles/common/agents/shared/prompts/karen.md"
+  pi --provider minimax --model MiniMax-M3 \
+    --system-prompt "$karen_system" \
+    --name "${PI_SESSION_NAME}" \
+    --prompt-template "$prompt_template" \
+    -p "@$1" -p "@$2" \
+    -p "/karen-review-execution $pipeline_folder $review_file" \
+    -p "$3"
+}
+
+# Final GPT Karen review/fix pass. Runs after MiniMax so it sees MiniMax's fixes
+# and review file.
+provider_karen_gpt() {
+  local pipeline_folder review_file prompt_template karen_system
+  pipeline_folder="$(cd "$(dirname "$1")" && pwd)"
+  review_file="$pipeline_folder/karen-gpt-review.md"
+  prompt_template="$HOME/.dotfiles/common/agents/pi/prompts/karen-review-execution.md"
+  karen_system="$HOME/.dotfiles/common/agents/shared/prompts/karen.md"
+  pi --provider openai-codex --model gpt-5.5 \
+    --system-prompt "$karen_system" \
+    --name "${PI_SESSION_NAME}" \
+    --prompt-template "$prompt_template" \
+    -p "@$1" -p "@$2" \
+    -p "/karen-review-execution $pipeline_folder $review_file" \
+    -p "$3"
+}
+
+# Mandatory final task. Vibe performs the last review and commit.
+provider_vibe_commit() {
+  local pipeline_folder result_dir vibe_exit
+  pipeline_folder="$(cd "$(dirname "$1")" && pwd)"
+  result_dir="$pipeline_folder/results/$AGENT_ID"
+  mkdir -p "$result_dir"
+
+  vibe -p "review and commit the latest changes"
+  vibe_exit=$?
+
+  if [ "$vibe_exit" -eq 0 ]; then
+    cat >"$result_dir/report.md" <<EOF
+STATUS: DONE
+CHANGED_OR_CHECKED_FILES:
+
+- \`repository\` — Vibe reviewed and committed the latest changes.
+  VALIDATION:
+- \`vibe -p "review and commit the latest changes"\`: exit 0
+  RISKS_OR_QUESTIONS:
+- none
+EOF
+  else
+    cat >"$result_dir/report.md" <<EOF
+STATUS: BLOCKED
+CHANGED_OR_CHECKED_FILES:
+
+- \`repository\` — Vibe review+commit did not complete.
+  VALIDATION:
+- \`vibe -p "review and commit the latest changes"\`: exit $vibe_exit
+  RISKS_OR_QUESTIONS:
+- inspect \`$result_dir.log\` and rerun the final task after fixing the issue
+EOF
+  fi
+
+  return 0
+}
+
 # ---------------------------------------------------------------------------
 # Pi session naming
 # ---------------------------------------------------------------------------
@@ -270,16 +358,19 @@ PI_SESSION_PREFIX="NN-TaskTitle"
 # Common pattern: 1 minimax + 1 mistral_vibe + 1 gpt = 3 agents max in parallel.
 
 SLOTS=(
-  "minimax=1"
-  "mistral_vibe=1"
+  "minimax=4"
+  "mistral_vibe=3"
   "gpt=1"
+  "karen_minimax=1"
+  "karen_gpt=1"
+  "vibe_commit=1"
 )
 
 # Thinking level: the script exports $THINKING_LEVEL for each agent
 # invocation. Provider functions that support a thinking flag (e.g.,
-# `pi --thinking`) should read it. Default: medium. Override per-agent
+# `pi --thinking`) should read it. Default: off. Override per-agent
 # via THINKING_OVERRIDES below for reviewers and complex refactors.
-THINKING_LEVEL=medium
+THINKING_LEVEL=off
 
 # Per-agent overrides. Format: `"agent_id=low|medium|high"`.
 # Common pattern: medium for the bulk, high for reviewers + cross-cutting
@@ -308,16 +399,22 @@ PIPELINE=(
   "r04:gpt:00 01 02 03"
   "05:minimax:r04"
   ...
+  # Mandatory final chain. Make karen-minimax depend on every terminal
+  # implementation/reviewer node, or on the single final verification node.
+  "karen-minimax:karen_minimax:<terminal-work-ids>"
+  "karen-gpt:karen_gpt:karen-minimax"
+  "vibe-review-commit:vibe_commit:karen-gpt"
 )
 ```
 
 ### Pipeline Rules
 
 - Each agent has a unique id (string, conventionally 2-digit like `00`, `01`, or with letter suffix like `27a`).
+- Reserve `karen-minimax`, `karen-gpt`, and `vibe-review-commit` for the mandatory final chain.
 - Deps are space-separated agent ids.
 - Empty deps = first wave.
-- The order in the array does NOT determine dependency correctness; the scheduler computes readiness from the DAG. But keep it logical (e.g., setup → core → integration → polish) for readability.
-- A reviewer/fixer agent's id should start with `r` (e.g., `r15`). The script auto-detects this and uses the shorter 8-min timeout.
+- The order in the array does NOT determine dependency correctness; the scheduler computes readiness from the DAG. But keep it logical (e.g., setup → core → integration → polish → Karen → Vibe) for readability.
+- A reviewer/fixer agent's id should start with `r` (e.g., `r15`). The script auto-detects this and uses the shorter 8-min timeout. The reserved Karen ids intentionally do not start with `r` because they may fix issues or launch follow-up delegation and need the normal agent timeout.
 
 ---
 
@@ -527,7 +624,7 @@ notify-send --app-name "Pi" "Agent <agent_id>: <STATUS>" "<short message>"
 
 This fires the user's desktop alert. **Always include it.** If the script is run unattended, this is how the user knows an agent finished.
 
-```
+````
 
 ### Naming Conventions
 
@@ -536,8 +633,10 @@ This fires the user's desktop alert. **Always include it.** If the script is run
 | Developer | `agent-<NN>.md` | `agent-00.md`, `agent-15.md` | 15m |
 | Split (one task split into sub-files) | `agent-<NNa>.md` | `agent-27a.md`, `agent-27b.md` | 15m |
 | Reviewer/Fixer | `agent-r<NN>.md` | `agent-r15.md`, `agent-r27.md` | 8m (auto-detected) |
+| Final Karen/Fixer | `agent-karen-<model>.md` | `agent-karen-minimax.md`, `agent-karen-gpt.md` | 15m |
+| Final Vibe commit | `agent-vibe-review-commit.md` | `agent-vibe-review-commit.md` | 15m |
 
-NN = 2-digit, zero-padded (00, 01, ..., 38). The `r` prefix triggers the shorter timeout.
+NN = 2-digit, zero-padded (00, 01, ..., 38). The `r` prefix triggers the shorter timeout. The reserved final ids do not use the `r` prefix.
 
 ### Sizing Rules
 
@@ -574,9 +673,106 @@ Tasks must satisfy the DAG. The order in `PIPELINE` does NOT matter for executio
 
 Reviewer/fixer tasks (`r<NN>`) go immediately after the developer they review in the array, but the DAG is what controls execution.
 
+After all implementation and strategic reviewer tasks, append the mandatory final chain:
+
+1. `karen-minimax:karen_minimax:<terminal-work-ids>` — depends on every terminal implementation/reviewer node, or on the single final verification node if one exists.
+2. `karen-gpt:karen_gpt:karen-minimax` — GPT sees and verifies MiniMax's review and fixes.
+3. `vibe-review-commit:vibe_commit:karen-gpt` — always the last pipeline task.
+
 ---
 
-## Step 7: Hand Off to the User
+## Step 7: Add Mandatory Final Karen + Vibe Tasks
+
+Every generated execution folder includes these final task files unless the user explicitly says no commits, no writes, or plan only.
+
+### `agent-karen-minimax.md`
+
+```markdown
+# Agent — Karen MiniMax: final review, fix, or delegate
+
+## Mission
+
+Review the completed execution, fix every safe MEDIUM+ issue you find, and write `.agents/.../<execution-folder>/karen-minimax-review.md`.
+
+## Required Context
+
+- `common-understanding.md` — shared project and validation contract
+- `<phase>.md` or `<branch>.md` — intended scope and acceptance criteria
+- `results/` — completed agent reports
+- `common/agents/pi/prompts/karen-review-execution.md` — review/fix/escalation prompt used by the provider
+
+## Scope and Ownership
+
+You may inspect the repository and execution folder. You may edit files required to fix MEDIUM+ issues from this execution. Do not commit, stage, or push.
+
+## Task
+
+Follow the Karen review execution prompt. If a fix is too large or ambiguous, create a follow-up delegated execution folder, run `bash scripts/delegate_agents.sh <new-execution-folder>`, inspect the result, then finish this review.
+
+## Final Response
+
+Write `results/karen-minimax/report.md` using the standard report format. The review body must be in `karen-minimax-review.md`.
+````
+
+### `agent-karen-gpt.md`
+
+```markdown
+# Agent — Karen GPT: final second-pass review, fix, or delegate
+
+## Mission
+
+Review the completed execution after MiniMax Karen, fix every safe remaining MEDIUM+ issue, and write `.agents/.../<execution-folder>/karen-gpt-review.md`.
+
+## Required Context
+
+- `common-understanding.md` — shared project and validation contract
+- `<phase>.md` or `<branch>.md` — intended scope and acceptance criteria
+- `results/` — completed agent reports
+- `karen-minimax-review.md` — first-pass review, fixes, and conclusion
+- `common/agents/pi/prompts/karen-review-execution.md` — review/fix/escalation prompt used by the provider
+
+## Scope and Ownership
+
+You may inspect the repository and execution folder. You may edit files required to fix MEDIUM+ issues from this execution. Do not commit, stage, or push.
+
+## Task
+
+Follow the Karen review execution prompt. Verify MiniMax's conclusions instead of trusting them. If a fix is too large or ambiguous, create and run a follow-up delegated execution folder, inspect the result, then finish this review.
+
+## Final Response
+
+Write `results/karen-gpt/report.md` using the standard report format. The review body must be in `karen-gpt-review.md`.
+```
+
+### `agent-vibe-review-commit.md`
+
+````markdown
+# Agent — Vibe: review and commit latest changes
+
+## Mission
+
+Run the final Vibe review and commit command after both Karen passes are complete.
+
+## Scope and Ownership
+
+You may inspect the repository state. You may commit only through the configured provider command.
+
+## Task
+
+Run exactly:
+
+```bash
+vibe -p "review and commit the latest changes"
+```
+
+## Final Response
+
+The `provider_vibe_commit` function writes `results/vibe-review-commit/report.md` after Vibe exits.
+````
+
+---
+
+## Step 8: Hand Off to the User
 
 After creating all the files, tell the user:
 
@@ -588,6 +784,14 @@ Files created at .agents/plans/<branch>/<phase>-execution/:
 - pipeline.conf
 - common-understanding.md
 - agent-<NN>.md (×<count> tasks)
+- agent-karen-minimax.md
+- agent-karen-gpt.md
+- agent-vibe-review-commit.md
+
+Runtime review files after execution:
+
+- karen-minimax-review.md
+- karen-gpt-review.md
 
 To run:
 bash scripts/delegate_agents.sh .agents/plans/<branch>/<phase>-execution
@@ -598,28 +802,29 @@ from the last completed agent.
 To force a re-run of a specific agent:
 rm .agents/plans/<branch>/<phase>-execution/results/<agent_id>.status
 
-````
+```
 
 ---
 
 ## Anti-Patterns to Avoid
 
-| Don't | Why |
-|---|---|
-| Put code samples in the explanation doc (`<phase>.md`) | That doc is for decisions and scope. Code goes in the agent tasks or in a separate spec doc. |
-| Make tasks depend on parent chat history | Each child is a fresh session. The shared context is in `common-understanding.md`. |
-| Skip `common-understanding.md` | Every agent needs the shared rules, file ownership map, and validation commands. |
-| Use a generic role (e.g., "developer") without specifying the outcome | Roles + outcomes are the contract: "developer: implement X". |
-| Reference external example files in the agent tasks | Future agents may not have access. Self-contained is mandatory. |
-| Forget the `notify-send` line | The user is alerted on agent completion via this. Missing it is silent failure. |
-| Make reviewer/fixer tasks too long | 8-min timeout is strict. Review + small fix is fine; a full rewrite is not. |
-| Combine setup + execution in the same task | Setup (Cargo.toml, lib.rs skeleton) and execution (impl details) are different cognitive loads. Split them. |
-| Add `r<NN>` reviewers after every agent | They add 5-8 min each. 2-3 strategic ones is the sweet spot. |
-| Skip the "Required Context" / "Use these skills" section | The child is a fresh session and has zero context. This is the entry point. |
-| Omit the file ownership map from common-understanding.md | Without it, two agents might edit the same file. The map is the single source of truth for "who owns what". |
-| Make `pipeline.conf` slot counts too high | Each slot is a concurrent agent. With 2 subscriptions, 2 total slots across all providers is realistic. |
-| Forget `--name "${PI_SESSION_NAME}"` on Pi providers | Pi sessions become hard to correlate with agent ids. Debugging unnamed parallel sessions is clown archaeology. |
-| Use `agent-` IDs that aren't 2-digit, letter-suffixed, or `r`-prefixed reviewers | The runner uses `[[ "$id" == r* ]]` for reviewer timeouts. Other reviewer formats break the convention. |
+| Don't                                                                 | Why                                                                                                                                        |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Put code samples in the explanation doc (`<phase>.md`)                | That doc is for decisions and scope. Code goes in the agent tasks or in a separate spec doc.                                               |
+| Make tasks depend on parent chat history                              | Each child is a fresh session. The shared context is in `common-understanding.md`.                                                         |
+| Skip `common-understanding.md`                                        | Every agent needs the shared rules, file ownership map, and validation commands.                                                           |
+| Use a generic role (e.g., "developer") without specifying the outcome | Roles + outcomes are the contract: "developer: implement X".                                                                               |
+| Reference external example files in the agent tasks                   | Future agents may not have access. Self-contained is mandatory.                                                                            |
+| Forget the `notify-send` line                                         | The user is alerted on agent completion via this. Missing it is silent failure.                                                            |
+| Make reviewer/fixer tasks too long                                    | 8-min timeout is strict. Review + small fix is fine; a full rewrite is not.                                                                |
+| Prefix final Karen tasks with `r`                                     | They may fix issues or run follow-up delegation; keep the reserved ids `karen-minimax` and `karen-gpt` so they get the normal timeout.     |
+| Combine setup + execution in the same task                            | Setup (Cargo.toml, lib.rs skeleton) and execution (impl details) are different cognitive loads. Split them.                                |
+| Add `r<NN>` reviewers after every agent                               | They add 5-8 min each. 2-3 strategic ones is the sweet spot.                                                                               |
+| Skip the "Required Context" / "Use these skills" section              | The child is a fresh session and has zero context. This is the entry point.                                                                |
+| Omit the file ownership map from common-understanding.md              | Without it, two agents might edit the same file. The map is the single source of truth for "who owns what".                                |
+| Make `pipeline.conf` slot counts too high                             | Each slot is a concurrent agent. With 2 subscriptions, 2 total slots across all providers is realistic.                                    |
+| Forget `--name "${PI_SESSION_NAME}"` on Pi providers                  | Pi sessions become hard to correlate with agent ids. Debugging unnamed parallel sessions is clown archaeology.                             |
+| Use ad-hoc final task ids                                             | Use the reserved ids `karen-minimax`, `karen-gpt`, and `vibe-review-commit`; the runner accepts them and the skill depends on those names. |
 
 ---
 
@@ -629,7 +834,7 @@ rm .agents/plans/<branch>/<phase>-execution/results/<agent_id>.status
 
 This is illustrative only — your real tasks will be larger:
 
-```markdown
+````markdown
 # Agent — developer: Create Cargo.toml for the providers crate
 
 ## Mission
@@ -644,6 +849,7 @@ This task must be complete for a fresh-session child agent. Do not rely on paren
 - `crates/persistence/Cargo.toml` — for the persistence dep version
 
 Use these skills while doing this task:
+
 - `pi-delegation-contract` — the delegation contract format
 - `writing-clearly-and-concisely` — clear, active-voice prose
 - `writing-plans` — bite-sized task discipline
@@ -651,14 +857,17 @@ Use these skills while doing this task:
 ## Scope and Ownership
 
 You may inspect:
+
 - `Cargo.toml` (root)
 - `crates/sessions/Cargo.toml`
 
 You may edit only:
+
 - `Cargo.toml` (root)
 - `crates/providers/Cargo.toml` (new)
 
 Do not:
+
 - Change other crate manifests
 - Add features the provider doesn't need
 - Commit, stage, or push
@@ -677,6 +886,7 @@ Create the manifest and register the workspace member. See template structure in
 
 ```bash
 cargo check -p providers 2>&1 | head -20
+```
 ````
 
 ## Stop Rules
@@ -709,10 +919,16 @@ provider_gpt()     { pi --provider openai-codex --model gpt-5.5 --thinking "${TH
 
 PI_SESSION_PREFIX="NN-TaskTitle"
 
+# Include provider_karen_minimax, provider_karen_gpt, and
+# provider_vibe_commit from templates/pipeline.conf.example.
+
 SLOTS=(
   "minimax=1"
   "mistral_vibe=1"
   "gpt=1"
+  "karen_minimax=1"
+  "karen_gpt=1"
+  "vibe_commit=1"
 )
 
 PIPELINE=(
@@ -731,5 +947,8 @@ PIPELINE=(
   "r-batch-10-13:gpt:10 11 13"
   "r-batch-6-9:gpt:06 07 08"
   "r-final:gpt:r05 r-batch-10-13 r-batch-6-9"
+  "karen-minimax:karen_minimax:r-final"
+  "karen-gpt:karen_gpt:karen-minimax"
+  "vibe-review-commit:vibe_commit:karen-gpt"
 )
 ````

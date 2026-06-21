@@ -57,6 +57,72 @@ provider_copilot() {
     -p "@$1" -p "@$2" -p "$3"
 }
 
+provider_karen_minimax() {
+  local pipeline_folder review_file prompt_template karen_system
+  pipeline_folder="$(cd "$(dirname "$1")" && pwd)"
+  review_file="$pipeline_folder/karen-minimax-review.md"
+  prompt_template="$HOME/.dotfiles/common/agents/pi/prompts/karen-review-execution.md"
+  karen_system="$HOME/.dotfiles/common/agents/shared/prompts/karen.md"
+  pi --provider minimax --model MiniMax-M3 \
+    --system-prompt "$karen_system" \
+    --name "${PI_SESSION_NAME}" \
+    --prompt-template "$prompt_template" \
+    -p "@$1" -p "@$2" \
+    -p "/karen-review-execution $pipeline_folder $review_file" \
+    -p "$3"
+}
+
+provider_karen_gpt() {
+  local pipeline_folder review_file prompt_template karen_system
+  pipeline_folder="$(cd "$(dirname "$1")" && pwd)"
+  review_file="$pipeline_folder/karen-gpt-review.md"
+  prompt_template="$HOME/.dotfiles/common/agents/pi/prompts/karen-review-execution.md"
+  karen_system="$HOME/.dotfiles/common/agents/shared/prompts/karen.md"
+  pi --provider openai-codex --model gpt-5.5 \
+    --system-prompt "$karen_system" \
+    --name "${PI_SESSION_NAME}" \
+    --prompt-template "$prompt_template" \
+    -p "@$1" -p "@$2" \
+    -p "/karen-review-execution $pipeline_folder $review_file" \
+    -p "$3"
+}
+
+provider_vibe_commit() {
+  local pipeline_folder result_dir vibe_exit
+  pipeline_folder="$(cd "$(dirname "$1")" && pwd)"
+  result_dir="$pipeline_folder/results/$AGENT_ID"
+  mkdir -p "$result_dir"
+
+  vibe -p "review and commit the latest changes"
+  vibe_exit=$?
+
+  if [ "$vibe_exit" -eq 0 ]; then
+    cat >"$result_dir/report.md" <<EOF
+STATUS: DONE
+CHANGED_OR_CHECKED_FILES:
+
+- \`repository\` — Vibe reviewed and committed the latest changes.
+  VALIDATION:
+- \`vibe -p "review and commit the latest changes"\`: exit 0
+  RISKS_OR_QUESTIONS:
+- none
+EOF
+  else
+    cat >"$result_dir/report.md" <<EOF
+STATUS: BLOCKED
+CHANGED_OR_CHECKED_FILES:
+
+- \`repository\` — Vibe review+commit did not complete.
+  VALIDATION:
+- \`vibe -p "review and commit the latest changes"\`: exit $vibe_exit
+  RISKS_OR_QUESTIONS:
+- inspect \`$result_dir.log\` and rerun the final task after fixing the issue
+EOF
+  fi
+
+  return 0
+}
+
 # ---------------------------------------------------------------------------
 # Pi session naming
 # ---------------------------------------------------------------------------
@@ -77,6 +143,9 @@ SLOTS=(
   "minimax=1"
   "mistral_vibe=1"
   "gpt=1"
+  "karen_minimax=1"
+  "karen_gpt=1"
+  "vibe_commit=1"
 )
 
 # ---------------------------------------------------------------------------
@@ -112,4 +181,7 @@ PIPELINE=(
   "07:mistral_vibe:r05"
   "08:minimax:06 07"
   "r09:gpt:08"
+  "karen-minimax:karen_minimax:r09"
+  "karen-gpt:karen_gpt:karen-minimax"
+  "vibe-review-commit:vibe_commit:karen-gpt"
 )
