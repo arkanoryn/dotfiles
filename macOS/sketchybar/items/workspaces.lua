@@ -6,6 +6,7 @@ local sbar = require("sketchybar")
 sbar.add("event", "aerospace_workspace_change")
 
 local workspaces = {}
+local workspace_items = {}
 
 -- Function to execute shell commands and return the output
 local function execute_command(command)
@@ -45,13 +46,16 @@ local function add_workspace(monitor_id, workspace_id)
 	})
 
 	workspaces[workspace_id] = space
+	table.insert(workspace_items, space)
 
 	-- Padding space
-	sbar.add("space", "space.padding." .. tostring(workspace_id), {
+	local padding = sbar.add("space", "space.padding." .. tostring(workspace_id), {
 		space = monitor_id,
+		position = "center",
 		script = "",
 		width = settings.group_paddings,
 	})
+	table.insert(workspace_items, padding)
 
 	space:subscribe({ "aerospace_workspace_change" }, function(env)
 		local selected = tonumber(env.FOCUSED_WORKSPACE) == workspace_id
@@ -153,8 +157,8 @@ sbar.trigger("aerospace_workspace_change", { FOCUSED_WORKSPACE = focused_workspa
 
 return {
 	set = function(properties)
-		for id = 1, 4 do
-			workspaces[id]:set(properties)
+		for _, workspace_item in ipairs(workspace_items) do
+			workspace_item:set(properties)
 		end
 	end,
 }

@@ -55,11 +55,14 @@ state)
   notify_sketchybar_with_layout_state "$current_layout"
   echo "$current_layout"
   ;;
+sync)
+  set_all_workspace_layouts "$(fetch_current_layout)"
+  ;;
 toggle)
   set_all_workspace_layouts "$(next_layout "$(fetch_current_layout)")"
   ;;
 *)
-  echo "Usage: $0 {state|toggle}" >&2
+  echo "Usage: $0 {state|sync|toggle}" >&2
   exit 2
   ;;
 esac

@@ -47,13 +47,13 @@ end
 
 sbar.add("event", "keyboard_state_update")
 
-sbar.exec(keyboard_script .. " state")
-
 keyboard_mode:subscribe("keyboard_state_update", function(env)
 	keyboard_mode:set({
 		label = { string = state_to_label(env.KEYBOARD_STATE) },
 	})
 end)
+
+sbar.exec(keyboard_script .. " state")
 
 return {
 	set = function(properties)
