@@ -133,13 +133,6 @@ tell application "zoom.us"
 end tell'
 '''
 
-ctrl-shift-alt-n = '''exec-and-forget osascript -e '
-tell application "Harvest"
-    activate
-    if result is not {} then set index of item 1 of result to 1
-end tell'
-'''
-
 ctrl-shift-alt-r = '''exec-and-forget osascript -e '
 tell application "Things3"
     activate
@@ -197,11 +190,9 @@ end tell'
 '''
 
 alt-h = 'focus --dfs-index 0'
-alt-a = 'focus --dfs-index 1'
 alt-e = 'focus --dfs-index 2'
 alt-i = 'focus --dfs-index 3'
 ctrl-shift-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
-ctrl-shift-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
 ctrl-shift-alt-e = 'focus --boundaries-action wrap-around-the-workspace up'
 ctrl-shift-alt-i = 'focus --boundaries-action wrap-around-the-workspace right'
 ctrl-shift-alt-f = 'workspace 1'
@@ -247,7 +238,6 @@ u = 'focus --dfs-index 6'
 j = 'focus --dfs-index 7'
 
 ctrl-shift-alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
-ctrl-shift-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
 ctrl-shift-alt-e = 'focus --boundaries-action wrap-around-the-workspace up'
 ctrl-shift-alt-i = 'focus --boundaries-action wrap-around-the-workspace right'
 
@@ -258,7 +248,6 @@ ctrl-shift-alt-j = ['join-with right']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
 alt-h = 'move left'
-alt-a = 'move down'
 alt-e = 'move up'
 alt-i = 'move right'
 
@@ -298,12 +287,10 @@ i = 'workspace 4'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-h = 'move-node-to-workspace 1'
-alt-a = 'move-node-to-workspace 2'
 alt-e = 'move-node-to-workspace 3'
 alt-i = 'move-node-to-workspace 4'
 
 ctrl-shift-alt-h = ['move-node-to-workspace 1', 'workspace 1']
-ctrl-shift-alt-a = ['move-node-to-workspace 2', 'workspace 2']
 ctrl-shift-alt-e = ['move-node-to-workspace 3', 'workspace 3']
 ctrl-shift-alt-i = ['move-node-to-workspace 4', 'workspace 4']
 
@@ -348,7 +335,6 @@ o = [
 j = ['balance-sizes'] # reset layout
 
 ctrl-shift-alt-h = ['join-with left']
-ctrl-shift-alt-a = ['join-with down']
 ctrl-shift-alt-e = ['join-with up']
 ctrl-shift-alt-i = ['join-with right']
 ctrl-shift-alt-backspace = [
