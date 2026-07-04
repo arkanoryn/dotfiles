@@ -12,6 +12,8 @@ switch (uname)
 
     case Darwin
         abbr pic 'pi --provider github-copilot --model gpt-5.5'
+        abbr ccs 'claude --model sonnet'
+        abbr cco 'claude --model opus'
 end
 
 # accessible in both MacOS and Linux

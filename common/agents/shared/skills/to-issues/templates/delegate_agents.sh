@@ -3,15 +3,16 @@
 # delegate_agents - DAG-based task delegation with per-provider slot pools.
 # macOS-compatible: avoids Bash 4 associative arrays and GNU-only wait -n.
 #
-# Usage: scripts/delegate_agents.sh <tasks_folder>
+# Usage: scripts/delegate_agents.sh [--validate] <tasks_folder>
+#
+# --validate: run the preflight checks (task files, provider functions, dep
+# references, duplicate ids, cycles) and exit without starting any agent.
 #
 # DAG mode: if <tasks_folder>/pipeline.conf exists, source it. The file should
 # define provider_<name>() functions plus Bash-3-compatible arrays:
 #   SLOTS=("copilot=3")
 #   THINKING_OVERRIDES=("r05=high")
 #   PIPELINE=("00:copilot:" "01:copilot:00")
-# Optional: set PI_SESSION_PREFIX="NN-TaskTitle" so pi providers can name
-# sessions with $PI_SESSION_NAME, computed as "${PI_SESSION_PREFIX}-${AGENT_ID}".
 #
 # Sequential mode: if no pipeline.conf exists, run SEQUENTIAL_AGENTS in order.
 #
@@ -21,13 +22,20 @@
 #   NEEDS_CONTEXT      -> needs_context; dependents blocked; final exit 1
 #   BLOCKED            -> blocked (reported); dependents blocked; final exit 1
 #
-# Resume: only status=completed is skipped. Delete an agent's status file to
-# force a re-run.
+# Resume: status=completed, status=completed_with_concerns, and reviewer
+# status="blocked (reported)" are preserved. A preserved blocked review can
+# unblock its paired fix-* task. Delete an agent's status file to force a re-run.
 
 set -o pipefail
 
+VALIDATE_ONLY=0
+if [ "${1:-}" = "--validate" ]; then
+  VALIDATE_ONLY=1
+  shift
+fi
+
 if [ $# -lt 1 ]; then
-  echo "Usage: $0 <tasks_folder>" >&2
+  echo "Usage: $0 [--validate] <tasks_folder>" >&2
   exit 1
 fi
 
@@ -35,9 +43,6 @@ TASKS_FOLDER="$1"
 RESULT_FOLDER="$TASKS_FOLDER/results"
 COMMON_UNDERSTANDING="$TASKS_FOLDER/common-understanding.md"
 PIPELINE_CONF="$TASKS_FOLDER/pipeline.conf"
-AGENT_TIMEOUT_SEC="${AGENT_TIMEOUT_SEC:-900}"
-REVIEWER_TIMEOUT_SEC="${REVIEWER_TIMEOUT_SEC:-480}"
-TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-3600}"
 THINKING_LEVEL="${THINKING_LEVEL:-off}"
 PI_SESSION_PREFIX="${PI_SESSION_PREFIX:-$(basename "$TASKS_FOLDER")}"
 
@@ -47,7 +52,9 @@ THINKING_OVERRIDES=()
 PROVIDERS=()
 RUNNING_PIDS=()
 RUNNING_IDS=()
-SEQUENTIAL_AGENTS=(00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 r15 17 18 r18 20 21 22 23 24 25 26 27a 27b 27c 27d 27e 27f 27g r27 28 29 30 31 32 33 34 35 36 37 38)
+# Sequential mode default: derived from agent-*.md files (alphabetical) unless
+# pipeline.conf defines SEQUENTIAL_AGENTS explicitly.
+SEQUENTIAL_AGENTS=()
 
 if [ ! -d "$TASKS_FOLDER" ]; then
   echo "Error: tasks folder not found: $TASKS_FOLDER" >&2
@@ -71,7 +78,23 @@ else
   MODE="sequential"
 fi
 
-mkdir -p "$RESULT_FOLDER"
+if [ "$MODE" = "sequential" ] && [ ${#SEQUENTIAL_AGENTS[@]} -eq 0 ]; then
+  for _task_file in "$TASKS_FOLDER"/agent-*.md; do
+    [ -f "$_task_file" ] || continue
+    _id=$(basename "$_task_file")
+    _id="${_id#agent-}"
+    _id="${_id%.md}"
+    SEQUENTIAL_AGENTS=("${SEQUENTIAL_AGENTS[@]}" "$_id")
+  done
+fi
+
+AGENT_TIMEOUT_SEC="${AGENT_TIMEOUT_SEC:-900}"
+REVIEWER_TIMEOUT_SEC="${REVIEWER_TIMEOUT_SEC:-480}"
+TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-3600}"
+
+if [ "$VALIDATE_ONLY" != 1 ]; then
+  mkdir -p "$RESULT_FOLDER"
+fi
 START_TIME=$(date +%s)
 
 elapsed() {
@@ -191,15 +214,18 @@ set_status() {
 
 extract_report_status() {
   local report_file="$1"
-  local line
+  local line stripped
   if [ ! -f "$report_file" ]; then
     echo ""
     return 0
   fi
   while IFS= read -r line; do
-    case "$line" in
+    # Strip leading whitespace and markdown header markers so both
+    # "STATUS: DONE" and "## STATUS: DONE" (and "# STATUS: DONE") match.
+    stripped="${line#"${line%%[![:space:]#]*}"}"
+    case "$stripped" in
     STATUS:*)
-      trim_status "${line#STATUS:}"
+      trim_status "${stripped#STATUS:}"
       return 0
       ;;
     esac
@@ -225,19 +251,44 @@ status_from_report() {
   esac
 }
 
-status_satisfies_dependency() {
-  case "$1" in
-  completed) return 0 ;;
-  completed_with_concerns) [ "${STRICT_CONCERNS:-0}" != "1" ] ;;
+is_fix_for_review() {
+  local candidate="$1"
+  local dep="$2"
+  case "$candidate:$dep" in
+  fix-*:karen-*) [ "${candidate#fix-}" = "${dep#karen-}" ] ;;
   *) return 1 ;;
   esac
 }
 
-status_blocks_dependents() {
-  case "$1" in
-  failed* | timed_out* | missing | blocked* | needs_context*) return 0 ;;
+status_satisfies_dependency_for() {
+  local candidate="$1"
+  local dep="$2"
+  local status="$3"
+  case "$status" in
+  completed) return 0 ;;
+  completed_with_concerns) [ "${STRICT_CONCERNS:-0}" != "1" ] ;;
+  blocked\ \(reported\)) is_fix_for_review "$candidate" "$dep" ;;
+  *) return 1 ;;
+  esac
+}
+
+status_blocks_dependent() {
+  local candidate="$1"
+  local dep="$2"
+  local status="$3"
+  case "$status" in
+  failed* | timed_out* | missing | needs_context*) return 0 ;;
+  blocked*) ! is_fix_for_review "$candidate" "$dep" ;;
   completed_with_concerns) [ "${STRICT_CONCERNS:-0}" = "1" ] ;;
   *) return 1 ;;
+  esac
+}
+
+fix_for_review() {
+  local review_id="$1"
+  case "$review_id" in
+  karen-*) echo "fix-${review_id#karen-}" ;;
+  *) echo "" ;;
   esac
 }
 
@@ -247,6 +298,29 @@ status_exit_code() {
   completed_with_concerns) echo 2 ;;
   *) echo 1 ;;
   esac
+}
+
+status_exit_code_for() {
+  local agent_id="$1"
+  local status="$2"
+  local fix_id fix_status
+  if [ "$status" = "blocked (reported)" ]; then
+    fix_id=$(fix_for_review "$agent_id")
+    if [ -n "$fix_id" ] && agent_exists "$fix_id"; then
+      fix_status=$(status_of "$fix_id")
+      case "$fix_status" in
+      completed)
+        echo 0
+        return 0
+        ;;
+      completed_with_concerns)
+        echo 2
+        return 0
+        ;;
+      esac
+    fi
+  fi
+  status_exit_code "$status"
 }
 
 thinking_level_for() {
@@ -361,15 +435,18 @@ run_agent() {
     return 0
   fi
 
-  if [ -f "$status_file" ] && [ "$(cat "$status_file")" = "completed" ]; then
-    return 0
+  if [ -f "$status_file" ]; then
+    case "$(cat "$status_file")" in
+    completed | completed_with_concerns) return 0 ;;
+    esac
   fi
 
   echo "running" >"$status_file"
   mkdir -p "$result_subdir"
 
   local prompt
-  prompt=$(cat <<EOF
+  prompt=$(
+    cat <<EOF
 read the common-understanding and the task file. then implement the task.
 
 once you are done:
@@ -379,7 +456,7 @@ once you are done:
   - macOS: \`osascript -e 'display notification "{message}" with title "Pi" subtitle "{Status}"'\`
   - Linux: \`notify-send --app-name "Pi" "{Status}" "{message}"\`
 EOF
-)
+  )
 
   local provider provider_fn level exit_code
   if [ "$MODE" = "dag" ]; then
@@ -414,7 +491,7 @@ EOF
 
 base_timeout_for() {
   case "$1" in
-  r*) echo "$REVIEWER_TIMEOUT_SEC" ;;
+  r* | karen-*) echo "$REVIEWER_TIMEOUT_SEC" ;;
   *) echo "$AGENT_TIMEOUT_SEC" ;;
   esac
 }
@@ -512,7 +589,7 @@ initialize_dag_statuses() {
     id="${entry%%:*}"
     status=$(status_of "$id")
     case "$status" in
-    completed) : ;;
+    completed | completed_with_concerns | blocked\ \(reported\)) : ;;
     *) set_status "$id" "pending" ;;
     esac
   done
@@ -526,7 +603,7 @@ mark_blocked_agents() {
       deps=$(deps_for "$id")
       for dep in $deps; do
         dep_status=$(status_of "$dep")
-        if status_blocks_dependents "$dep_status"; then
+        if status_blocks_dependent "$id" "$dep" "$dep_status"; then
           set_status "$id" "blocked (dep $dep $dep_status)"
           break
         fi
@@ -544,7 +621,7 @@ build_ready_queue() {
       deps=$(deps_for "$id")
       all_done=true
       for dep in $deps; do
-        if ! status_satisfies_dependency "$(status_of "$dep")"; then
+        if ! status_satisfies_dependency_for "$id" "$dep" "$(status_of "$dep")"; then
           all_done=false
           break
         fi
@@ -644,7 +721,7 @@ run_dag() {
     id="${entry%%:*}"
     status=$(status_of "$id")
     echo "  $id: $status"
-    status_code=$(status_exit_code "$status")
+    status_code=$(status_exit_code_for "$id" "$status")
     if [ "$status_code" -eq 1 ]; then
       exit_code=1
     elif [ "$status_code" -eq 2 ] && [ "$exit_code" -eq 0 ]; then
@@ -653,6 +730,122 @@ run_dag() {
   done
   return "$exit_code"
 }
+
+preflight_dag() {
+  local errors=0 entry id deps dep provider seen=" " resolved=" " progress unresolved
+  local task_file base tid found
+
+  for entry in "${PIPELINE[@]}"; do
+    id="${entry%%:*}"
+    case "$seen" in
+    *" $id "*)
+      echo "PREFLIGHT: duplicate pipeline id '$id'" >&2
+      errors=1
+      ;;
+    esac
+    seen="$seen$id "
+
+    if [ ! -f "$TASKS_FOLDER/agent-$id.md" ]; then
+      echo "PREFLIGHT: missing task file agent-$id.md for pipeline id '$id'" >&2
+      errors=1
+    fi
+
+    provider=$(provider_for "$id")
+    if ! declare -F "provider_$provider" >/dev/null 2>&1; then
+      echo "PREFLIGHT: missing function provider_$provider (agent '$id')" >&2
+      errors=1
+    fi
+
+    deps=$(deps_for "$id")
+    for dep in $deps; do
+      if ! agent_exists "$dep"; then
+        echo "PREFLIGHT: agent '$id' depends on unknown id '$dep'" >&2
+        errors=1
+      fi
+    done
+  done
+
+  # Task files present but absent from the pipeline (warning only).
+  for task_file in "$TASKS_FOLDER"/agent-*.md; do
+    [ -f "$task_file" ] || continue
+    base=$(basename "$task_file")
+    tid="${base#agent-}"
+    tid="${tid%.md}"
+    if ! agent_exists "$tid"; then
+      echo "PREFLIGHT: warning: $base exists but '$tid' is not in PIPELINE" >&2
+    fi
+  done
+
+  # Cycle detection: repeatedly resolve ids whose deps are all resolved.
+  progress=1
+  while [ "$progress" = 1 ]; do
+    progress=0
+    for entry in "${PIPELINE[@]}"; do
+      id="${entry%%:*}"
+      case "$resolved" in *" $id "*) continue ;; esac
+      deps=$(deps_for "$id")
+      found=0
+      for dep in $deps; do
+        agent_exists "$dep" || continue
+        case "$resolved" in
+        *" $dep "*) : ;;
+        *)
+          found=1
+          break
+          ;;
+        esac
+      done
+      if [ "$found" = 0 ]; then
+        resolved="$resolved $id "
+        progress=1
+      fi
+    done
+  done
+  unresolved=""
+  for entry in "${PIPELINE[@]}"; do
+    id="${entry%%:*}"
+    case "$resolved" in *" $id "*) continue ;; esac
+    unresolved="$unresolved $id"
+  done
+  if [ -n "$unresolved" ]; then
+    echo "PREFLIGHT: dependency cycle involving:$unresolved" >&2
+    errors=1
+  fi
+
+  return "$errors"
+}
+
+preflight_sequential() {
+  local errors=0 agent_id
+  if [ ${#SEQUENTIAL_AGENTS[@]} -eq 0 ]; then
+    echo "PREFLIGHT: no agent-*.md files found in $TASKS_FOLDER" >&2
+    errors=1
+  fi
+  for agent_id in "${SEQUENTIAL_AGENTS[@]}"; do
+    if [ ! -f "$TASKS_FOLDER/agent-$agent_id.md" ]; then
+      echo "PREFLIGHT: missing task file agent-$agent_id.md" >&2
+      errors=1
+    fi
+  done
+  return "$errors"
+}
+
+if [ "$MODE" = "dag" ]; then
+  if ! preflight_dag; then
+    echo "PREFLIGHT FAILED: fix pipeline.conf / task files before running." >&2
+    exit 3
+  fi
+else
+  if ! preflight_sequential; then
+    echo "PREFLIGHT FAILED: fix task files before running." >&2
+    exit 3
+  fi
+fi
+
+if [ "$VALIDATE_ONLY" = 1 ]; then
+  echo "Preflight OK: mode=$MODE, agents=$([ "$MODE" = "dag" ] && echo "${#PIPELINE[@]}" || echo "${#SEQUENTIAL_AGENTS[@]}")"
+  exit 0
+fi
 
 echo "Tasks folder : $TASKS_FOLDER"
 echo "Results in   : $RESULT_FOLDER"
@@ -664,8 +857,14 @@ echo
 exit_code=0
 case "$MODE" in
 dag) run_dag || exit_code=$? ;;
-sequential) export_provider_functions; run_sequential || exit_code=$? ;;
-*) echo "ERROR: unknown mode $MODE" >&2; exit 1 ;;
+sequential)
+  export_provider_functions
+  run_sequential || exit_code=$?
+  ;;
+*)
+  echo "ERROR: unknown mode $MODE" >&2
+  exit 1
+  ;;
 esac
 
 echo

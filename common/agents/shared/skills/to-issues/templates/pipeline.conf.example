@@ -1,0 +1,135 @@
+# pipeline.conf — <NN-feature-title>
+# Consumed by scripts/delegate_agents.sh (DAG mode). Bash-3 compatible: plain
+# arrays only, no associative arrays (stock macOS Bash).
+#
+# Budget (from the /to-issues arguments): minimax=4 vibe=3 gpt=1 karen=minimax fix=gpt
+# Honor the budget exactly in SLOTS below.
+
+# ---------------------------------------------------------------------------
+# Provider functions
+# ---------------------------------------------------------------------------
+# Each function is the "how do I invoke this provider" recipe. It receives
+# 3 args from the runner: <task_file> <common_understanding_file> <prompt>.
+# The runner exports AGENT_ID, THINKING_LEVEL, and PI_SESSION_NAME
+# ("${PI_SESSION_PREFIX}-${AGENT_ID}"). Pi providers must pass
+# --name "${PI_SESSION_NAME}" so sessions are easy to correlate.
+# Do NOT wrap in `timeout` — the runner handles timeouts.
+
+provider_minimax() {
+  pi --provider minimax --model minimax-m3 \
+    --thinking "${THINKING_LEVEL:-off}" \
+    --name "${PI_SESSION_NAME}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+# Mistral via Vibe — preferred Mistral path (better results). Vibe thinking
+# cannot be changed via CLI; it is effectively off.
+provider_vibe() {
+  local combined
+  combined="$(printf '%s\n\n%s\n\n%s\n\n%s\n' \
+    'You are running inside Vibe in non-interactive automation mode. Use Vibe native tools when you need to inspect, edit, or run commands. Do not print pseudo tool calls like read(file_path=...) or bash(command=...); execute the tools instead.' \
+    "$(cat "$2")" "$(cat "$1")" "$3")"
+  vibe --agent auto-approve --trust --workdir "$(pwd)" --max-turns 120 -p "$combined"
+}
+
+# Mistral via Pi — only when Mistral needs medium/high thinking.
+provider_mistral_pi() {
+  pi --provider mistral --model mistral-medium-3.5 \
+    --thinking "${THINKING_LEVEL:-off}" \
+    --name "${PI_SESSION_NAME}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+provider_gpt() {
+  pi --provider openai-codex --model gpt-5.5 \
+    --thinking "${THINKING_LEVEL:-medium}" \
+    --name "${PI_SESSION_NAME}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+# Karen reviews (all karen-* tasks). Substitute the provider/model from the
+# budget's karen= assignment. Uses the Karen persona as system prompt; the
+# task file tells her which karen-review mode and output paths to use.
+provider_karen() {
+  local karen_system="$HOME/.dotfiles/common/agents/shared/prompts/karen.md"
+  pi --provider minimax --model minimax-m3 \
+    --thinking high \
+    --system-prompt "$karen_system" \
+    --name "${PI_SESSION_NAME}" \
+    -p "@$1" -p "@$2" -p "$3"
+}
+
+# ---------------------------------------------------------------------------
+# Session naming: compact feature name; the runner appends "-<agent_id>".
+# ---------------------------------------------------------------------------
+PI_SESSION_PREFIX="NN-feature-title"
+
+# ---------------------------------------------------------------------------
+# Slot pool: max concurrent agents per provider. Mirror the budget.
+# fix-* tasks run on the fix= provider's pool (here: gpt).
+# ---------------------------------------------------------------------------
+SLOTS=(
+  "minimax=4"
+  "vibe=3"
+  "gpt=1"
+  "karen=1"
+)
+
+# ---------------------------------------------------------------------------
+# Thinking: off by default — the intelligence lives in the task files.
+# Override per-agent: every karen-* and fix-* at high; genuinely tricky
+# cross-cutting implementation tasks at medium.
+# ---------------------------------------------------------------------------
+THINKING_LEVEL=off
+THINKING_OVERRIDES=(
+  "karen-1=high"
+  "fix-1=high"
+  "karen-2=high"
+  "fix-2=high"
+  "karen-3=high"
+  "fix-3=high"
+  "karen-final=high"
+  "fix-final=high"
+)
+
+# ---------------------------------------------------------------------------
+# Timeouts (seconds, all overridable from the environment). Size the total
+# to the pipeline's critical path, not the sum of all tasks.
+# ---------------------------------------------------------------------------
+AGENT_TIMEOUT_SEC="${AGENT_TIMEOUT_SEC:-900}"
+REVIEWER_TIMEOUT_SEC="${REVIEWER_TIMEOUT_SEC:-480}"
+TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-7200}"
+
+# ---------------------------------------------------------------------------
+# Pipeline: the DAG. "<agent_id>:<provider>:<space-separated deps>"
+# - Seams form a DAG: independent seams run concurrently (disjoint ownership!).
+# - Tasks within a seam run in parallel (1a, 1b) unless one builds on another.
+# - Every seam ends karen-<seam> -> fix-<seam>; downstream seams depend on
+#   fix-<seam>, never on the raw tasks.
+# - The runner pairs fix-X with karen-X: a BLOCKED review unblocks its fix.
+# - Ends with the whole-PRD gate: karen-final -> fix-final.
+# ---------------------------------------------------------------------------
+PIPELINE=(
+  # Seam 1 — backend foundation (independent of seam 2)
+  "1a:minimax:"
+  "1b:minimax:"
+  "1c:minimax:1a"
+  "karen-1:karen:1a 1b 1c"
+  "fix-1:gpt:karen-1"
+
+  # Seam 2 — frontend foundation (disjoint files; runs concurrently with seam 1)
+  "2a:vibe:"
+  "2b:vibe:"
+  "karen-2:karen:2a 2b"
+  "fix-2:gpt:karen-2"
+
+  # Seam 3 — integration (builds on both)
+  "3a:minimax:fix-1 fix-2"
+  "3b:vibe:fix-1 fix-2"
+  "karen-3:karen:3a 3b"
+  "fix-3:gpt:karen-3"
+
+  # Whole-PRD gate — always last
+  "karen-final:karen:fix-3"
+  "fix-final:gpt:karen-final"
+)
