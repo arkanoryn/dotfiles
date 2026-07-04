@@ -1,7 +1,7 @@
-display_name = "Developer"
+display_name = "Intern"
 description = "Single-writer implementation agent for approved plans and scoped coding tasks"
 safety = "yolo"
-active_model = "mistral-developer"
+active_model = "mistral-intern"
 
 enabled_tools = ["*"]
 disabled_tools = ["ask"]
@@ -12,6 +12,6 @@ disabled_skills = []
 [[models]]
 name = "mistral-vibe-cli-latest"
 provider = "mistral"
-alias = "mistral-developer"
-thinking = "high"
+alias = "mistral-intern"
+thinking = "off"                 # junior.toml -> "medium", developer.toml -> "high" 
 temperature = 1.0

@@ -5,69 +5,167 @@
 # Budget (from the /to-issues arguments): minimax=4 vibe=3 gpt=1 karen=minimax fix=gpt
 # Honor the budget exactly in SLOTS below.
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
 # Provider functions
-# ---------------------------------------------------------------------------
-# Each function is the "how do I invoke this provider" recipe. It receives
-# 3 args from the runner: <task_file> <common_understanding_file> <prompt>.
-# The runner exports AGENT_ID, THINKING_LEVEL, and PI_SESSION_NAME
-# ("${PI_SESSION_PREFIX}-${AGENT_ID}"). Pi providers must pass
-# --name "${PI_SESSION_NAME}" so sessions are easy to correlate.
-# Do NOT wrap in `timeout` — the runner handles timeouts.
+# ===========================================================================
+# Contract: the runner calls
+#     provider_<name> "<task_file>" "<common_understanding_file>" "<prompt>"
+# in a fresh `bash -c` subshell, after exporting AGENT_ID, THINKING_LEVEL, and
+# PI_SESSION_NAME ("${PI_SESSION_PREFIX}-${AGENT_ID}"). Do NOT wrap in `timeout`
+# — the runner handles timeouts.
+#
+# THINKING_LEVEL is expressed in Pi's vocabulary (off, minimal, low, medium,
+# high, xhigh). Each non-Pi wrapper translates it to that tool's own knob
+# (claude --effort, vibe agent name). Set it per agent via THINKING_OVERRIDES.
+#
+# NOTE: the runner only exports functions whose name starts with `provider_`
+# into the subshell. The shared helper below is therefore named
+# `provider_pi_run` so it survives — but it is a HELPER, not a selectable
+# provider: never put `pi_run` in SLOTS or PIPELINE.
+#
+# Available providers (pick per the budget; add/remove to taste):
+#   provider_minimax   Pi + minimax-m3
+#   provider_mistral   Pi + mistral-medium-3.5
+#   provider_gpt       Pi + openai-codex/gpt-5.5
+#   provider_karen     Pi + minimax-m3, forced high, Karen persona (karen-* only)
+#   provider_vibe      Vibe (Mistral); thinking -> agent name (see PREREQUISITES)
+#   provider_claude    Claude Code
+#   provider_codex     Codex CLI (commented; untested — see below)
 
-provider_minimax() {
-  pi --provider minimax --model minimax-m3 \
-    --thinking "${THINKING_LEVEL:-off}" \
-    --name "${PI_SESSION_NAME}" \
-    -p "@$1" -p "@$2" -p "$3"
+# --- Shared Pi invocation -------------------------------------------------
+# Args: <provider> <model> <system_prompt_or_empty> then the runner's three
+# (<task_file> <common_file> <prompt>). `pi --system-prompt` accepts either
+# literal text or a file path (it reads the file).
+provider_pi_run() {
+  local provider="$1" model="$2" system="$3"
+  shift 3
+  if [ -n "$system" ]; then
+    pi --provider "$provider" --model "$model" \
+      --thinking "${THINKING_LEVEL:-off}" \
+      --system-prompt "$system" \
+      --name "${PI_SESSION_NAME}" \
+      -p "@$1" -p "@$2" -p "$3"
+  else
+    pi --provider "$provider" --model "$model" \
+      --thinking "${THINKING_LEVEL:-off}" \
+      --name "${PI_SESSION_NAME}" \
+      -p "@$1" -p "@$2" -p "$3"
+  fi
 }
 
-# Mistral via Vibe — preferred Mistral path (better results). Vibe thinking
-# cannot be changed via CLI; it is effectively off.
-provider_vibe() {
-  local combined
-  combined="$(printf '%s\n\n%s\n\n%s\n\n%s\n' \
-    'You are running inside Vibe in non-interactive automation mode. Use Vibe native tools when you need to inspect, edit, or run commands. Do not print pseudo tool calls like read(file_path=...) or bash(command=...); execute the tools instead.' \
-    "$(cat "$2")" "$(cat "$1")" "$3")"
-  vibe --agent auto-approve --trust --workdir "$(pwd)" --max-turns 120 -p "$combined"
-}
+# --- Pi coding providers (table: <provider> <model>) ----------------------
+provider_minimax() { provider_pi_run minimax minimax-m3 "" "$@"; }
+provider_mistral() { provider_pi_run mistral mistral-medium-3.5 "" "$@"; }
+provider_gpt() { provider_pi_run openai-codex gpt-5.5 "" "$@"; }
 
-# Mistral via Pi — only when Mistral needs medium/high thinking.
-provider_mistral_pi() {
-  pi --provider mistral --model mistral-medium-3.5 \
-    --thinking "${THINKING_LEVEL:-off}" \
-    --name "${PI_SESSION_NAME}" \
-    -p "@$1" -p "@$2" -p "$3"
-}
-
-provider_gpt() {
-  pi --provider openai-codex --model gpt-5.5 \
-    --thinking "${THINKING_LEVEL:-medium}" \
-    --name "${PI_SESSION_NAME}" \
-    -p "@$1" -p "@$2" -p "$3"
-}
-
-# Karen reviews (all karen-* tasks). Substitute the provider/model from the
-# budget's karen= assignment. Uses the Karen persona as system prompt; the
-# task file tells her which karen-review mode and output paths to use.
+# --- Karen reviews (all karen-* tasks) ------------------------------------
+# Karen persona as system prompt, forced to `high` regardless of overrides.
+# Swap the provider/model to the budget's karen= assignment.
 provider_karen() {
-  local karen_system="$HOME/.dotfiles/common/agents/shared/prompts/karen.md"
-  pi --provider minimax --model minimax-m3 \
-    --thinking high \
-    --system-prompt "$karen_system" \
-    --name "${PI_SESSION_NAME}" \
-    -p "@$1" -p "@$2" -p "$3"
+  THINKING_LEVEL=high provider_pi_run minimax minimax-m3 \
+    "$HOME/.dotfiles/common/agents/shared/prompts/karen.md" "$@"
 }
 
-# ---------------------------------------------------------------------------
+# --- Mistral via Vibe (preferred Mistral path) ----------------------------
+# Vibe has no thinking flag — effort is expressed by WHICH AGENT runs, and an
+# agent's thinking is a MODEL-level setting (see PREREQUISITES). We map
+# THINKING_LEVEL -> agent name so the existing THINKING_OVERRIDES mechanism
+# picks the agent (e.g. "2a=high" -> developer). `vibe -p` auto-approves all
+# tools, so no --agent auto-approve is needed.
+provider_vibe() {
+  local agent
+  case "${THINKING_LEVEL:-off}" in
+  off | minimal | "") agent=intern ;;
+  low | medium) agent=junior ;;
+  high | xhigh | max) agent=developer ;;
+  *) agent=junior ;;
+  esac
+  local combined
+  combined="$(printf '%s\n\n%s\n\n%s\n' "$(cat "$2")" "$(cat "$1")" "$3")"
+  vibe --agent "$agent" --trust --workdir "$(pwd)" --max-turns 120 -p "$combined"
+}
+
+# --- Claude Code ----------------------------------------------------------
+# `--effort` has no "off" (levels: low, medium, high, xhigh, max), so
+# off/minimal map to low. `--file` is for REMOTE resources, not local context,
+# so task + common are cat'd into the prompt like vibe. `--permission-mode
+# bypassPermissions` is REQUIRED or it cannot edit files non-interactively.
+# Swap the model alias (sonnet/opus/haiku or a full id) to taste.
+provider_claude() {
+  local effort
+  case "${THINKING_LEVEL:-off}" in
+  off | minimal | low | "") effort=low ;;
+  medium) effort=medium ;;
+  high) effort=high ;;
+  xhigh) effort=xhigh ;;
+  max) effort=max ;;
+  *) effort=medium ;;
+  esac
+  local combined
+  combined="$(printf '%s\n\n%s\n\n%s\n' "$(cat "$2")" "$(cat "$1")" "$3")"
+  claude --model sonnet --effort "$effort" \
+    --permission-mode bypassPermissions \
+    -p "$combined"
+}
+
+# --- Codex CLI (ALTERNATIVE to provider_gpt; UNTESTED) --------------------
+# Codex was not installed when this template was written; verify every flag
+# against `codex exec --help` before enabling. Codex has no --system-prompt or
+# @file: context is cat'd into the prompt, passed on stdin via `-`. Reasoning
+# effort is a config key. Uncomment, verify, then reference `codex` in SLOTS +
+# PIPELINE (and remove/keep provider_gpt as you prefer).
+# provider_codex() {
+#   local effort
+#   case "${THINKING_LEVEL:-off}" in
+#   off | minimal | low | "") effort=low ;;
+#   medium) effort=medium ;;
+#   high | xhigh | max) effort=high ;;
+#   *) effort=medium ;;
+#   esac
+#   printf '%s\n\n%s\n\n%s\n' "$(cat "$2")" "$(cat "$1")" "$3" |
+#     codex exec --cd "$(pwd)" --model gpt-5.5 \
+#       -c model_reasoning_effort="$effort" -
+# }
+
+# ===========================================================================
+# PREREQUISITES — Vibe agents (only if you use provider_vibe)
+# ===========================================================================
+# provider_vibe selects agents named intern/junior/developer. They must exist
+# as ~/.vibe/agents/<name>.toml (global) or .vibe/agents/<name>.toml (project),
+# or vibe fails at runtime. Vibe thinking is a MODEL-level setting, so each
+# agent pins an `active_model` defined at the right thinking level (mirrors the
+# builtin `lean` agent). Adapt provider/api-key to your config.toml, then
+# create the three files — for example intern.toml (off), junior.toml (medium),
+# developer.toml (high):
+#
+#   display_name = "Intern"
+#   description  = "Low-effort implementation agent (thinking off)"
+#   safety       = "yolo"
+#   agent_type   = "subagent"
+#   system_prompt_id = "developer"
+#   enabled_tools  = ["*"]
+#   disabled_tools = ["ask"]
+#   active_model   = "mistral-intern"
+#
+#   [[models]]
+#   name     = "mistral-vibe-cli-latest"
+#   provider = "mistral"
+#   alias    = "mistral-intern"
+#   thinking = "off"          # junior.toml -> "medium", developer.toml -> "high"
+#   temperature = 1.0
+#
+# (defining `models` in an agent REPLACES config.toml's model list for that
+# run, so include every model that agent references.)
+
+# ===========================================================================
 # Session naming: compact feature name; the runner appends "-<agent_id>".
-# ---------------------------------------------------------------------------
+# ===========================================================================
 PI_SESSION_PREFIX="NN-feature-title"
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
 # Slot pool: max concurrent agents per provider. Mirror the budget.
 # fix-* tasks run on the fix= provider's pool (here: gpt).
-# ---------------------------------------------------------------------------
+# ===========================================================================
 SLOTS=(
   "minimax=4"
   "vibe=3"
@@ -75,11 +173,11 @@ SLOTS=(
   "karen=1"
 )
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
 # Thinking: off by default — the intelligence lives in the task files.
 # Override per-agent: every karen-* and fix-* at high; genuinely tricky
 # cross-cutting implementation tasks at medium.
-# ---------------------------------------------------------------------------
+# ===========================================================================
 THINKING_LEVEL=off
 THINKING_OVERRIDES=(
   "karen-1=high"
@@ -92,15 +190,15 @@ THINKING_OVERRIDES=(
   "fix-final=high"
 )
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
 # Timeouts (seconds, all overridable from the environment). Size the total
 # to the pipeline's critical path, not the sum of all tasks.
-# ---------------------------------------------------------------------------
+# ===========================================================================
 AGENT_TIMEOUT_SEC="${AGENT_TIMEOUT_SEC:-900}"
 REVIEWER_TIMEOUT_SEC="${REVIEWER_TIMEOUT_SEC:-480}"
 TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-7200}"
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
 # Pipeline: the DAG. "<agent_id>:<provider>:<space-separated deps>"
 # - Seams form a DAG: independent seams run concurrently (disjoint ownership!).
 # - Tasks within a seam run in parallel (1a, 1b) unless one builds on another.
@@ -108,7 +206,7 @@ TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-7200}"
 #   fix-<seam>, never on the raw tasks.
 # - The runner pairs fix-X with karen-X: a BLOCKED review unblocks its fix.
 # - Ends with the whole-PRD gate: karen-final -> fix-final.
-# ---------------------------------------------------------------------------
+# ===========================================================================
 PIPELINE=(
   # Seam 1 — backend foundation (independent of seam 2)
   "1a:minimax:"
