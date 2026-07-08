@@ -1,0 +1,1 @@
+../../../common/agents/shared/prompts/lazy-chaton.md
