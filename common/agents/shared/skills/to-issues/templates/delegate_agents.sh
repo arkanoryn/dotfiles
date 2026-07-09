@@ -22,6 +22,18 @@
 #   NEEDS_CONTEXT      -> needs_context; dependents blocked; final exit 1
 #   BLOCKED            -> blocked (reported); dependents blocked; final exit 1
 #
+# Resolver (DAG mode, opt-in via RESOLVER_PROVIDER in pipeline.conf): when an
+# agent ends failed/timed_out, a resolver agent (thinking high) is spawned to
+# repair the state so the agent can re-run. On a DONE resolver report the
+# failed agent is reset to pending and rescheduled automatically. A resolver
+# that fails or times out is replaced by a fresh one with the same instruction.
+# At most RESOLVER_MAX (default 3) resolver spawns per script run; each gets
+# RESOLVER_TIMEOUT_SEC (default 600). One resolver runs at a time.
+#
+# Commit tasks: ids matching commit-* get COMMITTER_TIMEOUT_SEC and their
+# provider pool must have exactly 1 slot (preflight-enforced) so commits are
+# serialized — concurrent seams then can never interleave git index operations.
+#
 # Resume: status=completed, status=completed_with_concerns, and reviewer
 # status="blocked (reported)" are preserved. A preserved blocked review can
 # unblock its paired fix-* task. Delete an agent's status file to force a re-run.
@@ -90,7 +102,17 @@ fi
 
 AGENT_TIMEOUT_SEC="${AGENT_TIMEOUT_SEC:-900}"
 REVIEWER_TIMEOUT_SEC="${REVIEWER_TIMEOUT_SEC:-480}"
+COMMITTER_TIMEOUT_SEC="${COMMITTER_TIMEOUT_SEC:-600}"
 TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-3600}"
+
+# Resolver config (pipeline.conf may set these before this point; :- keeps them).
+RESOLVER_PROVIDER="${RESOLVER_PROVIDER:-}"
+RESOLVER_MAX="${RESOLVER_MAX:-3}"
+RESOLVER_TIMEOUT_SEC="${RESOLVER_TIMEOUT_SEC:-600}"
+RESOLVER_PID=""
+RESOLVER_TARGET=""
+RESOLVER_ORIG=""
+RESOLVER_USED=0
 
 if [ "$VALIDATE_ONLY" != 1 ]; then
   mkdir -p "$RESULT_FOLDER"
@@ -105,6 +127,9 @@ cleanup() {
   local exit_code="${1:-130}"
   echo "Cleanup: killing running agents" >&2
   local pid
+  if [ -n "$RESOLVER_PID" ] && kill -0 "$RESOLVER_PID" 2>/dev/null; then
+    kill -TERM "$RESOLVER_PID" 2>/dev/null || true
+  fi
   for pid in "${RUNNING_PIDS[@]}"; do
     if kill -0 "$pid" 2>/dev/null; then
       kill -TERM "$pid" 2>/dev/null || true
@@ -492,6 +517,7 @@ EOF
 base_timeout_for() {
   case "$1" in
   r* | karen-*) echo "$REVIEWER_TIMEOUT_SEC" ;;
+  commit-*) echo "$COMMITTER_TIMEOUT_SEC" ;;
   *) echo "$AGENT_TIMEOUT_SEC" ;;
   esac
 }
@@ -546,6 +572,112 @@ in_flight_for_provider() {
     fi
   done
   echo "$count"
+}
+
+# --- Resolver ---------------------------------------------------------------
+# One resolver at a time repairs a failed/timed_out agent so it can re-run.
+
+start_resolver() {
+  local target="$1"
+  RESOLVER_USED=$((RESOLVER_USED + 1))
+  RESOLVER_TARGET="$target"
+  local resolver_id="_resolver-$RESOLVER_USED"
+  local report_dir="$RESULT_FOLDER/$resolver_id"
+  mkdir -p "$report_dir"
+
+  local prompt
+  prompt=$(
+    cat <<EOF
+You are the pipeline RESOLVER, not an implementer. Agent '$target' ended with
+status '$RESOLVER_ORIG'. Attached: its task file and the common understanding.
+
+Investigate why it failed:
+- its output log: $RESULT_FOLDER/$target.log
+- its results folder: $RESULT_FOLDER/$target/
+- the repository state (half-applied edits, failing build, broken tooling)
+
+Repair the MINIMUM needed so the pipeline can cleanly re-run agent '$target':
+revert or complete half-applied edits, unstick tooling, restore a green build.
+Do NOT implement the agent's task yourself beyond that minimum.
+
+When done, write $report_dir/report.md starting with exactly one line:
+STATUS: DONE      (repaired - safe to re-run '$target')
+or
+STATUS: BLOCKED   (a human must intervene)
+followed by what you changed and why.
+EOF
+  )
+
+  set_status "$target" "resolving (attempt $RESOLVER_USED/$RESOLVER_MAX)"
+  echo "[$(date +%H:%M:%S)] resolver $RESOLVER_USED/$RESOLVER_MAX: repairing $target [$RESOLVER_ORIG] (timeout: ${RESOLVER_TIMEOUT_SEC}s)"
+  (
+    export THINKING_LEVEL=high
+    export AGENT_ID="$resolver_id"
+    export PI_SESSION_PREFIX="${PI_SESSION_PREFIX:-$(basename "$TASKS_FOLDER")}"
+    export PI_SESSION_NAME="${PI_SESSION_PREFIX}-${resolver_id}"
+    run_with_timeout "$RESOLVER_TIMEOUT_SEC" bash -c "provider_$RESOLVER_PROVIDER \"\$@\"" _ \
+      "$TASKS_FOLDER/agent-$target.md" "$COMMON_UNDERSTANDING" "$prompt" \
+      >"$report_dir/resolver.log" 2>&1
+  ) &
+  RESOLVER_PID=$!
+}
+
+# Reset statuses derived from a dependency failure ("blocked (dep ...)") back
+# to pending after a repair, so dependents of a re-queued agent can recover.
+# Reviewer-reported "blocked (reported)" is never touched.
+reset_derived_blocks() {
+  local entry id
+  for entry in "${PIPELINE[@]}"; do
+    id="${entry%%:*}"
+    case "$(status_of "$id")" in
+    blocked\ \(dep\ *) set_status "$id" "pending" ;;
+    esac
+  done
+}
+
+manage_resolver() {
+  [ -n "$RESOLVER_PROVIDER" ] || return 0
+
+  if [ -n "$RESOLVER_PID" ]; then
+    if is_job_running "$RESOLVER_PID"; then
+      return 0
+    fi
+    wait "$RESOLVER_PID" 2>/dev/null || true
+    RESOLVER_PID=""
+    local report="$RESULT_FOLDER/_resolver-$RESOLVER_USED/report.md"
+    if [ "$(extract_report_status "$report")" = "DONE" ]; then
+      echo "[$(date +%H:%M:%S)] resolver $RESOLVER_USED repaired $RESOLVER_TARGET -> re-queued (elapsed: $(elapsed)s)"
+      set_status "$RESOLVER_TARGET" "pending"
+      reset_derived_blocks
+      RESOLVER_TARGET=""
+      RESOLVER_ORIG=""
+    elif [ "$RESOLVER_USED" -lt "$RESOLVER_MAX" ]; then
+      echo "[$(date +%H:%M:%S)] resolver $RESOLVER_USED did not repair $RESOLVER_TARGET; spawning next resolver" >&2
+      start_resolver "$RESOLVER_TARGET"
+      return 0
+    else
+      echo "[$(date +%H:%M:%S)] resolver budget exhausted ($RESOLVER_MAX); $RESOLVER_TARGET stays failed" >&2
+      set_status "$RESOLVER_TARGET" "$RESOLVER_ORIG (unresolved)"
+      RESOLVER_TARGET=""
+      RESOLVER_ORIG=""
+    fi
+    return 0
+  fi
+
+  [ "$RESOLVER_USED" -lt "$RESOLVER_MAX" ] || return 0
+  local entry id status
+  for entry in "${PIPELINE[@]}"; do
+    id="${entry%%:*}"
+    status=$(status_of "$id")
+    case "$status" in
+    *unresolved*) : ;;
+    failed* | timed_out*)
+      RESOLVER_ORIG="$status"
+      start_resolver "$id"
+      return 0
+      ;;
+    esac
+  done
 }
 
 run_sequential() {
@@ -695,11 +827,12 @@ run_dag() {
   while true; do
     check_total_timeout
     update_running_agents
+    manage_resolver
     mark_blocked_agents
     build_ready_queue
     start_ready_agents
 
-    if [ ${#RUNNING_PIDS[@]} -eq 0 ]; then
+    if [ ${#RUNNING_PIDS[@]} -eq 0 ] && [ -z "$RESOLVER_PID" ]; then
       if [ ${#READY[@]} -eq 0 ]; then
         pending=$(pending_count)
         if [ "$pending" -gt 0 ]; then
@@ -755,6 +888,15 @@ preflight_dag() {
       echo "PREFLIGHT: missing function provider_$provider (agent '$id')" >&2
       errors=1
     fi
+
+    case "$id" in
+    commit-*)
+      if [ "$(slot_for "$provider")" != "1" ]; then
+        echo "PREFLIGHT: commit task '$id' uses provider '$provider' with $(slot_for "$provider") slots; commit providers must have exactly 1 slot so commits are serialized" >&2
+        errors=1
+      fi
+      ;;
+    esac
 
     deps=$(deps_for "$id")
     for dep in $deps; do
@@ -812,6 +954,11 @@ preflight_dag() {
     errors=1
   fi
 
+  if [ -n "$RESOLVER_PROVIDER" ] && ! declare -F "provider_$RESOLVER_PROVIDER" >/dev/null 2>&1; then
+    echo "PREFLIGHT: RESOLVER_PROVIDER='$RESOLVER_PROVIDER' but provider_$RESOLVER_PROVIDER is not defined" >&2
+    errors=1
+  fi
+
   return "$errors"
 }
 
@@ -851,7 +998,13 @@ echo "Tasks folder : $TASKS_FOLDER"
 echo "Results in   : $RESULT_FOLDER"
 echo "Per-developer: ${AGENT_TIMEOUT_SEC}s"
 echo "Per-reviewer : ${REVIEWER_TIMEOUT_SEC}s"
+echo "Per-committer: ${COMMITTER_TIMEOUT_SEC}s"
 echo "Total        : ${TOTAL_TIMEOUT_SEC}s"
+if [ -n "$RESOLVER_PROVIDER" ]; then
+  echo "Resolver     : $RESOLVER_PROVIDER (max ${RESOLVER_MAX}/run, ${RESOLVER_TIMEOUT_SEC}s each)"
+else
+  echo "Resolver     : disabled (set RESOLVER_PROVIDER in pipeline.conf)"
+fi
 echo
 
 exit_code=0
