@@ -29,10 +29,13 @@
 #   provider_mistral   Pi + mistral-medium-3.5
 #   provider_gpt       Pi + openai-codex/gpt-5.5
 #   provider_karen     Pi + minimax-m3, forced high, Karen persona (karen-* only)
-#   provider_committer wraps the commit= provider; 1 slot (commit-* only)
+#   provider_committer wraps the commit= provider; 1 slot (commit-final only)
 #   provider_vibe      Vibe (Mistral); thinking -> agent name (see PREREQUISITES)
 #   provider_claude    Claude Code
 #   provider_codex     Codex CLI (commented; untested — see below)
+#
+# RESERVED: `git` is built into the runner (native seam commits from
+# agent-<id>.commit manifests). No function, no SLOTS entry (defaults to 1).
 
 # --- Shared Pi invocation -------------------------------------------------
 # Args: <provider> <model> <system_prompt_or_empty> then the runner's three
@@ -60,11 +63,10 @@ provider_minimax() { provider_pi_run minimax minimax-m3 "" "$@"; }
 provider_mistral() { provider_pi_run mistral mistral-medium-3.5 "" "$@"; }
 provider_gpt() { provider_pi_run openai-codex gpt-5.5 "" "$@"; }
 
-# --- Committer (all commit-* tasks) ----------------------------------------
-# Wraps the budget's commit= provider. ALWAYS exactly 1 slot (see SLOTS): the
-# runner preflight rejects commit-* tasks on a multi-slot pool, because
-# serialized committers are what make per-seam commits safe while other seams
-# still run. The commit task file restricts staging to the seam's owned files.
+# --- Committer (commit-final ONLY) -----------------------------------------
+# Per-seam commits are native (`git` provider — no agent). This wrapper serves
+# commit-final: format, stage what fix-final changed, real commit message via
+# the commit-work skill. ALWAYS exactly 1 slot (preflight-enforced).
 provider_committer() { provider_claude "$@"; }
 
 # --- Karen reviews (all karen-* tasks) ------------------------------------
@@ -187,10 +189,14 @@ SLOTS=(
 # Resolver: repairs failed/timed_out agents at runtime so they re-run.
 # Provider from the budget's resolver= assignment; empty string disables.
 # Runs at thinking `high` regardless of THINKING_LEVEL/overrides.
+# Transient provider aborts (log matches ABORT_PATTERN, no report.md) are
+# retried by the runner itself and never consume resolver budget.
 # ===========================================================================
 RESOLVER_PROVIDER="gpt"
 RESOLVER_MAX="${RESOLVER_MAX:-3}"             # resolver spawns per script run
 RESOLVER_TIMEOUT_SEC="${RESOLVER_TIMEOUT_SEC:-600}" # 10 min each
+ABORT_RETRY_MAX="${ABORT_RETRY_MAX:-2}"       # per-agent retries on provider abort
+ABORT_RETRY_DELAY_SEC="${ABORT_RETRY_DELAY_SEC:-300}" # wait before re-queueing
 
 # ===========================================================================
 # Thinking: off by default — the intelligence lives in the task files.
@@ -201,13 +207,10 @@ THINKING_LEVEL=off
 THINKING_OVERRIDES=(
   "karen-1=high"
   "fix-1=high"
-  "commit-1=medium"
   "karen-2=high"
   "fix-2=high"
-  "commit-2=medium"
   "karen-3=high"
   "fix-3=high"
-  "commit-3=medium"
   "karen-final=high"
   "fix-final=high"
   "commit-final=medium"
@@ -226,8 +229,9 @@ TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-7200}"
 # Pipeline: the DAG. "<agent_id>:<provider>:<space-separated deps>"
 # - Seams form a DAG: independent seams run concurrently (disjoint ownership!).
 # - Tasks within a seam run in parallel (1a, 1b) unless one builds on another.
-# - Every seam ends karen-<seam> -> fix-<seam> -> commit-<seam>; downstream
-#   seams depend on commit-<seam>, never on the raw tasks.
+# - Every seam ends karen-<seam> -> fix-<seam> -> commit-<seam> (provider
+#   `git`: native manifest commit); downstream seams depend on commit-<seam>,
+#   never on the raw tasks.
 # - The runner pairs fix-X with karen-X: a BLOCKED review unblocks its fix.
 # - Ends with the whole-PRD gate: karen-final -> fix-final -> commit-final.
 # ===========================================================================
@@ -238,21 +242,21 @@ PIPELINE=(
   "1c:minimax:1a"
   "karen-1:karen:1a 1b 1c"
   "fix-1:gpt:karen-1"
-  "commit-1:committer:fix-1"
+  "commit-1:git:fix-1"
 
   # Seam 2 — frontend foundation (disjoint files; runs concurrently with seam 1)
   "2a:vibe:"
   "2b:vibe:"
   "karen-2:karen:2a 2b"
   "fix-2:gpt:karen-2"
-  "commit-2:committer:fix-2"
+  "commit-2:git:fix-2"
 
   # Seam 3 — integration (builds on both)
   "3a:minimax:commit-1 commit-2"
   "3b:vibe:commit-1 commit-2"
   "karen-3:karen:3a 3b"
   "fix-3:gpt:karen-3"
-  "commit-3:committer:fix-3"
+  "commit-3:git:fix-3"
 
   # Whole-PRD gate — always last
   "karen-final:karen:commit-3"

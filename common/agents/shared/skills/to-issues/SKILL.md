@@ -24,8 +24,8 @@ The user may pass a provider budget. Grammar: `name=N` declares a coding provide
 - Every `name=N` pool is available for implementation tasks; spread independent tasks across pools to reduce shared blind spots (e.g. backend on minimax, frontend on vibe).
 - `karen=` — provider for all `karen-*` reviews (1 slot, thinking `high`). Prefer a different model than the main implementer: different model, different blind spots.
 - `fix=` — provider for all `fix-*` tasks (1 slot, thinking `high`). Defaults to the largest coding pool if omitted.
-- `commit=` — provider for all `commit-*` tasks. Wrapped as `provider_committer` with **exactly 1 slot** (the runner preflight enforces this) so commits are serialized.
-- `resolver=` — provider that repairs failed agents at runtime (`RESOLVER_PROVIDER`, thinking `high` forced by the runner).
+- `commit=` — provider for `commit-final` ONLY. Per-seam commits run natively inside the runner (reserved provider `git`, no agent, no LLM) — see "Seam commits are native". Wrapped as `provider_committer` with **exactly 1 slot** (preflight-enforced).
+- `resolver=` — provider that repairs failed agents at runtime (`RESOLVER_PROVIDER`, thinking `high` forced by the runner). Transient provider aborts never reach the resolver — the runner retries those itself (see "Runtime resilience").
 - No arguments at all → ask the user for their full budget including `karen`/`fix`/`commit`/`resolver`; do not invent one.
 
 Record the parsed budget at the top of `pipeline.conf` as a comment, and honor it exactly in `SLOTS`.
@@ -42,7 +42,7 @@ From the PRD's seams, build this shape:
    - ≤ 5 acceptance criteria;
    - ≤ 15 minutes for a focused thinking-off agent.
    Tasks within a seam may depend on each other (`1b` after `1a`) when ownership can't be made disjoint.
-4. **Every seam ends in a gate:** `karen-<seam>` (reviews the seam, depends on all its tasks) → `fix-<seam>` (depends on `karen-<seam>`; runs even when Karen reports BLOCKED — the runner unblocks the paired fix) → `commit-<seam>` (formats and commits the seam's files). Downstream seams depend on `commit-<seam>`, never on the raw tasks.
+4. **Every seam ends in a gate:** `karen-<seam>` (reviews the seam, depends on all its tasks) → `fix-<seam>` (depends on `karen-<seam>`; runs even when Karen reports BLOCKED — the runner unblocks the paired fix) → `commit-<seam>` (a native runner commit of the seam's files — no agent). Downstream seams depend on `commit-<seam>`, never on the raw tasks.
 5. **The pipeline ends with a whole-PRD gate:** `karen-final` (depends on every terminal `commit-<seam>`) → `fix-final` → `commit-final`.
 
 ID conventions (the runner keys behavior off these):
@@ -52,34 +52,42 @@ ID conventions (the runner keys behavior off these):
 | Implementation | `<seam><letter>[-slug]`   | `1a`, `2b-replay-strip` | developer |
 | Seam review    | `karen-<seam>`            | `karen-1`               | reviewer  |
 | Seam fix       | `fix-<seam>`              | `fix-1`                 | developer |
-| Seam commit    | `commit-<seam>`           | `commit-1`              | committer |
+| Seam commit    | `commit-<seam>` (native)  | `commit-1`              | committer |
 | Final gate     | `karen-final`, `fix-final`, `commit-final` |        | as above  |
 
-The runner pairs `fix-X` with `karen-X` automatically (a BLOCKED review unblocks only its paired fix). Every pipeline id needs a matching `agent-<id>.md`.
+The runner pairs `fix-X` with `karen-X` automatically (a BLOCKED review unblocks only its paired fix). Every pipeline id needs a matching `agent-<id>.md` — except native commits, which need `agent-<id>.commit` instead.
 
-## Why parallel commits are safe
+## Seam commits are native
 
-Two seams running concurrently would produce dirty commits if committers grabbed whatever is in the worktree. Two mechanisms prevent that:
+Seam commits are **checkpoints, not deliverables** — they don't need to compile, pass hooks, or carry a polished message. Only the final gate produces real history. So per-seam `commit-<seam>` tasks use the runner's reserved provider `git`: no agent, no LLM slot, no report parsing, no hook failures. The runner reads `agent-commit-<seam>.commit` (first non-comment line = commit message, remaining lines = explicit paths), stages ONLY those paths, and runs `git commit --no-verify` scoped to them.
 
-1. **Ownership-scoped staging** — a committer stages ONLY its seam's owned files by explicit path (the ownership map guarantees disjointness). Never `git add -A` / `git add .`.
-2. **Serialized committers** — all `commit-*` tasks share one 1-slot pool, so two committers never touch the git index at the same time. The runner preflight rejects a multi-slot commit provider.
+Why this is safe under concurrency:
 
-`scripts/format.sh`, which may rewrite files owned by a still-running seam, therefore runs INSIDE the commit task (scoped to the seam's files when it accepts paths), never as a free-floating task.
+1. **Ownership-scoped staging** — the manifest lists the seam's owned paths explicitly (the ownership map guarantees disjointness); pathspec-scoped commit means other seams' staged/dirty files are untouched. Never a `git add -A` anywhere.
+2. **Serialization** — the `git` provider defaults to 1 slot, so two native commits never interleave index operations.
 
-## Runtime resolver
+You write the manifest at breakdown time (message: `wip(seam <N>): <seam title>`; paths: the union of the seam's ownership rows plus test files those tasks create). `commit-final` stays an agent: it runs `scripts/format.sh` (formatting is deferred to the end — it would rewrite files still owned by running seams), stages what `fix-final` changed, and uses the `commit-work` skill to craft the real message. If the wip history should be squashed/reworded, that is a human decision after the run — say so in the handoff.
 
-The runner repairs itself when an agent breaks. If an agent ends `failed`/`timed_out` (not a Karen-reported BLOCKED — that's the fix task's job), the runner spawns a resolver on the `resolver=` provider with the agent's log, results, and task file, instructed to repair the minimum so the agent can re-run — then it resets the agent to `pending` and reschedules it automatically. A resolver that fails or times out is replaced by a fresh one with the same instruction. Caps: `RESOLVER_MAX` spawns per script run (default 3), `RESOLVER_TIMEOUT_SEC` each (default 600). This exists so a broken run does not need a human to paste logs into a fresh session; the caps keep it from looping forever.
+## Runtime resilience
+
+Two mechanisms, in escalation order:
+
+1. **Abort retry (cheap, automatic).** A provider-side abort (log matches `ABORT_PATTERN`, default `Unhandled stop reason: abort`, and no `report.md` was written) is transient overload, not broken state. The runner re-queues the agent after `ABORT_RETRY_DELAY_SEC` (default 300), up to `ABORT_RETRY_MAX` (default 2) times per agent, without consuming resolver budget.
+2. **Resolver (expensive, for real breakage).** If an agent ends `failed`/`timed_out` for any other reason — or exhausts its abort retries — the runner spawns a resolver on the `resolver=` provider with the agent's log, results, and task file, instructed to repair the minimum (revert half-applied edits, unstick tooling) so the agent can re-run, then reschedules it. A resolver that fails or times out is replaced by a fresh one. Caps: `RESOLVER_MAX` spawns per script run (default 3), `RESOLVER_TIMEOUT_SEC` each (default 600).
+
+This split matters: a run that spends its 3 resolver slots writing "nothing to repair, just re-run it" for transient aborts has no budget left when an agent leaves genuinely broken state.
 
 ## What you produce
 
 A folder `<feature-folder>/executions/` beside the PRD:
 
-| File                      | Purpose                                                       |
-| ------------------------- | ------------------------------------------------------------- |
-| `pipeline.conf`           | Provider functions, slots, thinking levels, resolver, the DAG |
-| `common-understanding.md` | Shared contract every agent reads first                       |
-| `agent-<id>.md`           | One micro-task per pipeline id (incl. karen/fix/commit)       |
-| `results/`                | Created at runtime; do not pre-create                         |
+| File                       | Purpose                                                       |
+| -------------------------- | ------------------------------------------------------------- |
+| `pipeline.conf`            | Provider functions, slots, thinking levels, resolver, the DAG |
+| `common-understanding.md`  | Shared contract every agent reads first                       |
+| `agent-<id>.md`            | One micro-task per pipeline id (karen/fix/commit-final incl.) |
+| `agent-commit-<seam>.commit` | Native commit manifest: message line + explicit paths       |
+| `results/`                 | Created at runtime; do not pre-create                         |
 
 **Runner bootstrap:** this skill bundles the runner and a reference pipeline. Resolve template paths relative to this `SKILL.md`:
 
@@ -92,7 +100,7 @@ fi
 bash -n scripts/delegate_agents.sh
 ```
 
-If the runner already exists, never overwrite it silently — check it supports DAG mode, per-provider slots, the STATUS report gates, `--validate`, the `fix-X`/`karen-X` pairing, the resolver (`RESOLVER_PROVIDER`), and the `commit-*` 1-slot preflight; report drift to the user instead of patching it unasked.
+If the runner already exists, never overwrite it silently — check it supports DAG mode, per-provider slots, the STATUS report gates, `--validate`, the `fix-X`/`karen-X` pairing, the resolver (`RESOLVER_PROVIDER`), abort retry (`ABORT_PATTERN`), native `git`-provider commits (`agent-<id>.commit`), and the `commit-*` 1-slot preflight; report drift to the user instead of patching it unasked.
 
 ## Task-file checklist (zero-thinking execution)
 
@@ -156,9 +164,11 @@ If your task needs a file not on your row, stop and report `BLOCKED`.
 | ----- | ------- |
 | <layer> | `<command>` |
 
+Scope validation to YOUR seam (specific crates/packages/test modules). Other seams run concurrently and may be mid-edit: a failure in a file outside your ownership is NOT your failure — report it under RISKS_OR_QUESTIONS ("out-of-seam: <file>: <error>") and judge your own work only by your seam's gates.
+
 ## Report format
 
-Every agent ends by writing `results/<agent_id>/report.md`:
+Every agent ends by writing `results/<agent_id>/report.md`. The STATUS line contains the keyword and NOTHING else — no dashes, notes, or parentheses after it (the runner parses it mechanically):
 
 ```markdown
 STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
@@ -170,9 +180,19 @@ RISKS_OR_QUESTIONS:
 - item or none
 ```
 
+Fix agents (`fix-*`) additionally append an attribution section (consumed by the post-run retro — be specific and honest):
+
+```markdown
+FIX_ATTRIBUTION:
+- issue: <one line — what was broken>
+  from: <task id that introduced it, e.g. 4b>
+  cause: vague-task | wrong-task-spec | model-error | missing-context | cross-seam-interference | tooling
+  prevention: <one line — what change to the task file / common-understanding would have prevented it>
+```
+
 ## Stop rules
 
-Report `BLOCKED` (do not guess) for: an unapproved product/architecture/API/security/data-model/scope decision; a file outside your ownership row; a spec ambiguity with two reasonable interpretations; a test failure you cannot resolve within your scope. For minor ambiguities (a field name, a default), pick the reasonable option and note it under RISKS_OR_QUESTIONS.
+Report `BLOCKED` (do not guess) for: an unapproved product/architecture/API/security/data-model/scope decision; a file outside your ownership row (fix agents: see your task file — you have a minimal-repair exception); a spec ambiguity with two reasonable interpretations; a test failure you cannot resolve within your scope. For minor ambiguities (a field name, a default), pick the reasonable option and note it under RISKS_OR_QUESTIONS.
 
 ## Notification
 
@@ -224,47 +244,34 @@ Do not: edit other files (report `BLOCKED` instead), commit/stage/push, read sec
 Write `results/<id>/report.md` per common-understanding.md, then send the notification.
 ````
 
-**`karen-<seam>`** files are short: mission ("review seam <N> as completed: tasks <ids>"), the seam's task ids and owned files, and: *"Use the `karen-review` skill in mode `execution`, scoped to this seam only. Read-only — do not edit source files. Write the review to `<executions>/karen-<seam>-review.md` and `results/karen-<seam>/report.md`. If any unfixed MEDIUM+ issue remains, report STATUS: BLOCKED so `fix-<seam>` must address it."*
+**`karen-<seam>`** files are short: mission ("review seam <N> as completed: tasks <ids>"), the seam's task ids and owned files, and: *"Use the `karen-review` skill in mode `execution`, scoped to this seam only. Read-only — do not edit source files. Failures rooted in files outside this seam's ownership are recorded as observations, not blockers. Write the review to `<executions>/karen-<seam>-review.md` and `results/karen-<seam>/report.md`. If any unfixed MEDIUM+ issue remains INSIDE the seam, report STATUS: BLOCKED so `fix-<seam>` must address it."*
 
-**`fix-<seam>`** files: mission ("resolve every MEDIUM+ issue in `karen-<seam>-review.md`"), ownership = union of the seam's files, validation = the seam's commands, and: *"If the review found no MEDIUM+ issues, verify that claim briefly and report DONE."*
+**`fix-<seam>`** files: mission ("resolve every MEDIUM+ issue in `karen-<seam>-review.md`"), ownership = union of the seam's files, validation = the seam's commands, and both of:
 
-**`commit-<seam>`** files — the ONLY tasks allowed to run git write commands. Template:
+- *"If the review found no MEDIUM+ issues, verify that claim briefly and report DONE."*
+- The minimal-repair exception: *"Your primary scope is the seam's files. If a seam validation gate cannot pass without a change outside them (a broken test helper, a missing dependency declaration, a one-line compile fix), make the MINIMAL out-of-scope edit rather than reporting BLOCKED — and list every out-of-scope file under CHANGED_OR_CHECKED_FILES with the reason. Do not refactor, restructure, or fix unrelated issues outside the seam."*
 
-````markdown
-# Agent commit-<seam> — format and commit seam <N>'s reviewed work
+(Rationale: by the time `fix-<seam>` runs, its seam's implementers are finished, so the file-race the ownership map exists for is gone; a fixer that reports BLOCKED over a one-line out-of-scope repair forces the human intervention this pipeline exists to remove.)
 
-## Mission
+Fix task files must also require the `FIX_ATTRIBUTION` report section from common-understanding.md.
 
-Format seam <N>'s files and commit them. Nothing else.
+**`commit-<seam>`** — no task file. Write the manifest `agent-commit-<seam>.commit` instead:
 
-## Scope and ownership
+```
+# seam <N> checkpoint — consumed natively by delegate_agents.sh
+wip(seam <N>): <seam title>
+crates/<...>/src/<file1>.rs
+crates/<...>/src/<file2>.rs
+crates/<...>/tests/<test file>.rs
+```
 
-Seam <N>'s owned files (union of the ownership map rows for tasks <ids>):
-<explicit path list>
+First non-comment line is the commit message; every following line is a path (union of the seam's ownership rows; include test files the tasks create). Missing paths are skipped, an empty diff is a no-op DONE — both are fine.
 
-## Task
-
-1. If `scripts/format.sh` exists, run it on the files above (pass the paths if it accepts arguments; otherwise run it as-is).
-2. If `git diff --cached` is non-empty BEFORE you stage anything, report `BLOCKED` — someone else's work is staged.
-3. Stage ONLY the files listed above, by explicit path. Never `git add -A`, `git add .`, or `git add -u`.
-4. Commit using the `commit-work` skill if available; otherwise write a Conventional Commits message yourself (`<type>(<scope>): <summary>` + body explaining why). Split into multiple commits only if the skill says so.
-5. Never push. Never amend or rebase existing commits.
-
-## Acceptance criteria
-
-- [ ] `git log` shows the new commit(s) containing exactly the owned files
-- [ ] `git diff --cached` is empty afterwards
-
-## Report
-
-Write `results/commit-<seam>/report.md` per common-understanding.md.
-````
-
-**`karen-final` / `fix-final` / `commit-final`**: same patterns, scoped to the whole PRD; `karen-final` verifies the seam reviews' conclusions instead of trusting them; `commit-final` commits only what `fix-final` changed.
+**`karen-final` / `fix-final` / `commit-final`**: same patterns, scoped to the whole PRD; `karen-final` verifies the seam reviews' conclusions instead of trusting them; workspace-wide validation IS in scope here. `commit-final` is an agent (the `committer` provider): it runs `scripts/format.sh` if present, stages what `fix-final` and formatting changed, and commits via the `commit-work` skill with a real Conventional Commits message. It never pushes, amends, or rebases.
 
 ## Step 4 — pipeline.conf
 
-Start from [templates/pipeline.conf.example](templates/pipeline.conf.example) (resolve relative to this SKILL.md) and adapt: provider functions to the budget's pools, `provider_committer` to the `commit=` assignment, `RESOLVER_PROVIDER` to the `resolver=` assignment, `SLOTS` to the budget's counts (committer stays 1), `PI_SESSION_PREFIX` to `NN-feature-title`, `THINKING_OVERRIDES` for every `karen-*`/`fix-*` (high) and `commit-*` (medium), and the `PIPELINE` DAG to your seams. Keep it Bash-3 compatible (stock macOS): plain arrays, no associative arrays.
+Start from [templates/pipeline.conf.example](templates/pipeline.conf.example) (resolve relative to this SKILL.md) and adapt: provider functions to the budget's pools, `provider_committer` to the `commit=` assignment (used by `commit-final` only), `RESOLVER_PROVIDER` to the `resolver=` assignment, `SLOTS` to the budget's counts (committer stays 1; `git` needs no function and no SLOTS entry — it defaults to 1), `PI_SESSION_PREFIX` to `NN-feature-title`, `THINKING_OVERRIDES` for every `karen-*`/`fix-*` (high) and `commit-final` (medium), and the `PIPELINE` DAG to your seams. Keep it Bash-3 compatible (stock macOS): plain arrays, no associative arrays.
 
 The DAG shape, condensed:
 
@@ -272,11 +279,11 @@ The DAG shape, condensed:
 PIPELINE=(
   # "<id>:<provider>:<space-separated deps>"
   "1a:minimax:"  "1b:vibe:"  "1c:minimax:1a"          # seam 1: parallel micro-tasks
-  "karen-1:karen:1a 1b 1c"  "fix-1:gpt:karen-1"  "commit-1:committer:fix-1"
+  "karen-1:karen:1a 1b 1c"  "fix-1:gpt:karen-1"  "commit-1:git:fix-1"
   "2a:minimax:"  "2b:vibe:"                            # seam 2: concurrent with seam 1
-  "karen-2:karen:2a 2b"     "fix-2:gpt:karen-2"  "commit-2:committer:fix-2"
+  "karen-2:karen:2a 2b"     "fix-2:gpt:karen-2"  "commit-2:git:fix-2"
   "3a:minimax:commit-1 commit-2"                       # seam 3: builds on both gates
-  "karen-3:karen:3a"        "fix-3:gpt:karen-3"  "commit-3:committer:fix-3"
+  "karen-3:karen:3a"        "fix-3:gpt:karen-3"  "commit-3:git:fix-3"
   "karen-final:karen:commit-3" "fix-final:gpt:karen-final" "commit-final:committer:fix-final"
 )
 ```
@@ -292,11 +299,12 @@ bash scripts/delegate_agents.sh --validate <executions>   # preflight only, runs
 
 Also verify by hand:
 
-- Every `PIPELINE` id has `agent-<id>.md`, and every `agent-*.md` is in the pipeline.
-- Every provider used has a `provider_<name>()` and a `SLOTS` entry; Pi providers pass `--name "${PI_SESSION_NAME}"`; `committer=1`; `RESOLVER_PROVIDER` names a defined provider.
+- Every `PIPELINE` id has `agent-<id>.md` (or `agent-<id>.commit` for `git`-provider commits), and every `agent-*.md` / `agent-*.commit` is in the pipeline.
+- Every provider used has a `provider_<name>()` and a `SLOTS` entry (`git` excepted — it's built in); Pi providers pass `--name "${PI_SESSION_NAME}"`; `committer=1`; `RESOLVER_PROVIDER` names a defined provider.
 - Deps reference existing ids; no cycles; every seam ends `karen-<seam>` → `fix-<seam>` → `commit-<seam>`; the pipeline ends `karen-final` → `fix-final` → `commit-final`.
-- Concurrent tasks (same wave or independent seams) have disjoint file ownership per the map; commit tasks stage only their seam's paths.
-- Every task file passes the task-file checklist above.
+- Concurrent tasks (same wave or independent seams) have disjoint file ownership per the map; each commit manifest lists exactly its seam's paths.
+- Each seam's validation commands are scoped to that seam (specific crates/packages/test modules), not the whole workspace — workspace-wide gates belong to `karen-final` only.
+- Every task file passes the task-file checklist above; every `fix-*` file carries the minimal-repair exception and the `FIX_ATTRIBUTION` requirement.
 
 Then hand off:
 
@@ -305,7 +313,9 @@ To run:      bash scripts/delegate_agents.sh <executions-folder>
 Recommended: have Karen review the plan first (karen-review skill, mode `plan`).
 Resume:      re-run the same command; completed agents are preserved.
 Force re-run of one agent: rm <executions>/results/<id>.status
+Abort retry: automatic; tune ABORT_RETRY_MAX / ABORT_RETRY_DELAY_SEC / ABORT_PATTERN in the environment.
 Resolver:    automatic; tune RESOLVER_MAX / RESOLVER_TIMEOUT_SEC in the environment.
+After the run: /pipeline-retro <executions-folder> to score providers and harvest improvements.
 ```
 
 ## Anti-patterns
@@ -315,8 +325,11 @@ Resolver:    automatic; tune RESOLVER_MAX / RESOLVER_TIMEOUT_SEC in the environm
 | Serial chain of fat seam-tasks (one agent per seam) | Context grows, cost explodes, one slow agent blocks everything |
 | A task with two behaviors "because they're related" | Small targeted tasks fail less; split it |
 | Two concurrent tasks touching one file | Race; add a dep or merge the tasks |
-| `git add -A` / commit tasks on a multi-slot pool | Dirty commits from concurrent seams; ownership-scoped staging + 1 slot is the whole safety model |
-| format.sh as its own parallel task | It rewrites files other seams still own; it belongs inside the serialized commit task |
+| An LLM agent for seam commits | Checkpoints need no judgment; a deterministic runner commit can't be blocked by hooks, sandboxes, or report-format drift |
+| `git add -A` anywhere / commit provider on a multi-slot pool | Dirty commits from concurrent seams; manifest-scoped staging + 1 slot is the whole safety model |
+| format.sh as its own parallel task or per-seam | It rewrites files other seams still own; it runs once, inside `commit-final` |
+| Workspace-wide validation gates on seam tasks | Concurrent seams' in-flight breakage bleeds in; Karen blocks on noise and fixers chase other seams' bugs |
+| Fix tasks hard-blocked by the ownership map | Their seam is already done; a one-line out-of-scope repair beats a BLOCKED report and a human intervention |
 | Karen and implementer on the same model when the budget allows otherwise | Same blind spots |
 | Skipping the seam gate to save time | Final review then drowns; per-seam fixes are cheap because context is small |
 | Task files that assume chat history | Fresh sessions know nothing |

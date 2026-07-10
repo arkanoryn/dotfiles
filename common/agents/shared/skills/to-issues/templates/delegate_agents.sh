@@ -34,6 +34,19 @@
 # provider pool must have exactly 1 slot (preflight-enforced) so commits are
 # serialized — concurrent seams then can never interleave git index operations.
 #
+# Native commits: a commit-* task whose provider is the reserved name 'git'
+# runs no agent. The runner itself stages the paths listed in
+# <tasks_folder>/agent-<id>.commit (first non-comment line = commit message,
+# remaining lines = explicit paths) and commits with --no-verify. WIP seam
+# commits are checkpoints, not deliverables — they don't need to compile or
+# pass hooks; only the final gate does.
+#
+# Abort retry: a failed agent whose log matches ABORT_PATTERN (a provider-side
+# abort, e.g. "Unhandled stop reason: abort") and produced no report.md is
+# retried automatically after ABORT_RETRY_DELAY_SEC (default 300), up to
+# ABORT_RETRY_MAX (default 2) times per agent — without consuming resolver
+# budget. Only after retries are exhausted does the resolver see it.
+#
 # Resume: status=completed, status=completed_with_concerns, and reviewer
 # status="blocked (reported)" are preserved. A preserved blocked review can
 # unblock its paired fix-* task. Delete an agent's status file to force a re-run.
@@ -104,6 +117,11 @@ AGENT_TIMEOUT_SEC="${AGENT_TIMEOUT_SEC:-900}"
 REVIEWER_TIMEOUT_SEC="${REVIEWER_TIMEOUT_SEC:-480}"
 COMMITTER_TIMEOUT_SEC="${COMMITTER_TIMEOUT_SEC:-600}"
 TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-3600}"
+
+# Abort retry config (provider-side aborts are transient; retry before resolving).
+ABORT_PATTERN="${ABORT_PATTERN:-Unhandled stop reason: abort}"
+ABORT_RETRY_MAX="${ABORT_RETRY_MAX:-2}"
+ABORT_RETRY_DELAY_SEC="${ABORT_RETRY_DELAY_SEC:-300}"
 
 # Resolver config (pipeline.conf may set these before this point; :- keeps them).
 RESOLVER_PROVIDER="${RESOLVER_PROVIDER:-}"
@@ -239,7 +257,7 @@ set_status() {
 
 extract_report_status() {
   local report_file="$1"
-  local line stripped
+  local line stripped first
   if [ ! -f "$report_file" ]; then
     echo ""
     return 0
@@ -250,7 +268,9 @@ extract_report_status() {
     stripped="${line#"${line%%[![:space:]#]*}"}"
     case "$stripped" in
     STATUS:*)
-      trim_status "${stripped#STATUS:}"
+      first=$(awk '{print $1}' <<<"${stripped#STATUS:}")
+      first="${first%%[!A-Za-z0-9_]*}"
+      trim_status "$first"
       return 0
       ;;
     esac
@@ -447,6 +467,78 @@ run_with_timeout() {
   return "$exit_code"
 }
 
+# Native commit task: no agent. Stage the manifest's paths, commit --no-verify.
+# Manifest format (agent-<id>.commit): first non-comment, non-blank line is the
+# commit message; every following non-comment, non-blank line is a path.
+run_native_commit() {
+  local agent_id="$1"
+  local manifest="$TASKS_FOLDER/agent-$agent_id.commit"
+  local status_file="$RESULT_FOLDER/$agent_id.status"
+  local log_file="$RESULT_FOLDER/$agent_id.log"
+  local result_subdir="$RESULT_FOLDER/$agent_id"
+  local message="" paths=() line
+
+  mkdir -p "$result_subdir"
+
+  while IFS= read -r line; do
+    line=$(trim_status "$line")
+    case "$line" in
+    "" | \#*) continue ;;
+    esac
+    if [ -z "$message" ]; then
+      message="$line"
+    else
+      paths=("${paths[@]}" "$line")
+    fi
+  done <"$manifest"
+
+  if [ -z "$message" ] || [ ${#paths[@]} -eq 0 ]; then
+    echo "manifest missing message or paths: $manifest" >"$log_file"
+    echo "failed (bad commit manifest)" >"$status_file"
+    return 0
+  fi
+
+  local existing=()
+  local p
+  for p in "${paths[@]}"; do
+    if [ -e "$p" ] || git ls-files --error-unmatch "$p" >/dev/null 2>&1; then
+      existing=("${existing[@]}" "$p")
+    else
+      echo "skip (not found, never tracked): $p" >>"$log_file"
+    fi
+  done
+
+  if [ ${#existing[@]} -eq 0 ]; then
+    echo "no manifest paths exist; nothing to commit" >>"$log_file"
+    printf 'STATUS: DONE\n\nNothing to commit (no manifest paths exist).\n' >"$result_subdir/report.md"
+    echo "completed" >"$status_file"
+    return 0
+  fi
+
+  if ! git add -- "${existing[@]}" >>"$log_file" 2>&1; then
+    echo "failed (git add)" >"$status_file"
+    return 0
+  fi
+
+  if git diff --cached --quiet -- "${existing[@]}"; then
+    echo "no staged changes for manifest paths; nothing to commit" >>"$log_file"
+    printf 'STATUS: DONE\n\nNothing to commit (no changes in owned paths).\n' >"$result_subdir/report.md"
+    echo "completed" >"$status_file"
+    return 0
+  fi
+
+  if git commit --no-verify -m "$message" -- "${existing[@]}" >>"$log_file" 2>&1; then
+    {
+      printf 'STATUS: DONE\n\nCommit: %s\n' "$(git log -1 --format='%h %s')"
+      printf 'Files:\n'
+      git log -1 --name-only --format=''
+    } >"$result_subdir/report.md"
+    echo "completed" >"$status_file"
+  else
+    echo "failed (git commit)" >"$status_file"
+  fi
+}
+
 run_agent() {
   local agent_id="$1"
   local effective_timeout="$2"
@@ -454,6 +546,17 @@ run_agent() {
   local status_file="$RESULT_FOLDER/$agent_id.status"
   local log_file="$RESULT_FOLDER/$agent_id.log"
   local result_subdir="$RESULT_FOLDER/$agent_id"
+
+  if [ "$MODE" = "dag" ] && [ "$(provider_for "$agent_id")" = "git" ]; then
+    if [ -f "$status_file" ]; then
+      case "$(cat "$status_file")" in
+      completed | completed_with_concerns) return 0 ;;
+      esac
+    fi
+    echo "running" >"$status_file"
+    run_native_commit "$agent_id"
+    return 0
+  fi
 
   if [ ! -f "$task_file" ]; then
     echo "missing" >"$status_file"
@@ -570,6 +673,70 @@ in_flight_for_provider() {
     if [ "$agent_provider" = "$provider" ]; then
       count=$((count + 1))
     fi
+  done
+  echo "$count"
+}
+
+# --- Abort retry ------------------------------------------------------------
+# Provider-side aborts (log matches ABORT_PATTERN, no report.md written) are
+# transient overload, not broken state: schedule a delayed re-run instead of
+# burning resolver budget. After ABORT_RETRY_MAX retries, mark the failure
+# terminal so the resolver takes over.
+
+retries_of() {
+  local file="$RESULT_FOLDER/$1.retries"
+  if [ -f "$file" ]; then cat "$file"; else echo 0; fi
+}
+
+is_provider_abort() {
+  local agent_id="$1"
+  local log_file="$RESULT_FOLDER/$agent_id.log"
+  [ -f "$log_file" ] || return 1
+  [ ! -f "$RESULT_FOLDER/$agent_id/report.md" ] || return 1
+  grep -q "$ABORT_PATTERN" "$log_file"
+}
+
+manage_retries() {
+  local entry id status count now retry_at_file
+  now=$(date +%s)
+  for entry in "${PIPELINE[@]}"; do
+    id="${entry%%:*}"
+    status=$(status_of "$id")
+    retry_at_file="$RESULT_FOLDER/$id.retry_at"
+    case "$status" in
+    retry_wait*)
+      if [ -f "$retry_at_file" ] && [ "$now" -ge "$(cat "$retry_at_file")" ]; then
+        rm -f "$retry_at_file"
+        set_status "$id" "pending"
+        echo "[$(date +%H:%M:%S)] $id retry delay elapsed -> pending (elapsed: $(elapsed)s)"
+      fi
+      ;;
+    failed\ \(abort*) : ;;
+    failed*)
+      is_provider_abort "$id" || continue
+      count=$(retries_of "$id")
+      if [ "$count" -lt "$ABORT_RETRY_MAX" ]; then
+        count=$((count + 1))
+        echo "$count" >"$RESULT_FOLDER/$id.retries"
+        echo $((now + ABORT_RETRY_DELAY_SEC)) >"$retry_at_file"
+        set_status "$id" "retry_wait (abort $count/$ABORT_RETRY_MAX, ${ABORT_RETRY_DELAY_SEC}s)"
+        echo "[$(date +%H:%M:%S)] $id aborted (provider); retry $count/$ABORT_RETRY_MAX in ${ABORT_RETRY_DELAY_SEC}s"
+      else
+        set_status "$id" "failed (abort, retries exhausted)"
+        echo "[$(date +%H:%M:%S)] $id aborted (provider); retries exhausted -> resolver" >&2
+      fi
+      ;;
+    esac
+  done
+}
+
+retry_wait_count() {
+  local count=0 entry id
+  for entry in "${PIPELINE[@]}"; do
+    id="${entry%%:*}"
+    case "$(status_of "$id")" in
+    retry_wait*) count=$((count + 1)) ;;
+    esac
   done
   echo "$count"
 }
@@ -722,7 +889,10 @@ initialize_dag_statuses() {
     status=$(status_of "$id")
     case "$status" in
     completed | completed_with_concerns | blocked\ \(reported\)) : ;;
-    *) set_status "$id" "pending" ;;
+    *)
+      set_status "$id" "pending"
+      rm -f "$RESULT_FOLDER/$id.retries" "$RESULT_FOLDER/$id.retry_at"
+      ;;
     esac
   done
 }
@@ -827,12 +997,17 @@ run_dag() {
   while true; do
     check_total_timeout
     update_running_agents
+    manage_retries
     manage_resolver
     mark_blocked_agents
     build_ready_queue
     start_ready_agents
 
     if [ ${#RUNNING_PIDS[@]} -eq 0 ] && [ -z "$RESOLVER_PID" ]; then
+      if [ "$(retry_wait_count)" -gt 0 ]; then
+        sleep 1
+        continue
+      fi
       if [ ${#READY[@]} -eq 0 ]; then
         pending=$(pending_count)
         if [ "$pending" -gt 0 ]; then
@@ -878,15 +1053,29 @@ preflight_dag() {
     esac
     seen="$seen$id "
 
-    if [ ! -f "$TASKS_FOLDER/agent-$id.md" ]; then
-      echo "PREFLIGHT: missing task file agent-$id.md for pipeline id '$id'" >&2
-      errors=1
-    fi
-
     provider=$(provider_for "$id")
-    if ! declare -F "provider_$provider" >/dev/null 2>&1; then
-      echo "PREFLIGHT: missing function provider_$provider (agent '$id')" >&2
-      errors=1
+
+    if [ "$provider" = "git" ]; then
+      case "$id" in
+      commit-*) : ;;
+      *)
+        echo "PREFLIGHT: provider 'git' is reserved for commit-* tasks (agent '$id')" >&2
+        errors=1
+        ;;
+      esac
+      if [ ! -f "$TASKS_FOLDER/agent-$id.commit" ]; then
+        echo "PREFLIGHT: missing commit manifest agent-$id.commit for native commit '$id'" >&2
+        errors=1
+      fi
+    else
+      if [ ! -f "$TASKS_FOLDER/agent-$id.md" ]; then
+        echo "PREFLIGHT: missing task file agent-$id.md for pipeline id '$id'" >&2
+        errors=1
+      fi
+      if ! declare -F "provider_$provider" >/dev/null 2>&1; then
+        echo "PREFLIGHT: missing function provider_$provider (agent '$id')" >&2
+        errors=1
+      fi
     fi
 
     case "$id" in
@@ -1005,6 +1194,7 @@ if [ -n "$RESOLVER_PROVIDER" ]; then
 else
   echo "Resolver     : disabled (set RESOLVER_PROVIDER in pipeline.conf)"
 fi
+echo "Abort retry  : ${ABORT_RETRY_MAX}x after ${ABORT_RETRY_DELAY_SEC}s (pattern: '$ABORT_PATTERN')"
 echo
 
 exit_code=0
