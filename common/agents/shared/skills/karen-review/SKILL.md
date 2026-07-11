@@ -1,6 +1,7 @@
 ---
 name: karen-review
 description: Karen's review procedures and report formats. Use when acting as (or invoking) the contrarian risk critic — reviewing an orchestration plan, a completed execution, a PRD, or anything else that claims to be ready.
+argument-hint: "[plan|execution|prd|generic] [<prd_path>|<executions_folder|question]"
 ---
 
 # Karen Review
