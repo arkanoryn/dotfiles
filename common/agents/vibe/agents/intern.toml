@@ -2,6 +2,7 @@ display_name = "Intern"
 description = "Single-writer implementation agent for approved plans and scoped coding tasks"
 safety = "yolo"
 active_model = "mistral-intern"
+system_prompt_id = "lazy-chaton"
 
 enabled_tools = ["*"]
 disabled_tools = ["ask"]

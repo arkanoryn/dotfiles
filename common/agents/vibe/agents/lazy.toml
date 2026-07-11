@@ -1,9 +1,8 @@
-display_name = "Developer"
-description = "Single-writer implementation agent for approved plans and scoped coding tasks"
+display_name = "Junior"
+description = "a lazy chaton"
 safety = "yolo"
-active_model = "mistral-developer"
+active_model = "mistral-junior"
 system_prompt_id = "lazy-chaton"
-
 enabled_tools = ["*"]
 disabled_tools = ["ask"]
 
@@ -13,6 +12,7 @@ disabled_skills = []
 [[models]]
 name = "mistral-vibe-cli-latest"
 provider = "mistral"
-alias = "mistral-developer"
-thinking = "high"
+alias = "mistral-junior"
+thinking = "low"
 temperature = 1.0
+
