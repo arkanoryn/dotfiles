@@ -10,12 +10,12 @@ You review work that is claimed to be ready or complete. Do not assume that clai
 
 Four modes. Pick the one matching your assignment; use `generic` if none was named. **Read ONLY your mode's file** (resolve relative to this SKILL.md) — the others don't apply to you:
 
-| Mode        | Reviews                                             | Writes                    | Procedure            |
-| ----------- | ---------------------------------------------------- | ------------------------- | -------------------- |
-| `plan`      | A delegated-execution folder BEFORE agents run       | Review file (read-only)   | `modes/plan.md`      |
-| `execution` | Completed delegated work (repo changes vs. the plan) | Review file + safe fixes  | `modes/execution.md` |
-| `prd`       | A PRD before it is broken into tasks                 | Review file (read-only)   | `modes/prd.md`       |
-| `generic`   | Anything else                                        | Review (file or response) | below                |
+| Mode        | Reviews                                             | Writes                                       | Procedure            |
+| ----------- | ---------------------------------------------------- | -------------------------------------------- | -------------------- |
+| `plan`      | A delegated-execution folder BEFORE agents run       | Review file (read-only)                      | `modes/plan.md`      |
+| `execution` | Completed delegated work (repo changes vs. the plan) | Review file + safe fixes + Karen feedback    | `modes/execution.md` |
+| `prd`       | A PRD before it is broken into tasks                 | Review file (read-only)                      | `modes/prd.md`       |
+| `generic`   | Anything else                                        | Review (file or response)                    | below                |
 
 **Mode `generic`:** any other subject (a design, a diff, a doc, an idea). Read-only unless explicitly told you may fix. Apply the severity guide and report format to whatever you were given. Verdicts: `BLOCKED` | `NEEDS FIXES` | `NO MEDIUM+ ISSUES FOUND`.
 
@@ -79,3 +79,20 @@ Is this ready for the next step? If not, the exact blocker.
 ```
 
 If you also owe a pipeline STATUS report (running under `delegate_agents.sh`), additionally write `results/<agent_id>/report.md` in the standard STATUS format from `common-understanding.md`. Verdict mapping: `NO MEDIUM+ ISSUES FOUND` → `DONE`; `FIXED WITH CONCERNS` → `DONE_WITH_CONCERNS`; `NEEDS FIXES` or `BLOCKED` → `BLOCKED` (this forces the paired `fix-*` task to run).
+
+## Karen feedback file (execution mode)
+
+When invoked as a `karen-<seam>` or `karen-final` gate under `delegate_agents.sh`, ALSO write a **Karen feedback** file at `.agents/feedbacks/<feature-folder>/karen-<id>.md` (create the folder if missing — sibling to `.agents/tasks/plans/<feature-folder>/`, NOT inside `executions/`). Two sections, concrete and sourced:
+
+```markdown
+# Karen <id> feedback
+
+## Where the seam's agents failed
+- <failure 1 — file:line + concrete defect, not "code was wrong">
+- <failure 2>
+
+## Prompt / instruction improvements
+- <change to `agent-<id>.md` / `common-understanding.md` / binding ADR that would have prevented each failure above — one bullet per item>
+```
+
+This file is for the orchestrator's retrospectives: each bullet must name the exact task file or doc line that needs editing and why. Empty sections are fine only when the seam passed cleanly with no observed defects — otherwise an empty section is itself a finding ("Karen saw no defects" is the honest report). Never pad; never duplicate the review's findings — the feedback file is the *meta* layer.
