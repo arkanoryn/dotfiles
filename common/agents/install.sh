@@ -16,6 +16,13 @@ vibe_home=${VIBE_HOME:-"$HOME/.vibe"}
 pi_agent_dir=${PI_CODING_AGENT_DIR:-"$HOME/.pi/agent"}
 claude_skills_dir=${CLAUDE_SKILLS_DIR:-"$HOME/.claude/skills"}
 
+# Fish exports these as-given, so a quoted "~/.vibe" arrives here unexpanded.
+# Stow would then treat it as a relative path and create <dotfiles>/~/.
+agents_home=${agents_home/#~/$HOME}
+vibe_home=${vibe_home/#~/$HOME}
+pi_agent_dir=${pi_agent_dir/#~/$HOME}
+claude_skills_dir=${claude_skills_dir/#~/$HOME}
+
 stow_cmd=(stow --restow --no-folding)
 stow_delete_cmd=(stow --delete)
 
@@ -72,8 +79,7 @@ ensure_dirs() {
 do_install() {
   # Remove links created by the previous whole-shared stow, so prompts no longer
   # linger in AGENTS_HOME after moving to the harness-specific homes.
-  "${stow_delete_cmd[@]}" -d "$script_dir" -t "$agents_home" shared \
-    || log_warn "stow --delete shared -> $agents_home failed (continuing)"
+  "${stow_delete_cmd[@]}" -d "$script_dir" -t "$agents_home" shared
 
   # Stow can't sweep links to source dirs that no longer exist — do it ourselves
   # so the next restow lands on a clean slate.
@@ -81,39 +87,27 @@ do_install() {
 
   # Keep generated harness state in the harness home by stowing individual files,
   # never whole directories that tools may later write into.
-  "${stow_cmd[@]}" -d "$script_dir/shared" -t "$pi_agent_dir/agents" prompts \
-    || log_warn "stow prompts -> $pi_agent_dir/agents failed (continuing)"
-  "${stow_cmd[@]}" -d "$script_dir/shared" -t "$vibe_home/prompts" prompts \
-    || log_warn "stow prompts -> $vibe_home/prompts failed (continuing)"
-  "${stow_cmd[@]}" --ignore='^prompts($|/)' -d "$script_dir" -t "$agents_home" shared \
-    || log_warn "stow shared -> $agents_home failed (continuing)"
-  "${stow_cmd[@]}" -d "$script_dir" -t "$vibe_home" vibe \
-    || log_warn "stow vibe -> $vibe_home failed (continuing)"
+  "${stow_cmd[@]}" -d "$script_dir/shared" -t "$pi_agent_dir/agents" prompts
+  "${stow_cmd[@]}" -d "$script_dir/shared" -t "$vibe_home/prompts" prompts
+  "${stow_cmd[@]}" --ignore='^prompts($|/)' -d "$script_dir" -t "$agents_home" shared
+  "${stow_cmd[@]}" -d "$script_dir" -t "$vibe_home" vibe
 
   # pi target dir has runtime state mixed with our stowed files; move any
   # conflicting real files aside first so stow can link through.
   backup_pi_subdir_conflicts
-  "${stow_cmd[@]}" -d "$script_dir" -t "$pi_agent_dir" pi \
-    || log_warn "stow pi -> $pi_agent_dir failed (continuing)"
+  "${stow_cmd[@]}" -d "$script_dir" -t "$pi_agent_dir" pi
 
   # Also mirror skills into Claude Code's own skills directory.
-  "${stow_cmd[@]}" -d "$script_dir/shared" -t "$claude_skills_dir" skills \
-    || log_warn "stow skills -> $claude_skills_dir failed (continuing)"
+  "${stow_cmd[@]}" -d "$script_dir/shared" -t "$claude_skills_dir" skills
 }
 
 do_remove() {
-  "${stow_delete_cmd[@]}" -d "$script_dir/shared" -t "$pi_agent_dir/agents" prompts \
-    || log_warn "stow --delete prompts -> $pi_agent_dir/agents failed (continuing)"
-  "${stow_delete_cmd[@]}" -d "$script_dir/shared" -t "$vibe_home/prompts" prompts \
-    || log_warn "stow --delete prompts -> $vibe_home/prompts failed (continuing)"
-  "${stow_delete_cmd[@]}" --ignore='^prompts($|/)' -d "$script_dir" -t "$agents_home" shared \
-    || log_warn "stow --delete shared -> $agents_home failed (continuing)"
-  "${stow_delete_cmd[@]}" -d "$script_dir" -t "$vibe_home" vibe \
-    || log_warn "stow --delete vibe -> $vibe_home failed (continuing)"
-  "${stow_delete_cmd[@]}" -d "$script_dir" -t "$pi_agent_dir" pi \
-    || log_warn "stow --delete pi -> $pi_agent_dir failed (continuing)"
-  "${stow_delete_cmd[@]}" -d "$script_dir/shared" -t "$claude_skills_dir" skills \
-    || log_warn "stow --delete skills -> $claude_skills_dir failed (continuing)"
+  "${stow_delete_cmd[@]}" -d "$script_dir/shared" -t "$pi_agent_dir/agents" prompts
+  "${stow_delete_cmd[@]}" -d "$script_dir/shared" -t "$vibe_home/prompts" prompts
+  "${stow_delete_cmd[@]}" --ignore='^prompts($|/)' -d "$script_dir" -t "$agents_home" shared
+  "${stow_delete_cmd[@]}" -d "$script_dir" -t "$vibe_home" vibe
+  "${stow_delete_cmd[@]}" -d "$script_dir" -t "$pi_agent_dir" pi
+  "${stow_delete_cmd[@]}" -d "$script_dir/shared" -t "$claude_skills_dir" skills
 
   find "$agents_home" "$vibe_home" "$pi_agent_dir" "$claude_skills_dir" -depth -type d -empty -delete 2>/dev/null || true
 }

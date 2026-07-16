@@ -1,1 +1,0 @@
-../../../common/agents/shared/prompts/reviewer.md

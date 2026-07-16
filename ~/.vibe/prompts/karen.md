@@ -1,1 +1,0 @@
-../../../common/agents/shared/prompts/karen.md

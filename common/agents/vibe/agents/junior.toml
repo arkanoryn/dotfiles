@@ -4,7 +4,6 @@ safety = "yolo"
 active_model = "mistral-junior"
 system_prompt_id = "lazy-chaton"
 
-enabled_tools = ["*"]
 disabled_tools = ["ask"]
 
 enabled_skills = ["*"]
