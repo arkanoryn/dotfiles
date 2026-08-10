@@ -1,7 +1,7 @@
 #:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
 
 [default_session]
-# Layout: editor | ai agent | shell (top-right) | lazygit (bottom-right).
+# Linux (desktop): editor | ai agent | shell (top-right) | lazygit (bottom-right).
 # Columns auto-balance; refocus on the AI agent pane when done.
 # NOTE: tmux.conf sets `pane-base-index 1`, so panes are numbered 1..4:
 #   1 = editor (yh)   2 = ai agent (pim)   3 = shell (top-right)   4 = lazygit
@@ -9,14 +9,21 @@
 # installs a fish_prompt hook that signals a tmux wait-for channel; a
 # background process wakes on those signals and types the abbr + space
 # (triggers expansion) + Enter.
+# macOS (laptop): pim uses a private (non-work) subscription, so skip the
+# full layout there and just open a plain single-pane session.
 startup_command = '''
 fish -c '
-tmux split-window -h "fish --init-command=\"function __sesh_ready --on-event fish_prompt; tmux wait-for -S pane_agent_ready; functions -e __sesh_ready; end\""
-tmux split-window -h "fish"
-tmux split-window -v -t 3 "lazygit"
-tmux run-shell -b "tmux wait-for pane_editor_ready; tmux send-keys -t 1 yh Space C-m; tmux wait-for pane_agent_ready; tmux send-keys -t 2 pim Space C-m"
-tmux select-pane -t 2
-exec fish --init-command="function __sesh_ready --on-event fish_prompt; tmux wait-for -S pane_editor_ready; functions -e __sesh_ready; end"
+switch (uname)
+  case Linux
+    tmux split-window -h "fish --init-command=\"function __sesh_ready --on-event fish_prompt; tmux wait-for -S pane_agent_ready; functions -e __sesh_ready; end\""
+    tmux split-window -h "fish"
+    tmux split-window -v -t 3 "lazygit"
+    tmux run-shell -b "tmux wait-for pane_editor_ready; tmux send-keys -t 1 yh Space C-m; tmux wait-for pane_agent_ready; tmux send-keys -t 2 pim Space C-m"
+    tmux select-pane -t 2
+    exec fish --init-command="function __sesh_ready --on-event fish_prompt; tmux wait-for -S pane_editor_ready; functions -e __sesh_ready; end"
+  case Darwin
+    exec fish
+end
 '
 '''
 preview_command = "eza --all --git --icons --color=always {}"
