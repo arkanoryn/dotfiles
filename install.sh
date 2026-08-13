@@ -109,8 +109,11 @@ run_wizard() {
 
   local selected rc
   if [[ -n "$component_labels" ]]; then
-    selected=$(gm_choose_multi "Dotfiles components" <<< "$component_labels")
-    rc=$?
+    if selected=$(gm_choose_multi "Dotfiles components" <<< "$component_labels"); then
+      rc=0
+    else
+      rc=$?
+    fi
     check_cancel "$rc" "Cancelled — nothing installed."
     if [[ $rc -ne 0 ]]; then
       echo
@@ -121,8 +124,11 @@ run_wizard() {
   fi
 
   if [[ -n "$package_labels" ]]; then
-    selected=$(gm_choose_multi "Packages" <<< "$package_labels")
-    rc=$?
+    if selected=$(gm_choose_multi "Packages" <<< "$package_labels"); then
+      rc=0
+    else
+      rc=$?
+    fi
     check_cancel "$rc" "Cancelled — some components may already be installed."
     if [[ $rc -ne 0 ]]; then
       echo
@@ -177,8 +183,11 @@ run_update() {
     log_info "Found ${#new_ids[@]} new component(s) not yet in your setup."
     local rc
     for id in "${new_ids[@]}"; do
-      gm_confirm "New component found: $(component_label "$id") — install it?"
-      rc=$?
+      if gm_confirm "New component found: $(component_label "$id") — install it?"; then
+        rc=0
+      else
+        rc=$?
+      fi
       check_cancel "$rc" "Cancelled — remaining new components were left untouched."
       if [[ $rc -eq 0 ]]; then
         if component_install "$id"; then
