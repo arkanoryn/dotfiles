@@ -2,7 +2,7 @@
 # Consumed by scripts/delegate_agents.sh (DAG mode). Bash-3 compatible: plain
 # arrays only, no associative arrays (stock macOS Bash).
 #
-# Budget (from the /to-issues arguments):
+# Budget (from the /to-tasks arguments):
 #   minimax=4 vibe=3 gpt=1 karen=minimax fix=gpt commit=claude resolver=gpt
 # Honor the budget exactly in SLOTS below.
 
@@ -233,7 +233,7 @@ TOTAL_TIMEOUT_SEC="${TOTAL_TIMEOUT_SEC:-7200}"
 #   `git`: native manifest commit); downstream seams depend on commit-<seam>,
 #   never on the raw tasks.
 # - The runner pairs fix-X with karen-X: a BLOCKED review unblocks its fix.
-# - Ends with the whole-PRD gate: karen-final -> fix-final -> commit-final.
+# - Ends with the whole-specs gate: karen-final -> fix-final -> commit-final.
 # ===========================================================================
 PIPELINE=(
   # Seam 1 — backend foundation (independent of seam 2)
@@ -258,7 +258,7 @@ PIPELINE=(
   "fix-3:gpt:karen-3"
   "commit-3:git:fix-3"
 
-  # Whole-PRD gate — always last
+  # Whole-specs gate — always last
   "karen-final:karen:commit-3"
   "fix-final:gpt:karen-final"
   "commit-final:committer:fix-final"

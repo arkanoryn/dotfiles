@@ -1,24 +1,24 @@
 ---
-name: to-issues
-description: Break a PRD into a parallel-first execution folder (seams → micro-tasks → per-seam Karen gate → serialized commit) runnable by scripts/delegate_agents.sh.
+name: to-tasks
+description: Break the specs into a parallel-first execution folder (seams → micro-tasks → per-seam Karen gate → serialized commit) runnable by scripts/delegate_agents.sh.
 disable-model-invocation: true
-argument-hint: "[prd-path] [minimax=4 vibe=3 gpt=1 karen=minimax fix=gpt commit=claude resolver=gpt]"
+argument-hint: "[specs-path] [minimax=4 vibe=3 gpt=1 karen=minimax fix=gpt commit=claude resolver=gpt]"
 ---
 
-# To Issues
+# To Tasks
 
-Break a PRD into an execution folder of micro-tasks that `scripts/delegate_agents.sh` runs as a DAG. **Parallel-first**: maximum safe concurrency — many small cheap agents with small contexts beat few big agents with growing contexts.
+Break the specs into an execution folder of micro-tasks that `scripts/delegate_agents.sh` runs as a DAG. **Parallel-first**: maximum safe concurrency — many small cheap agents with small contexts beat few big agents with growing contexts.
 
 ## The contract: you do the leg work
 
-The runtime agents do no thinking — they follow instructions. YOU, running this skill, do ALL the hard work now: read the code, resolve every ambiguity, make every decision, spell out every step. **A task file is correct only if executing it requires zero decisions.** If writing a task forces you to leave a choice open, stop and resolve it (against the PRD/ADRs or with the user) before writing the file. Never delegate a decision downward.
+The runtime agents do no thinking — they follow instructions. YOU, running this skill, do ALL the hard work now: read the code, resolve every ambiguity, make every decision, spell out every step. **A task file is correct only if executing it requires zero decisions.** If writing a task forces you to leave a choice open, stop and resolve it (against the specs/ADRs or with the user) before writing the file. Never delegate a decision downward.
 
 ## Arguments
 
 The user may pass a provider budget. Grammar: `name=N` declares a coding provider pool with N parallel slots; role assignments name providers for the special tasks:
 
 ```
-/to-issues .agents/plans/26-avatars/PRD.md minimax=4 vibe=3 gpt=1 karen=minimax fix=gpt commit=claude resolver=gpt
+/to-tasks .agents/plans/26-avatars/SPECS.md minimax=4 vibe=3 gpt=1 karen=minimax fix=gpt commit=claude resolver=gpt
 ```
 
 - Every `name=N` pool is available for implementation tasks; spread independent tasks across pools to reduce shared blind spots (e.g. backend on minimax, frontend on vibe).
@@ -32,9 +32,9 @@ Record the parsed budget at the top of `pipeline.conf` as a comment, and honor i
 
 ## Structure: seams, micro-tasks, gates
 
-From the PRD's seams, build this shape:
+From the specs' seams, build this shape:
 
-1. **Seams** = the PRD's vertical slices (tracer bullets). Each seam delivers a narrow but COMPLETE path through every layer, demoable or verifiable on its own. Any prefactoring is its own first seam ("make the change easy, then make the easy change"). Slicing stays vertical — never reorganize into horizontal layers.
+1. **Seams** = the specs' vertical slices (tracer bullets). Each seam delivers a narrow but COMPLETE path through every layer, demoable or verifiable on its own. Any prefactoring is its own first seam ("make the change easy, then make the easy change"). Slicing stays vertical — never reorganize into horizontal layers.
 2. **Seams form a DAG, not a chain.** A seam depends on another only when it genuinely builds on its output. Independent seams run concurrently — which requires their tasks to have disjoint file ownership. If two seams must touch the same file, add a dependency between them.
 3. **Inside a seam, split into micro-tasks** `1a`, `1b`, `1c`… with strictly disjoint file ownership. Small targeted tasks fail less than large ones. Hard limits per task — if ANY is exceeded, split further:
    - one observable behavior (the mission fits one sentence with no "and");
@@ -43,7 +43,7 @@ From the PRD's seams, build this shape:
    - ≤ 15 minutes for a focused thinking-off agent.
    Tasks within a seam may depend on each other (`1b` after `1a`) when ownership can't be made disjoint.
 4. **Every seam ends in a gate:** `karen-<seam>` (reviews the seam, depends on all its tasks) → `fix-<seam>` (depends on `karen-<seam>`; runs even when Karen reports BLOCKED — the runner unblocks the paired fix) → `commit-<seam>` (a native runner commit of the seam's files — no agent). Downstream seams depend on `commit-<seam>`, never on the raw tasks.
-5. **The pipeline ends with a whole-PRD gate:** `karen-final` (depends on every terminal `commit-<seam>`) → `fix-final` → `commit-final`.
+5. **The pipeline ends with a whole-specs gate:** `karen-final` (depends on every terminal `commit-<seam>`) → `fix-final` → `commit-final`.
 
 ID conventions (the runner keys behavior off these):
 
@@ -79,7 +79,7 @@ This split matters: a run that spends its 3 resolver slots writing "nothing to r
 
 ## What you produce
 
-A folder `<feature-folder>/executions/` beside the PRD:
+A folder `<feature-folder>/executions/` beside the specs:
 
 | File                       | Purpose                                                       |
 | -------------------------- | ------------------------------------------------------------- |
@@ -107,14 +107,14 @@ If the runner already exists, never overwrite it silently — check it supports 
 Implementation, fix, and commit tasks run with `thinking: off`. Before writing any task file, verify it passes EVERY check below. A failed check means the breakdown is wrong — fix the breakdown, not the wording.
 
 1. **Fresh-session complete.** The file names every path to read and every path to edit, exactly. No reference to chat history, "as discussed", "see above", or the content of sibling tasks.
-2. **Zero decisions.** No architecture, API, security, data-model, or scope choice is left to the agent. If the PRD/ADRs don't settle it, settle it with the user first.
-3. **Concrete targets.** The exact function/module to extend or mirror is named; binding PRD language is quoted verbatim; edge cases are an explicit bullet list, never "handle edge cases".
+2. **Zero decisions.** No architecture, API, security, data-model, or scope choice is left to the agent. If the specs/ADRs don't settle it, settle it with the user first.
+3. **Concrete targets.** The exact function/module to extend or mirror is named; binding specs language is quoted verbatim; edge cases are an explicit bullet list, never "handle edge cases".
 4. **Mechanical acceptance.** Every acceptance criterion is provable by a command or test named in the same file — an agent can check its own work without judgment.
 5. **Thinking stays off.** Raise `THINKING_OVERRIDES` only: `high` for `karen-*`/`fix-*`, `medium` for `commit-*` and genuinely tricky cross-cutting tasks. Never raise it to compensate for a vague task file — the task text carries the intelligence.
 
 ## Step 1 — Read and quiz
 
-Read the PRD, `CONTEXT.md`, relevant `docs/adr/`, and explore the code. Then present the proposed breakdown as a table: seam → tasks (with one-line missions) → dependencies → provider assignment. Ask the user:
+Read the specs, `CONTEXT.md`, relevant `docs/adr/`, and explore the code. Then present the proposed breakdown as a table: seam → tasks (with one-line missions) → dependencies → provider assignment. Ask the user:
 
 - Does the granularity feel right? (too coarse / too fine)
 - Are the seam dependencies correct? Could any be parallelized further?
@@ -137,7 +137,7 @@ Adapt this template. Keep it short — it is read by every agent, so every line 
 
 ## Binding documents
 
-- `<path-to-PRD>` — the spec; it wins over this file on conflict
+- `<path-to-SPECS>` — the spec; it wins over this file on conflict
 - `CONTEXT.md` — use its vocabulary
 - `docs/adr/` — decisions are binding
 - `.agents/instructions/*.md` — coding standards, if present
@@ -214,7 +214,7 @@ One `agent-<id>.md` per pipeline id. Implementation/fix template:
 
 ## Required reading
 
-- `<PRD path>` — sections <X, Y>
+- `<SPECS path>` — sections <X, Y>
 - `<code path>` — <why: the thing you extend / the pattern to mirror>
 - `.agents/instructions/<relevant>.md`
 
@@ -225,7 +225,7 @@ Do not: edit other files (report `BLOCKED` instead), commit/stage/push, read sec
 
 ## Task
 
-<Specific instructions. Quote binding PRD language. Name the exact modules/functions. List edge cases. Follow the TDD loop from common-understanding.md: one failing test → minimal code → repeat.>
+<Specific instructions. Quote binding specs language. Name the exact modules/functions. List edge cases. Follow the TDD loop from common-understanding.md: one failing test → minimal code → repeat.>
 
 ## Acceptance criteria
 
@@ -267,7 +267,7 @@ crates/<...>/tests/<test file>.rs
 
 First non-comment line is the commit message; every following line is a path (union of the seam's ownership rows; include test files the tasks create). Missing paths are skipped, an empty diff is a no-op DONE — both are fine.
 
-**`karen-final` / `fix-final` / `commit-final`**: same patterns, scoped to the whole PRD; `karen-final` verifies the seam reviews' conclusions instead of trusting them; workspace-wide validation IS in scope here. `commit-final` is an agent (the `committer` provider): it runs `scripts/format.sh` if present, stages what `fix-final` and formatting changed, and commits via the `commit-work` skill with a real Conventional Commits message. It never pushes, amends, or rebases.
+**`karen-final` / `fix-final` / `commit-final`**: same patterns, scoped to the whole specs; `karen-final` verifies the seam reviews' conclusions instead of trusting them; workspace-wide validation IS in scope here. `commit-final` is an agent (the `committer` provider): it runs `scripts/format.sh` if present, stages what `fix-final` and formatting changed, and commits via the `commit-work` skill with a real Conventional Commits message. It never pushes, amends, or rebases.
 
 ## Step 4 — pipeline.conf
 
@@ -310,7 +310,7 @@ Then hand off:
 
 ```
 To run:      bash scripts/delegate_agents.sh <executions-folder>
-Recommended: have Karen review the plan first (karen-review skill, mode `plan`).
+Recommended: have Karen review the pipeline first (karen-review skill, mode `pipeline`).
 Resume:      re-run the same command; completed agents are preserved.
 Force re-run of one agent: rm <executions>/results/<id>.status
 Abort retry: automatic; tune ABORT_RETRY_MAX / ABORT_RETRY_DELAY_SEC / ABORT_PATTERN in the environment.
@@ -333,6 +333,6 @@ After the run: /pipeline-retro <executions-folder> to score providers and harves
 | Karen and implementer on the same model when the budget allows otherwise | Same blind spots |
 | Skipping the seam gate to save time | Final review then drowns; per-seam fixes are cheap because context is small |
 | Task files that assume chat history | Fresh sessions know nothing |
-| Decisions smuggled into task files | Violates the leg-work contract; resolve in PRD/ADR first |
+| Decisions smuggled into task files | Violates the leg-work contract; resolve in specs/ADR first |
 | `thinking` raised everywhere "to be safe" | Cost without benefit; the task text carries the intelligence |
 | Counting on the resolver as a safety net for vague tasks | The resolver repairs broken runs, not broken breakdowns |

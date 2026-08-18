@@ -1,16 +1,16 @@
 ---
-name: to-prd
-description: Turn the current conversation into a PRD saved in the repo — no interview, just synthesis of what you've already discussed.
+name: to-specs
+description: Turn the current conversation into a specs document saved in the repo — no interview, just synthesis of what you've already discussed.
 disable-model-invocation: true
 ---
 
-# To PRD
+# To Specs
 
-Take the current conversation context (typically the end of a `/grill-with-docs` session) and produce a PRD. Do NOT interview the user — just synthesize what you already know. If something essential is genuinely undecided, list it under "Open Questions" instead of asking.
+Take the current conversation context (typically the end of a `/refine-with-docs` session) and produce a specs document. Do NOT interview the user — just synthesize what you already know. If something essential is genuinely undecided, list it under "Open Questions" instead of asking.
 
 ## Process
 
-1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the vocabulary from `CONTEXT.md` throughout the PRD, and respect the ADRs in `docs/adr/` for the area you're touching. Reference ADRs by number; if the grilling session produced decisions that qualify for an ADR but none was written, write it now (see the `domain-modeling` skill's ADR rules).
+1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the vocabulary from `CONTEXT.md` throughout the specs, and respect the ADRs in `docs/adr/` for the area you're touching. Reference ADRs by number; if the refining session produced decisions that qualify for an ADR but none was written, write it now (see the `domain-modeling` skill's ADR rules).
 
 2. Sketch the seams at which the feature will be built and tested. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better — the ideal number is one.
 
@@ -18,11 +18,11 @@ Take the current conversation context (typically the end of a `/grill-with-docs`
 
 3. Determine the feature folder. Follow the project's existing convention if one exists (look for `.agents/plans/` or `.agents/process/plans/`); otherwise use `.agents/plans/`. Number it sequentially: `NN-kebab-title` (scan for the highest existing `NN` and increment).
 
-4. Write the PRD to `<feature-folder>/PRD.md` using the template below. This file is the binding spec that `to-issues` will consume — everything an implementer needs must be in it or reachable from it (ADR references, doc links).
+4. Write the specs to `<feature-folder>/SPECS.md` using the template below. This file is the binding spec that `to-tasks` will consume — everything an implementer needs must be in it or reachable from it (ADR references, doc links).
 
-<prd-template>
+<specs-template>
 
-# PRD — <Feature title>
+# SPECS — <Feature title>
 
 > One-paragraph summary of the feature from the user's perspective.
 
@@ -56,7 +56,7 @@ Do NOT include specific file paths or code snippets — they go stale fast. Exce
 
 ## Out of Scope
 
-The things explicitly NOT covered by this PRD, and (when known) when they will be.
+The things explicitly NOT covered by these specs, and (when known) when they will be.
 
 ## Open Questions
 
@@ -66,6 +66,6 @@ Decisions still owned by the user. Empty is the goal.
 
 Anything else an implementer needs.
 
-</prd-template>
+</specs-template>
 
-5. Tell the user the PRD path and suggest the next steps: an optional Karen pass (`karen-review` skill, mode `prd`), then `/to-issues`.
+5. Tell the user the specs path and suggest the next steps: an optional Karen pass (`karen-review` skill, mode `specs`), then `/to-tasks`.

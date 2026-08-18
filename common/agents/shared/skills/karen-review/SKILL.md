@@ -1,7 +1,7 @@
 ---
 name: karen-review
-description: Karen's review procedures and report formats. Use when acting as (or invoking) the contrarian risk critic — reviewing an orchestration plan, a completed execution, a PRD, or anything else that claims to be ready.
-argument-hint: "[plan|execution|prd|generic] [<prd_path>|<executions_folder|question]"
+description: Karen's review procedures and report formats. Use when acting as (or invoking) the contrarian risk critic — reviewing a delegation pipeline, a completed execution, a specs document, or anything else that claims to be ready.
+argument-hint: "[pipeline|execution|specs|generic] [<specs_path>|<executions_folder|question]"
 ---
 
 # Karen Review
@@ -12,9 +12,9 @@ Four modes. Pick the one matching your assignment; use `generic` if none was nam
 
 | Mode        | Reviews                                             | Writes                                       | Procedure            |
 | ----------- | ---------------------------------------------------- | -------------------------------------------- | -------------------- |
-| `plan`      | A delegated-execution folder BEFORE agents run       | Review file (read-only)                      | `modes/plan.md`      |
-| `execution` | Completed delegated work (repo changes vs. the plan) | Review file + safe fixes + Karen feedback    | `modes/execution.md` |
-| `prd`       | A PRD before it is broken into tasks                 | Review file (read-only)                      | `modes/prd.md`       |
+| `pipeline`  | A delegated-execution folder BEFORE agents run       | Review file (read-only)                      | `modes/pipeline.md`  |
+| `execution` | Completed delegated work (repo changes vs. the task files) | Review file + safe fixes + Karen feedback    | `modes/execution.md` |
+| `specs`     | Specs before they are broken into tasks              | Review file (read-only)                      | `modes/specs.md`     |
 | `generic`   | Anything else                                        | Review (file or response)                    | below                |
 
 **Mode `generic`:** any other subject (a design, a diff, a doc, an idea). Read-only unless explicitly told you may fix. Apply the severity guide and report format to whatever you were given. Verdicts: `BLOCKED` | `NEEDS FIXES` | `NO MEDIUM+ ISSUES FOUND`.
@@ -29,7 +29,7 @@ Report only BLOCKER, CRITICAL, HIGH, MEDIUM. Never LOW.
 - **MEDIUM**: plausible bug, incomplete edge case, misleading docs/tests, risky parallelism, or maintenance trap.
 - **LOW**: cosmetic, subjective, polish. Do not report these. Do not pad the review.
 
-Back every issue with concrete evidence: file paths, line references, failed commands, missing tests, or explicit reasoning from the plan. If you find no MEDIUM+ issues, say so directly and stop.
+Back every issue with concrete evidence: file paths, line references, failed commands, missing tests, or explicit reasoning from the pipeline. If you find no MEDIUM+ issues, say so directly and stop.
 
 ## Report format (all modes)
 
@@ -48,7 +48,7 @@ Write to the requested output file; if none given, write `karen-<subject>-review
 
 - Evidence:
 - Why this matters:
-- Recommended fix:        <plan / prd / generic modes>
+- Recommended fix:        <pipeline / specs / generic modes>
 - Fix applied:            <execution mode>
 - Validation:             <execution mode>
 - Remaining risk:
@@ -82,7 +82,7 @@ If you also owe a pipeline STATUS report (running under `delegate_agents.sh`), a
 
 ## Karen feedback file (execution mode)
 
-When invoked as a `karen-<seam>` or `karen-final` gate under `delegate_agents.sh`, ALSO write a **Karen feedback** file at `.agents/feedbacks/<feature-folder>/karen-<id>.md` (create the folder if missing — sibling to `.agents/tasks/plans/<feature-folder>/`, NOT inside `executions/`). Two sections, concrete and sourced:
+When invoked as a `karen-<seam>` or `karen-final` gate under `delegate_agents.sh`, ALSO write a **Karen feedback** file at `.agents/feedbacks/<feature-folder>/karen-<id>.md` (create the folder if missing — sibling to `.agents/plans/<feature-folder>/`, NOT inside `executions/`). Two sections, concrete and sourced:
 
 ```markdown
 # Karen <id> feedback

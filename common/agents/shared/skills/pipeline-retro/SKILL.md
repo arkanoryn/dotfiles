@@ -1,6 +1,6 @@
 ---
 name: pipeline-retro
-description: Judge a finished delegate_agents.sh run — score provider×thinking×task-type outcomes, mine fix/karen/resolver reports for root causes, and propose concrete improvements to task files, prompts, and the to-issues skill. Proposes only; never auto-applies.
+description: Judge a finished delegate_agents.sh run — score provider×thinking×task-type outcomes, mine fix/karen/resolver reports for root causes, and propose concrete improvements to task files, prompts, and the to-tasks skill. Proposes only; never auto-applies.
 disable-model-invocation: true
 argument-hint: "<executions-folder>"
 ---
@@ -49,7 +49,7 @@ For each (provider, thinking-level, task-type) cell with ≥1 run: first-attempt
 
 Every proposal must cite its evidence (agent id + file) and name its exact target. Categories, most valuable first:
 
-1. **Task-authoring rules** — recurring `vague-task`/`wrong-task-spec`/`missing-context` causes → a proposed wording change to the to-issues SKILL.md checklist or task template (quote the before/after).
+1. **Task-authoring rules** — recurring `vague-task`/`wrong-task-spec`/`missing-context` causes → a proposed wording change to the to-tasks SKILL.md checklist or task template (quote the before/after).
 2. **common-understanding.md template** — rules that were missing, ignored, or token-wasteful.
 3. **Provider/thinking assignment** — matrix cells that should move (e.g. "minimax thinking-off failed 3/4 multi-file tasks; route those to vibe or raise to medium").
 4. **System prompts / provider wrappers** — repeated model behaviors a system-prompt line would prevent (e.g. report-format drift, unrequested refactors).
@@ -78,7 +78,7 @@ Evidence: <agent ids, quotes>
 Change: <before → after, or the diff>
 ```
 
-End by telling the user: which proposals you'd apply first, and that applying them to `to-issues` (SKILL.md/templates) is their call. If the project has a `learnings` skill / `.agents/feedbacks/`, offer to also record the durable cross-project lessons there.
+End by telling the user: which proposals you'd apply first, and that applying them to `to-tasks` (SKILL.md/templates) is their call. If the project has a `learnings` skill / `.agents/feedbacks/`, offer to also record the durable cross-project lessons there.
 
 ## Anti-patterns
 

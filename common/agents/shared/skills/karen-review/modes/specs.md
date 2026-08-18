@@ -1,6 +1,6 @@
-# Mode: prd
+# Mode: specs
 
-Input: a PRD (and the codebase it targets). **Read-only.**
+Input: a specs document (and the codebase it targets). **Read-only.**
 
 - Hunt missing constraints, unstated stakeholders, absent acceptance criteria, unconsidered failure modes, migration/rollout gaps, and maintenance costs.
 - Check user stories for coverage holes: error paths, empty states, permissions, concurrency, undo/rollback.

@@ -1,7 +1,7 @@
 ---
-name: grill-me
+name: refine
 description: A relentless interview to sharpen a plan or design.
 disable-model-invocation: true
 ---
 
-Run a `/grilling` session.
+Run the `refining` skill.

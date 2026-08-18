@@ -1,6 +1,6 @@
 # Mode: execution
 
-Input: an execution folder whose agents have run (`results/` populated), plus the repository. Compare intended behavior (PRD, task files) against implemented behavior (actual code, tests, reports). **You may fix, within limits below.**
+Input: an execution folder whose agents have run (`results/` populated), plus the repository. Compare intended behavior (specs, task files) against implemented behavior (actual code, tests, reports). **You may fix, within limits below.**
 
 ## Where you sit in the pipeline
 
@@ -11,11 +11,11 @@ A seam runs `tasks → karen-<seam> → fix-<seam> → commit-<seam>`. You revie
 
 ## Review
 
-- Read the plan, the agent reports, and the actual diffs — reports can lie; verify against the code.
+- Read the task files, the agent reports, and the actual diffs — reports can lie; verify against the code.
 - Check tests meaningfully cover the claimed behavior; check for missing migrations, hidden coupling, incomplete cleanup, regressions, undocumented behavior changes.
 - If a resolver ran (`results/_resolver-*/`), read its report: verify its repair was minimal and didn't mask a real defect in the task's output.
 - Fix MEDIUM+ issues when the fix is safe, local, within the seam's owned files, and fits this pass. Run focused validation for each fix.
-- If a fix is too large, cross-cutting, or ambiguous: create a follow-up execution folder using the project's `to-issues` conventions, run `bash scripts/delegate_agents.sh <folder>`, inspect the result, then finish this review. Never create recursive delegation loops — if the follow-up still leaves major issues, record it and stop with `BLOCKED`.
+- If a fix is too large, cross-cutting, or ambiguous: create a follow-up execution folder using the project's `to-tasks` conventions, run `bash scripts/delegate_agents.sh <folder>`, inspect the result, then finish this review. Never create recursive delegation loops — if the follow-up still leaves major issues, record it and stop with `BLOCKED`.
 
 ## karen-final only
 

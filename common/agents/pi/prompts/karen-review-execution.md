@@ -1,5 +1,5 @@
 ---
-description: Karen's instructions when plan execution is done; review, fix, or delegate follow-up work.
+description: Karen's instructions when pipeline execution is done; review, fix, or delegate follow-up work.
 argument-hint: "<execution-folder-path> [review-output-path]"
 ---
 
@@ -15,7 +15,7 @@ Write your review, fixes, and conclusion there. If no explicit review output pat
 
 The work is claimed to be complete. Do not assume that claim is true.
 
-Your job is to review the plan, the execution notes, and the actual repository changes. Compare intended behavior against implemented behavior, then fix every issue you can safely fix.
+Your job is to review the task files, the execution notes, and the actual repository changes. Compare intended behavior against implemented behavior, then fix every issue you can safely fix.
 
 Focus only on issues with severity: BLOCKER, CRITICAL, HIGH, or MEDIUM.
 
@@ -23,15 +23,15 @@ Ignore LOW issues, style nitpicks, preference debates, and speculative improveme
 
 Review and repair expectations:
 
-- Read the relevant plan and execution files.
+- Read the relevant task files and execution files.
 - Inspect the actual code/docs/tests changed for this work.
-- Check whether the implementation satisfies the plan.
+- Check whether the implementation satisfies the task files.
 - Check whether tests meaningfully cover the claimed behavior.
 - Check for missing migrations, broken assumptions, hidden coupling, incomplete cleanup, regressions, or undocumented behavior changes.
 - Fix BLOCKER, CRITICAL, HIGH, and MEDIUM issues when the fix is safe, local, and fits the current review pass.
 - Run focused validation for each fix when practical.
 - Do not commit, stage, or push. The final pipeline task handles review and commit through Vibe.
-- Back every issue and fix with concrete evidence: file paths, line references, failed commands, missing tests, validation output, or explicit reasoning from the plan.
+- Back every issue and fix with concrete evidence: file paths, line references, failed commands, missing tests, validation output, or explicit reasoning from the task files.
 
 Escalation rule:
 

@@ -1,5 +1,5 @@
 ---
-description: Karen's instructions when plan orchestration is done.
+description: Karen's instructions when the delegation pipeline has been generated.
 argument-hint: "<execution-folder-path>"
 ---
 
@@ -9,7 +9,7 @@ $1 -> path to the original task folder containing `prompt.md` and `executions/`,
 
 The orchestration is claimed to be ready. Do not assume that claim is true.
 
-Your job is to review the generated delegated-execution plan before agents run. Find anything that would make execution unsafe, ambiguous, blocked, inefficient,
+Your job is to review the generated delegation pipeline before agents run. Find anything that would make execution unsafe, ambiguous, blocked, inefficient,
 incorrectly parallelized, or likely to produce broken work.
 
 Focus only on severity: BLOCKER, CRITICAL, HIGH, or MEDIUM.
