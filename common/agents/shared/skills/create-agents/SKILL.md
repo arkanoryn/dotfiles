@@ -1,5 +1,5 @@
 ---
-name: creating-agents
+name: create-agents
 description: Use when creating new agent configurations or modifying existing agent definitions
 ---
 
